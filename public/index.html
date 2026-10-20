@@ -309,6 +309,7 @@ body.sniperScoped #hud{cursor:none}
 #ctl button b{font-size:clamp(17px,calc(var(--u)*22),24px);font-weight:700;line-height:1}
 #ctl button small{font:700 8px/1 Inter,'Segoe UI',Roboto,Arial,sans-serif;letter-spacing:.04em}
 #ctl #bg{width:max(46px,calc(var(--u)*54));right:calc(var(--u)*20);bottom:calc(var(--sab) + var(--u)*205)} #ctl #bf{width:max(76px,calc(var(--u)*92));right:calc(var(--u)*36);bottom:calc(var(--sab) + var(--u)*44)}
+#ctl #bw{width:max(46px,calc(var(--u)*54));right:calc(var(--u)*86);bottom:calc(var(--sab) + var(--u)*205)}
 #ctl #bf b{font-size:clamp(24px,calc(var(--u)*30),34px)}
 #ctl #bad{width:max(46px,calc(var(--u)*54));right:calc(var(--u)*20);bottom:calc(var(--sab) + var(--u)*142)}
 #ctl #bj{width:max(46px,calc(var(--u)*46));right:calc(var(--u)*143);bottom:calc(var(--sab) + var(--u)*111)}
@@ -421,7 +422,7 @@ body.online #sbBtn{display:block} body.kbm #sbBtn{display:none}
   <div id="hpw" class="panel"><div class="healthline"><span class="plus">+</span><span id="hpt">100</span><span class="tiny">PV</span><span class="tiny r">ESTADO <b id="hstate">ESTÁVEL</b></span></div><div class="hbar"><i id="hp"></i></div></div>
   <div id="cards"></div>
   <button id="act">Loja</button>
-  <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button></div>
+  <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button></div>
 </div>
 <div id="start">
   <div id="sSun"></div>
@@ -1435,7 +1436,17 @@ renderer.domElement.addEventListener('webglcontextlost', ev => { ev.preventDefau
 const cv = renderer.domElement;
 const cam = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, .1, 700);
 let ads = false, adsK = 0, sensK = 1;
-const ICON = t => t === 'knife' ? '<svg viewBox="0 0 120 65"><path fill="#f3f6f4" d="M8 40L70 22l8 6-60 20z"/><path fill="#f3f6f4" d="M76 24l30-8 4 10-30 9z"/></svg>' : t === 'pistol' ? '<svg viewBox="0 0 120 65"><path fill="#f3f6f4" d="M10 14h86l6 8v10H72l-4 8H60l-8 20H36l6-20H34v-8H10z"/></svg>' : '<svg viewBox="0 0 180 65"><path fill="#f3f6f4" d="M8 27h30l8-8h52l9 7h26l12 5h22v7h-33l-12 7h-17l-5-8H80l-8 7H54l-5-9H35v-4H8z"/><path fill="#f3f6f4" d="M73 40h16l-3 20H70zM107 38h13l5 19h-13zM36 25h7v-8h-7zM148 26h12v4h-12z"/></svg>';
+const ICON = t => {
+  const f = '<svg viewBox="0 0 180 65"><g fill="#f3f6f4">';
+  switch (t) {
+    case 'knife': return '<svg viewBox="0 0 120 65"><path fill="#f3f6f4" d="M8 40L70 22l8 6-60 20z"/><path fill="#f3f6f4" d="M76 24l30-8 4 10-30 9z"/></svg>';
+    case 'pistol': return '<svg viewBox="0 0 120 65"><path fill="#f3f6f4" d="M10 14h86l6 8v10H72l-4 8H60l-8 20H36l6-20H34v-8H10z"/></svg>';
+    case 'smg': return f + '<path d="M40 22h92l10 8v8h-22l-6 6h-14l-3-6H78l-4 8H62l-3-8h-9l-4 16H32l5-16h-9v-8z"/><path d="M142 26h26v5h-26zM96 44h10l-1 20H93z"/></g></svg>';
+    case 'shotgun': return f + '<path d="M4 33h116l8-6h40v7h-30l-10 7H92l-10 7H62l-6-8H4z"/><path d="M4 28h104v4H4zM36 44l-6 12h16l5-12z"/><rect x="96" y="40" width="24" height="5" rx="2"/></g></svg>';
+    case 'sniper': return f + '<path d="M2 36h58l8-5h58l6-4h30v6h-27l-6 4H68l-5 6H44l-6 10H24l5-10H2z"/><path d="M78 22h30v5H78zM86 18h14v5H86zM68 31h6v8h-6z"/><rect x="154" y="33" width="24" height="3"/></g></svg>';
+    default: return f + '<path d="M8 27h30l8-8h52l9 7h26l12 5h22v7h-33l-12 7h-17l-5-8H80l-8 7H54l-5-9H35v-4H8z"/><path d="M73 40h16l-3 20H70zM107 38h13l5 19h-13zM36 25h7v-8h-7zM148 26h12v4h-12z"/></g></svg>';
+  }
+};
 const ZOOM = { rifle: 2.15, sniper: 8, smg: 1.8, lmg: 2.2, shotgun: 1.3, pistol: 1.4 }, SCOPED = { sniper: 1 };
 scene.add(cam);
 const hemi = new THREE.HemisphereLight(0xffffff, 0x6b5a48, 1);
@@ -1909,6 +1920,7 @@ function swapBodyGun() {
   const hand = body.userData.hand; if (bodyGun) hand.remove(bodyGun);
   bodyGun = GA.buildGun(THREE, slots[cur].type); bodyGun.scale.setScalar(TP_SCALE[slots[cur].type] || .6); orientHandGun(bodyGun); procGrips(bodyGun, slots[cur].type); hand.add(bodyGun); upgradeTpGun(bodyGun, slots[cur].type);
 }
+function nextWeapon() { if (!me.alive || menuOn || !walk) return; select((cur + 1) % slots.length); toast(slots[cur].cfg.label, 700); }
 function select(i) {
   ads = false; document.body.classList.remove('sniperScoped');
   cur = i; slots.forEach((s, k) => s.gun.visible = k === cur); slots[cur].reloading = false; swapBodyGun();
@@ -2099,22 +2111,36 @@ function activateBot(b, now) {
 let grenades = 2, grenadeDrops = [], ammoDrops = [];
 function throwGrenade(){
   if(!walk || !me.alive || menuOn || camMode === 2) return;
+  if(safe()){toast('Zona segura — sem granadas',1200);return;}
   if(grenades<=0){toast('Sem granadas',1200);return;}
   grenades--; updateGrenadeHud();
-  const dir=viewDir(), start=new V3(me.x,me.y+me.eh,me.z);
+  const dir=viewDir(), start=new V3(me.x+dir.x*.5,me.y+me.eh-.2,me.z+dir.z*.5);
   const mesh=createGrenadeVisual();
   mesh.position.copy(start); scene.add(mesh);
-  const vel=dir.clone().multiplyScalar(17); vel.y+=5;
-  const obj={mesh,vel,life:2.2}; grenadeDrops.push(obj); sfx('reload',.2);
+  const vel=dir.clone().multiplyScalar(15); vel.y+=4;
+  grenadeDrops.push({mesh,vel,life:2.2}); sfx('reload',.2);
 }
 function updateGrenadeHud(){ const b=$('bg'); if(b){const sm=b.querySelector('small');if(sm)sm.textContent='GRANADA '+grenades;} }
+function explodeGrenade(p){
+  const R=6;
+  if(!net.on){ for(const b of bots){ if(!b.alive) continue; const d=Math.hypot(b.x-p.x,b.z-p.z); if(d>=R||Math.abs(b.y+1-p.y)>5) continue;
+    if(blocked(p.x,p.y+.4,p.z,b.x,b.y+1,b.z)) continue;
+    b.root.userData.health-=Math.max(0,110-d*16); if(b.root.userData.health<=0) killBot(b,false); } }
+  else net.send({t:'nade',x:p.x,y:p.y,z:p.z});
+  const boom=new THREE.Mesh(new THREE.SphereGeometry(3,10,8),new THREE.MeshBasicMaterial({color:0xff9c35,transparent:true,opacity:.55}));boom.position.copy(p);scene.add(boom);
+  setTimeout(()=>{scene.remove(boom);boom.geometry.dispose();boom.material.dispose();},180);
+  sfx('shot',.5,300);
+}
 function updateGrenades(dt){
- for(let i=grenadeDrops.length-1;i>=0;i--){const g=grenadeDrops[i];g.life-=dt;g.vel.y-=18*dt;g.mesh.position.addScaledVector(g.vel,dt);
-  if(g.mesh.position.y<.15){g.mesh.position.y=.15;g.vel.y=Math.abs(g.vel.y)*.35;g.vel.x*=.7;g.vel.z*=.7;}
-  if(g.life<=0){const p=g.mesh.position; for(const b of bots){if(b.alive&&Math.hypot(b.x-p.x,b.z-p.z)<6&&Math.abs(b.y+1-p.y)<5){b.root.userData.health-=Math.max(0,100-Math.hypot(b.x-p.x,b.z-p.z)*15);if(b.root.userData.health<=0)killBot(b,false);}}
-   const boom=new THREE.Mesh(new THREE.SphereGeometry(3,10,8),new THREE.MeshBasicMaterial({color:0xff9c35,transparent:true,opacity:.55}));boom.position.copy(p);scene.add(boom);setTimeout(()=>{scene.remove(boom);boom.geometry.dispose();boom.material.dispose();},180);
-   scene.remove(g.mesh);disposeVisualObject(g.mesh);grenadeDrops.splice(i,1);
-  }
+ for(let i=grenadeDrops.length-1;i>=0;i--){const g=grenadeDrops[i],m=g.mesh.position;g.life-=dt;g.vel.y-=18*dt;
+  // movimento por eixo com colisão contra paredes (caixas) e chão (terreno/telhados)
+  for(const ax of ['x','z']){ const step=g.vel[ax]*dt; if(!step) continue; const o={x:0,y:0,z:0}; o[ax]=Math.sign(step);
+    if(rayWall(m.x,m.y,m.z,o.x,0,o.z,Math.abs(step)+.15)<Math.abs(step)+.15){ g.vel[ax]*=-.4; } else m[ax]+=step; }
+  m.y+=g.vel.y*dt;
+  const gy=groundOf({x:m.x,y:m.y+.3,z:m.z})+.12;
+  if(m.y<gy){ m.y=gy; if(g.vel.y<0) g.vel.y=-g.vel.y*.35; if(Math.abs(g.vel.y)<1) g.vel.y=0; g.vel.x*=.7; g.vel.z*=.7; }
+  g.mesh.rotation.x+=dt*6; 
+  if(g.life<=0){ explodeGrenade(m.clone()); scene.remove(g.mesh); grenadeDrops.splice(i,1); }
  }
 }
 function killBot(b, head) {
@@ -2192,7 +2218,7 @@ addEventListener('keydown', e => { if(['KeyW','KeyA','KeyS','KeyD','Space','Shif
 addEventListener('keydown', e => {
   key[e.code] = 1;
   if (e.code === 'Digit1') select(0); if (e.code === 'Digit2') select(1); if (e.code === 'Digit3') select(2);
-  if (e.code === 'KeyR') startReload(); if (e.code === 'KeyG') throwGrenade(); if (e.code === 'KeyC' || e.code === 'ControlLeft') toggleCrouch(); if (e.code === 'KeyE' && actShop) openMenu(actShop.kind); if (e.code === 'KeyV') toggleTps();
+  if (e.code === 'KeyR') startReload(); if (e.code === 'KeyG') throwGrenade(); if (e.code === 'KeyQ') nextWeapon(); if (e.code === 'KeyC' || e.code === 'ControlLeft') toggleCrouch(); if (e.code === 'KeyE' && actShop) openMenu(actShop.kind); if (e.code === 'KeyV') toggleTps();
   if (e.code === 'Escape' && menuOn) closeMenu();
 });
 addEventListener('keyup', e => key[e.code] = 0);
@@ -2458,7 +2484,7 @@ function frame() {
 }
 
 /* ---------- início ---------- */
-$('bg').addEventListener('click',throwGrenade); updateGrenadeHud(); detectKBM();
+$('bg').addEventListener('pointerdown',e=>{e.preventDefault();throwGrenade();}); $('bw').addEventListener('pointerdown',e=>{e.preventDefault();nextWeapon();}); updateGrenadeHud(); detectKBM();
 $('bc').setAttribute('aria-label', 'Alternar para terceira pessoa'); $('bc').title = 'Câmera: 1ª pessoa (toque para 3ª)'; buildLoadout(); setMode();
 for (let i = 0; i < BOT_COUNT; i++) makeBot(i);
 /* ---------- ONLINE (salas via WebSocket /ws) ---------- */
@@ -2546,6 +2572,7 @@ function onNet(m, finish) {
   else if (m.t === 'match_end') { net.over = true; showFinal(m); }
   else if (m.t === 'match_start') { net.over = false; hideBoard(); toast('Nova rodada! Primeiro a ' + m.limit + ' abates vence', 3000); }
   else if (m.t === 'respawn') { respawn(); me.x = m.x; me.z = m.z; me.y = favela.heightAt(me.x, me.z); }
+  else if (m.t === 'boom') { const bm=new THREE.Mesh(new THREE.SphereGeometry(3,10,8),new THREE.MeshBasicMaterial({color:0xff9c35,transparent:true,opacity:.55}));bm.position.set(m.x,m.y,m.z);scene.add(bm);setTimeout(()=>{scene.remove(bm);bm.geometry.dispose();bm.material.dispose();},180);sfx('shot',.3,300); }
   else if (m.t === 'shot') { GA.makeBulletTrail(THREE, scene, new V3(m.ox, m.oy, m.oz), new V3(m.ex, m.ey, m.ez), .06); sfx('shot', .12, 120); }
 }
 /* ---------- placar, killfeed e fim de rodada ---------- */

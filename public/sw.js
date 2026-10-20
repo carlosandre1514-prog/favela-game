@@ -1,5 +1,5 @@
 /* Favela Game — service worker (PWA). Troque VERSION quando publicar uma versão nova do jogo. */
-const VERSION = 'favela-v8';
+const VERSION = 'favela-v9';
 const SHELL = ['./', 'index.html', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

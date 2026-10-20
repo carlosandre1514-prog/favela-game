@@ -154,6 +154,30 @@ function onMessage(ws, raw) {
     }
     return;
   }
+  if (m.t === 'nade') {                                  // granada: o servidor calcula quem está no raio
+    if (!p.alive || room.state !== 'play') return;
+    if (now - (p.lastNade || 0) < 1500) return; p.lastNade = now;
+    const cx = num(m.x, 400), cy = num(m.y, 200), cz = num(m.z, 400);
+    if (Math.hypot(cx - p.x, cz - p.z) > 60 || p.z < -37 || cz < -37) return;
+    broadcast(room, { t: 'boom', x: cx, y: cy, z: cz }, ws);
+    for (const target of room.players.values()) {
+      if (target === p || !target.alive || target.z < -37 || now < target.protectUntil) continue;
+      const d = Math.hypot(target.x - cx, target.z - cz);
+      if (d >= 6 || Math.abs(target.y + 1 - cy) > 5) continue;
+      const dmg = Math.round(Math.max(0, 110 - d * 16)); if (dmg <= 0) continue;
+      target.hp -= dmg; target.lastDmg = now;
+      send(target.ws, { t: 'damage', from: p.id, hp: Math.max(0, target.hp) });
+      send(ws, { t: 'hitmark', id: target.id, kill: target.hp <= 0, head: false, dmg });
+      if (target.hp <= 0) {
+        target.hp = 0; target.alive = false; target.d++; p.k++; target.respawnAt = now + RESPAWN_MS;
+        broadcast(room, { t: 'kill', killer: p.id, victim: target.id, kn: p.name, vn: target.name, w: 'nade', head: false });
+        target.streak = 0; p.streak++; giveXp(p, XP_KILL, 'ABATE');
+        if (XP_STREAK[p.streak]) giveXp(p, XP_STREAK[p.streak][0], XP_STREAK[p.streak][1]);
+        if (p.k >= KILL_LIMIT) { endMatch(room, now); break; }
+      }
+    }
+    return;
+  }
   if (m.t === 'lv') { p.lv = cleanLv(m.lv); return; }
   if (m.t === 'ping') { send(ws, { t: 'pong', c: m.c }); return; }
   if (m.t === 'leave') { leaveRoom(ws); return; }

@@ -111,3 +111,11 @@ Servidor → cliente: `joined`, `error`, `player_join`, `player_leave`, `snap` (
 - Texturas das armas 1024→512 (menos memória de GPU e carga mais rápida); anisotropia 1 em aparelho fraco.
 - Contexto WebGL da tela inicial encolhe durante a partida; minimapa redesenha menos em aparelho fraco.
 - `sw.js` VERSION = favela-v8.
+
+## Granadas, troca rápida e ícones (outubro/2026)
+- Granada corrigida: antes atravessava o chão (o labirinto fica a 2 m de altura e o chão da granada era 0,15 m) e nunca causava dano. Agora quica no chão/telhados, bate nas paredes e a explosão (raio 6 m) respeita paredes.
+- Granada bloqueada na zona segura (igual ao tiro). Botão agora usa toque imediato.
+- Online: o servidor calcula o dano da granada (mensagem `nade`, 1,5 s de intervalo) e todos veem a explosão (`boom`). Precisa publicar o `server.js` novo.
+- Botão ⇄ ARMA (tecla Q) alterna entre as 3 armas equipadas.
+- Cada arma tem ícone próprio (fuzil, submetralhadora, escopeta, sniper).
+- `sw.js` VERSION = favela-v9.
