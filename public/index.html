@@ -595,9 +595,10 @@ body.homeOn #start{display:none!important}
 <div id="pad"><i id="jb"></i><i id="jk"></i></div>
 <div id="fcUI"><button id="fcM">−</button><button id="fcV">VISUAL</button><button id="fcP">+</button></div>
 <div id="menu"><div id="mh"><b id="mt">Loja</b><button id="mx">✕</button></div><div id="pv"></div><div id="ml"></div></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script src="vendor/fflate.min.js"></script>
+<script src="vendor/FBXLoader.js"></script>
 <script src="maps/colegio.js"></script>
 <script>
 /* Assets 3D para Three.js
@@ -1197,7 +1198,7 @@ body.homeOn #start{display:none!important}
 })(window);
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
+<script src="vendor/SkeletonUtils.js"></script>
 <script src="chars.js"></script>
 <script>
 /* ===== ASSET: buildFavela(THREE, scene, seed) =====
