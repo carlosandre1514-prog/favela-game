@@ -474,10 +474,12 @@ body.online #sbBtn{display:block} body.kbm #sbBtn{display:none}
   'use strict';
 
   const WEAPON_CONFIG = {
-    rifle:  { label:'Fuzil de assalto', damage:24, fireRate:110, recoil:0.09, ammo:30, reserve:120, spread:0.012, range:180 },
-    sniper: { label:'Precisão',         damage:85, fireRate:900, recoil:0.18, ammo:5, reserve:25, spread:0.002, range:300 },
-    shotgun:{label:'Escopeta',          damage:12, fireRate:650, recoil:0.16, ammo:6, reserve:36, spread:0.075, pellets:8, range:45 },
-    smg:    { label:'Submetralhadora',  damage:13, fireRate:75,  recoil:0.045, ammo:32, reserve:160, spread:0.025, range:90 }
+    rifle:  { label:'AK-47', damage:24, fireRate:110, recoil:0.09, ammo:30, reserve:120, spread:0.012, range:180 },
+    sniper: { label:'AWP',             damage:85, fireRate:900, recoil:0.18, ammo:5, reserve:25, spread:0.002, range:300 },
+    shotgun:{label:'Escopeta',          damage:22, fireRate:450, recoil:0.22, ammo:2, reserve:24, spread:0.075, pellets:8, range:45 },
+    smg:    { label:'MAC-10',           damage:13, fireRate:75,  recoil:0.045, ammo:32, reserve:160, spread:0.025, range:90 },
+    m4:     { label:'M4A1',             damage:22, fireRate:95,  recoil:0.07,  ammo:30, reserve:120, spread:0.010, range:190 },
+    barrett:{ label:'Barrett .50',      damage:100, fireRate:1200, recoil:0.26, ammo:5, reserve:20, spread:0.002, range:350 }
   };
 
   function material(THREE, color, roughness) {
@@ -653,6 +655,8 @@ body.online #sbBtn{display:block} body.kbm #sbBtn{display:none}
     sniper: { barrel:1.15, body:[0.55,0.14,0.20], stock:0.42, mag:[0.13,0.22,0.12], color:'#45483a' },
     shotgun:{ barrel:0.70, body:[0.55,0.17,0.20], stock:0.38, mag:[0.11,0.12,0.11], color:'#57412e' },
     smg:    { barrel:0.42, body:[0.40,0.15,0.20], stock:0.20, mag:[0.12,0.24,0.12], color:'#333b36' },
+    m4:     { barrel:0.74, body:[0.46,0.16,0.22], stock:0.34, mag:[0.12,0.27,0.12], color:'#2f3a36' },
+    barrett:{ barrel:1.30, body:[0.58,0.15,0.21], stock:0.45, mag:[0.13,0.20,0.12], color:'#3e4236' },
     lmg:    { barrel:0.82, body:[0.55,0.18,0.24], stock:0.32, mag:[0.17,0.32,0.17], color:'#303a33' },
     knife:  { barrel:0.42, body:[0.10,0.07,0.08], stock:0.17, mag:[0.09,0.12,0.09], color:'#737f79' }
   };
@@ -676,8 +680,8 @@ body.online #sbBtn{display:block} body.kbm #sbBtn{display:none}
       boxPart(THREE, gun, 'stock', [shape.stock, 0.11, 0.15], [-shape.body[0] / 2 - shape.stock / 2 + 0.02, -0.015, 0], wood);
       boxPart(THREE, gun, 'magazine', shape.mag, [-0.02, -shape.body[1] / 2 - shape.mag[1] / 2 + 0.03, 0], dark);
       boxPart(THREE, gun, 'sight', [0.16, 0.045, 0.07], [0.02, shape.body[1] / 2 + 0.035, 0], dark);
-      if (type === 'sniper') boxPart(THREE, gun, 'scope', [0.30, 0.10, 0.10], [-0.04, 0.14, 0], dark);
-      if (type === 'rifle') {
+      if (type === 'sniper' || type === 'barrett') boxPart(THREE, gun, 'scope', [0.30, 0.10, 0.10], [-0.04, 0.14, 0], dark);
+      if (type === 'rifle' || type === 'm4') {
         boxPart(THREE, gun, 'scope', [0.24, 0.085, 0.085], [0.0, 0.15, 0], dark);
         boxPart(THREE, gun, 'scopeLens', [0.012, 0.07, 0.07], [0.126, 0.15, 0], material(THREE, '#2a7fb8', 0.1));
         boxPart(THREE, gun, 'scopeMountA', [0.04, 0.05, 0.06], [-0.07, 0.105, 0], dark);
@@ -1443,11 +1447,11 @@ const ICON = t => {
     case 'pistol': return '<svg viewBox="0 0 120 65"><path fill="#f3f6f4" d="M10 14h86l6 8v10H72l-4 8H60l-8 20H36l6-20H34v-8H10z"/></svg>';
     case 'smg': return f + '<path d="M40 22h92l10 8v8h-22l-6 6h-14l-3-6H78l-4 8H62l-3-8h-9l-4 16H32l5-16h-9v-8z"/><path d="M142 26h26v5h-26zM96 44h10l-1 20H93z"/></g></svg>';
     case 'shotgun': return f + '<path d="M4 33h116l8-6h40v7h-30l-10 7H92l-10 7H62l-6-8H4z"/><path d="M4 28h104v4H4zM36 44l-6 12h16l5-12z"/><rect x="96" y="40" width="24" height="5" rx="2"/></g></svg>';
-    case 'sniper': return f + '<path d="M2 36h58l8-5h58l6-4h30v6h-27l-6 4H68l-5 6H44l-6 10H24l5-10H2z"/><path d="M78 22h30v5H78zM86 18h14v5H86zM68 31h6v8h-6z"/><rect x="154" y="33" width="24" height="3"/></g></svg>';
+    case 'sniper': case 'barrett': return f + '<path d="M2 36h58l8-5h58l6-4h30v6h-27l-6 4H68l-5 6H44l-6 10H24l5-10H2z"/><path d="M78 22h30v5H78zM86 18h14v5H86zM68 31h6v8h-6z"/><rect x="154" y="33" width="24" height="3"/></g></svg>';
     default: return f + '<path d="M8 27h30l8-8h52l9 7h26l12 5h22v7h-33l-12 7h-17l-5-8H80l-8 7H54l-5-9H35v-4H8z"/><path d="M73 40h16l-3 20H70zM107 38h13l5 19h-13zM36 25h7v-8h-7zM148 26h12v4h-12z"/></g></svg>';
   }
 };
-const ZOOM = { rifle: 2.15, sniper: 8, smg: 1.8, lmg: 2.2, shotgun: 1.3, pistol: 1.4 }, SCOPED = { sniper: 1 };
+const ZOOM = { rifle: 2.15, m4: 2.3, barrett: 10, sniper: 8, smg: 1.8, lmg: 2.2, shotgun: 1.3, pistol: 1.4 }, SCOPED = { sniper: 1, barrett: 1 };
 scene.add(cam);
 const hemi = new THREE.HemisphereLight(0xffffff, 0x6b5a48, 1);
 const sun = new THREE.DirectionalLight(0xfff1d6, .9);
@@ -1561,9 +1565,9 @@ const SKINS = [
 ];
 const teamOf = i => (SKINS[i] && SKINS[i].team) || 'bandido', TEAM_LABEL = { bandido: 'BANDIDO', policia: 'POLICIAL' };
 // Somente armas com modelos 3D reais disponíveis em public/assets/weapons.
-const PRIMARIES = ['rifle', 'smg', 'shotgun', 'sniper'];
-const RELOAD = { rifle: 1.7, sniper: 2.4, shotgun: 2.2, smg: 1.5 };
-const SHOT_F = { rifle: 1800, sniper: 900, shotgun: 700, smg: 2400 };
+const PRIMARIES = ['rifle', 'm4', 'smg', 'shotgun', 'sniper', 'barrett'];
+const RELOAD = { rifle: 1.7, m4: 1.6, barrett: 3.2, sniper: 2.4, shotgun: 2.4, smg: 1.5 };
+const SHOT_F = { rifle: 1800, m4: 1900, barrett: 700, sniper: 900, shotgun: 700, smg: 2400 };
 const save = { primary: 'rifle', skin: 0, xp: 0 };
 try { Object.assign(save, JSON.parse(localStorage.getItem('fv_save') || '{}')); } catch (e) {}
 if (!WC[save.primary] || save.primary === 'knife' || save.primary === 'pistol') save.primary = 'rifle';
@@ -1607,7 +1611,7 @@ function addXp(n, why) {
 }
 function stripHit(root) { root.traverse(o => { if (o.userData && o.userData.hitZone) delete o.userData.hitZone; }); }
 function orientHandGun(g) { g.rotation.set(0, Math.PI / 2, 0); }
-const TP_SCALE = { rifle: .6, sniper: .58, smg: .62, shotgun: .6, lmg: .6, pistol: .5, knife: .7 }, tpPending = {};
+const TP_SCALE = { rifle: .6, m4: .6, barrett: .56, sniper: .58, smg: .62, shotgun: .6, lmg: .6, pistol: .5, knife: .7 }, tpPending = {};
 // arma de 3ª pessoa: usa o mesmo modelo .glb realista do viewmodel e define onde cada mão segura
 function upgradeTpGun(g, type) {
   const file = weaponAssetFiles[type], V = VIEWMODEL[type]; if (!file || !V || g.userData.tpDone) return;
@@ -1626,7 +1630,7 @@ function upgradeTpGun(g, type) {
 function flushTpGuns(file) { const l = tpPending[file]; if (!l) return; delete tpPending[file]; for (const [g, t] of l) upgradeTpGun(g, t); }
 // empunhaduras de reserva para as armas procedurais (antes do .glb carregar)
 function procGrips(g, type) {
-  const T = { rifle: [[-.12, -.16], [.30, -.06]], smg: [[-.08, -.15], [.22, -.05]], shotgun: [[-.14, -.15], [.34, -.07]], sniper: [[-.13, -.14], [.36, -.06]], pistol: [[-.08, -.1], [-.04, -.13]], lmg: [[-.12, -.16], [.3, -.06]], knife: [[0, 0], [0, -.2]] }[type] || [[-.1, -.15], [.25, -.05]];
+  const T = { rifle: [[-.12, -.16], [.30, -.06]], m4: [[-.12, -.16], [.30, -.06]], barrett: [[-.13, -.14], [.36, -.06]], smg: [[-.08, -.15], [.22, -.05]], shotgun: [[-.14, -.15], [.34, -.07]], sniper: [[-.13, -.14], [.36, -.06]], pistol: [[-.08, -.1], [-.04, -.13]], lmg: [[-.12, -.16], [.3, -.06]], knife: [[0, 0], [0, -.2]] }[type] || [[-.1, -.15], [.25, -.05]];
   const mk = (n, a) => { const o = new THREE.Object3D(); o.name = n; o.position.set(a[0], a[1], 0); g.add(o); return o; };
   g.userData.gripR = mk('gripR', T[0]); g.userData.gripL = mk('gripL', T[1]);
 }
@@ -1725,10 +1729,14 @@ const makeSlot = t => ({ type: t, cfg: WC[t], mag: WC[t].ammo, res: WC[t].reserv
 // caso a conexão ou o carregamento dos arquivos falhe.
 const weaponAssetFiles = {
   rifle: 'weapons/ak47.glb',
+  m4: 'weapons/m4a1.glb',
   smg: 'weapons/mac10.glb',
   shotgun: 'weapons/shotgun.glb',
-  sniper: 'weapons/awp.glb'
+  sniper: 'weapons/awp.glb',
+  barrett: 'weapons/barret.glb'
 };
+// Tamanho final (em metros, no comprimento) dos modelos novos: o jogo mede o modelo, redimensiona e centraliza sozinho.
+const WEAPON_NORM = { 'weapons/m4a1.glb': 0.92, 'weapons/barret.glb': 1.35 };
 const weaponAssetCache = {};
 function loadWeaponAsset(type, gunGroup) {
   const file = weaponAssetFiles[type];
@@ -1744,7 +1752,12 @@ function loadWeaponAsset(type, gunGroup) {
   }
   window.__favelaWeaponLoading[file] = [gunGroup];
   new THREE.GLTFLoader().load(GAME_ASSET_BASE + file, gltf => {
-    const model = gltf.scene;
+    let model = gltf.scene;
+    if (WEAPON_NORM[file]) {                       // modelo novo: tamanho real + centralizado (cano para +X, topo para +Y)
+      const b = new THREE.Box3().setFromObject(model), sz = b.getSize(new THREE.Vector3()), ct = b.getCenter(new THREE.Vector3());
+      const sc = WEAPON_NORM[file] / (sz.x || 1), wrap = new THREE.Group();
+      model.scale.setScalar(sc); model.position.copy(ct).multiplyScalar(-sc); wrap.add(model); model = wrap;
+    }
     model.traverse(o => {
       if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; }
     });
@@ -1765,9 +1778,11 @@ function loadWeaponAsset(type, gunGroup) {
    bore   : altura do cano (saída do tiro) */
 const VIEWMODEL = {
   rifle:   { k: 1.12, grip: [-.01, -.07], fore: [.34, .025], sightY: .098, rs: .25,  ER: .42, bore: .03 },
+  m4:      { k: 1, grip: [-.092, -.064], fore: [.147, .009], sightY: .138, rs: -.138, ER: .30, bore: .055 },
   smg:     { k: 1.25, grip: [-.04, -.07], fore: [.07, -.045], sightY: .036, rs: -.08, ER: .26, bore: .012 },
   shotgun: { k: 1.50, grip: [-.10, -.012], fore: [.15, .03],  sightY: .064, rs: -.05, ER: .42, bore: .047 },
-  sniper:  { k: 1.05, grip: [-.075, -.035], fore: [.24, .005], sightY: .105, rs: -.10, ER: .30, bore: .06 }
+  sniper:  { k: 1.05, grip: [-.075, -.035], fore: [.24, .005], sightY: .105, rs: -.10, ER: .30, bore: .06 },
+  barrett: { k: 1, grip: [-.348, -.035], fore: [.002, .023], sightY: .096, rs: -.063, ER: .30, bore: .059 }
 };
 function buildFpHands(gunGroup, rel, V) {
   const arms = new THREE.Group(); arms.name = 'fpHands';
@@ -1898,7 +1913,7 @@ function buildLoadout() {
     const g = GA.buildGun(THREE, s.type); GA.attachGunFirstPerson(fpCam, g);
     // Escala de primeira pessoa baseada em comprimentos reais aproximados:
     // AK ~87 cm, fuzil de precisão ~110 cm, submetralhadora ~65 cm.
-    const viewScale = ({ rifle: .88, sniper: 1.0, smg: .82, shotgun: .90, lmg: .92, pistol: .72, knife: .72 })[s.type] || .88;
+    const viewScale = ({ rifle: .88, m4: .88, barrett: .95, sniper: 1.0, smg: .82, shotgun: .90, lmg: .92, pistol: .72, knife: .72 })[s.type] || .88;
     g.scale.setScalar(viewScale); g.position.set(.22, -.22, -.48); g.rotation.set(0, Math.PI / 2, 0); g.userData.basePosition.copy(g.position); g.userData.baseRotation = g.rotation.clone();
     g.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; o.frustumCulled = false; } });
     g.visible = false; s.gun = g;
@@ -2069,7 +2084,7 @@ function bfs(s, g) {
   return path.reverse().map(n => nodeAt(n.a, n.b));
 }
 const pathTo = (b, x, z) => bfs(nearestNode(b.x, b.z), nearestNode(x, z));
-const BOT_COUNT = 7, bots = [], botByRoot = new Map(), BOT_TYPES = ['rifle', 'smg', 'shotgun', 'sniper'];
+const BOT_COUNT = 7, bots = [], botByRoot = new Map(), BOT_TYPES = ['rifle', 'm4', 'smg', 'shotgun', 'sniper', 'barrett'];
 const BANDIT_LOOKS = [
   { shirt: '#7d1f1f', shorts: '#2b2b2b', gear: '#3a2a2a', touca: '#111418', bandana: '#b01818' },
   { shirt: '#e8e8e0', shorts: '#1a2a4a', gear: '#444', cap: '#222', chain: true, sleeveless: true },
@@ -2255,7 +2270,7 @@ function toggleAds() {
   if (slots[cur].type === 'knife') { toast('A faca n\u00e3o tem mira', 900); return; }
   if (tps) { toast('Mirar s\u00f3 na 1\u00aa pessoa (bot\u00e3o \u25c9)', 1400); return; }
   ads = !ads;
-  document.body.classList.toggle('sniperScoped', ads && slots[cur].type === 'sniper');
+  document.body.classList.toggle('sniperScoped', ads && SCOPED[slots[cur].type]);
 }
 tap('bad', toggleAds);
 function toggleCrouch() { if (!me.alive || !walk || menuOn) return; me.crouch = !me.crouch; }
@@ -2415,14 +2430,14 @@ function frame() {
   // mira (ADS) com zoom e luneta
   { const sc = slots[cur], want = (ads && walk && !tps && me.alive && !menuOn && sc.type !== 'knife') ? 1 : 0;
     adsK += (want - adsK) * (1 - Math.exp(-dt * 12)); if (Math.abs(adsK - want) < .002) adsK = want;
-    document.body.classList.toggle('sniperScoped', !!(adsK > .55 && sc.type === 'sniper' && walk && !tps && me.alive && !menuOn));
+    document.body.classList.toggle('sniperScoped', !!(adsK > .55 && SCOPED[sc.type] && walk && !tps && me.alive && !menuOn));
     me.runK = (me.runK || 0) + ((me.sprinting ? 1 : 0) - (me.runK || 0)) * (1 - Math.exp(-dt * 6));
     const z = ZOOM[sc.type] || 1.3, fv = 62 / (1 + (z - 1) * adsK) + (walk ? me.runK * 4 * (1 - adsK) : 0);
     if (Math.abs(cam.fov - fv) > .01) { cam.fov = fv; cam.updateProjectionMatrix(); }
     sensK = 1 / (1 + (z - 1) * adsK * .8); }
   // Arma em primeira pessoa: posição de ombro, balanço leve, recuo e retorno.
   const s = slots[cur], g = s.gun, base = g.userData.basePosition, bob = me.moving && me.alive ? Math.sin(now * .009) * .012 : 0;
-  const scoped = s.type === 'sniper' && adsK > .55;
+  const scoped = SCOPED[s.type] && adsK > .55;
   const vw = g.userData.view, rk = me.runK || 0, lerp = (a, b, t) => a + (b - a) * t;
   if (vw) {
     // pegada realista: cintura → mira alinhada ao centro; correndo, a arma abaixa e aponta para dentro
@@ -2435,7 +2450,7 @@ function frame() {
   g.visible = !scoped; fpArms.visible = !scoped && walk && !tps && me.alive && !g.userData.hasArms;
   g.userData.updateRecoil(dt); g.position.y += (base.y - g.position.y) * (1 - Math.exp(-dt * 14));
   const sw = now - s.swing, firingKick = s.lastShot ? Math.max(0, 1 - (now - s.lastShot) / 150) : 0;
-  const aimBlend = adsK * (s.type === 'sniper' ? .7 : .55);
+  const aimBlend = adsK * (SCOPED[s.type] ? .7 : .55);
   g.rotation.set((s.reloading ? .28 : 0) + firingKick * s.cfg.recoil * .7, Math.PI / 2 + (vw ? (1 - adsK) * .035 + rk * .5 * (1 - adsK) : 0) + (sw < 220 ? Math.sin(sw / 220 * Math.PI) * -.12 : 0), (sw < 220 ? Math.sin(sw / 220 * Math.PI) * .06 : 0) + bob * 1.8);
   g.rotation.z *= 1 - aimBlend; if (vw) g.rotation.z -= rk * .22 * (1 - adsK);
   // corpo (3ª pessoa / morte)

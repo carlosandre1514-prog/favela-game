@@ -26,8 +26,10 @@ const MAX_VSPEED = 30;          // m/s vertical (pulo/queda/escada)
 const WEAPONS = {
   rifle:   { dmg: 24, rate: 110, pellets: 1, range: 180 },
   sniper:  { dmg: 85, rate: 900, pellets: 1, range: 300 },
-  shotgun: { dmg: 12, rate: 650, pellets: 8, range: 45 },
-  smg:     { dmg: 13, rate: 75,  pellets: 1, range: 90 }
+  shotgun: { dmg: 22, rate: 450, pellets: 8, range: 45 },
+  smg:     { dmg: 13, rate: 75,  pellets: 1, range: 90 },
+  m4:      { dmg: 22, rate: 95,  pellets: 1, range: 190 },
+  barrett: { dmg: 100, rate: 1200, pellets: 1, range: 350 }
 };
 const HEAD_MULT = 2;
 /* XP (o servidor só concede XP por eventos reais de partida contra outros jogadores) */
