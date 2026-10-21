@@ -68,6 +68,13 @@ const server = http.createServer((req, res) => {
   });
 });
 
+/* ---------- mapas: zona segura (sem dano) e onde a polícia renasce ---------- */
+const MAPS = {
+  favela:  { safe: z => z < -37, spawn: () => [(Math.random() - .5) * 12, -67 + Math.random() * 8] },     // quadra
+  colegio: { safe: z => z > 66,  spawn: () => [28 + Math.random() * 12, 71 + Math.random() * 7] }        // portaria
+};
+const mapOf = room => MAPS[room.map] || MAPS.favela;
+
 /* ---------- salas ---------- */
 const rooms = new Map();   // code -> { code, players, state, endsAt, overUntil }
 let nextId = 1;
@@ -81,10 +88,11 @@ const broadcast = (room, obj, except) => { const s = JSON.stringify(obj); for (c
 
 function joinRoom(ws, room, name, lv) {
   if (room.players.size >= MAX_PLAYERS) { send(ws, { t: 'error', msg: 'Sala cheia (16 jogadores)' }); return; }
-  const p = { id: nextId++, ws, name: cleanName(name), x: 0, y: 0, z: -60, yaw: 0, pit: 0, w: 'rifle', hp: 100, alive: true, k: 0, d: 0, lv: cleanLv(lv), streak: 0, lastShot: 0, respawnAt: 0,
+  const [sx, sz] = mapOf(room).spawn();
+  const p = { id: nextId++, ws, name: cleanName(name), x: sx, y: 0, z: sz, yaw: 0, pit: 0, w: 'rifle', hp: 100, alive: true, k: 0, d: 0, lv: cleanLv(lv), streak: 0, lastShot: 0, respawnAt: 0,
              lastState: Date.now(), allow: MOVE_BURST, budget: 0, budgetAt: Date.now(), protectUntil: 0, lastDmg: 0, lastFix: 0 };
   ws.player = p; ws.room = room; room.players.set(p.id, p);
-  send(ws, { t: 'joined', id: p.id, code: room.code, name: p.name, players: room.players.size });
+  send(ws, { t: 'joined', id: p.id, code: room.code, name: p.name, players: room.players.size, map: room.map });
   broadcast(room, { t: 'player_join', id: p.id, name: p.name }, ws);
 }
 
@@ -106,12 +114,13 @@ function onMessage(ws, raw) {
 
   if (m.t === 'create') {
     if (ws.room) return;
-    const room = { code: newCode(), players: new Map(), state: 'play', endsAt: Date.now() + MATCH_SECS * 1000, overUntil: 0 }; rooms.set(room.code, room); joinRoom(ws, room, m.name, m.lv); return;
+    const room = { code: newCode(), map: MAPS[m.map] ? m.map : 'favela', players: new Map(), state: 'play', endsAt: Date.now() + MATCH_SECS * 1000, overUntil: 0 }; rooms.set(room.code, room); joinRoom(ws, room, m.name, m.lv); return;
   }
   if (m.t === 'join') {
     if (ws.room) return;
     const room = rooms.get(String(m.code || '').toUpperCase().trim());
     if (!room) { send(ws, { t: 'error', msg: 'Sala não encontrada' }); return; }
+    if (m.map !== room.map) { send(ws, { t: 'wrongmap', map: room.map, code: room.code }); return; }   // cliente recarrega com o mapa da sala
     joinRoom(ws, room, m.name, m.lv); return;
   }
   const p = ws.player, room = ws.room; if (!p || !room) return;
@@ -149,7 +158,7 @@ function onMessage(ws, raw) {
     if (p.budget < 1) return; p.budget -= 1;
     const dist = Math.hypot(p.x - target.x, p.y - target.y, p.z - target.z);
     if (dist > W.range + 6) return;                      // além do alcance da arma
-    if (p.z < -37 || target.z < -37) return;             // zona segura: sem dano
+    const SF = mapOf(room).safe; if (SF(p.z) || SF(target.z)) return;             // zona segura: sem dano
     if (now < target.protectUntil) return;               // protegido logo após renascer
     const head = m.z === 'head';
     const dmg = Math.round(W.dmg * (head ? HEAD_MULT : 1));
@@ -170,10 +179,10 @@ function onMessage(ws, raw) {
     if (!p.alive || room.state !== 'play') return;
     if (now - (p.lastNade || 0) < 1500) return; p.lastNade = now;
     const cx = num(m.x, 400), cy = num(m.y, 200), cz = num(m.z, 400);
-    if (Math.hypot(cx - p.x, cz - p.z) > 60 || p.z < -37 || cz < -37) return;
+    const SF = mapOf(room).safe; if (Math.hypot(cx - p.x, cz - p.z) > 60 || SF(p.z) || SF(cz)) return;
     broadcast(room, { t: 'boom', x: cx, y: cy, z: cz }, ws);
     for (const target of room.players.values()) {
-      if (target === p || !target.alive || target.z < -37 || now < target.protectUntil) continue;
+      if (target === p || !target.alive || SF(target.z) || now < target.protectUntil) continue;
       const d = Math.hypot(target.x - cx, target.z - cz);
       if (d >= 6 || Math.abs(target.y + 1 - cy) > 5) continue;
       const dmg = Math.round(Math.max(0, 110 - d * 16)); if (dmg <= 0) continue;
@@ -214,7 +223,7 @@ function startMatch(room, now) {
   room.state = 'play'; room.endsAt = now + MATCH_SECS * 1000;
   for (const p of room.players.values()) {
     p.k = 0; p.d = 0; p.streak = 0; p.hp = 100; p.alive = true; p.protectUntil = now + SPAWN_PROTECT_MS; p.allow = MOVE_BURST; p.lastState = now;
-    p.x = (Math.random() - .5) * 12; p.y = 0; p.z = -67 + Math.random() * 8;
+    [p.x, p.z] = mapOf(room).spawn(); p.y = 0;
     send(p.ws, { t: 'respawn', x: p.x, z: p.z });
   }
   broadcast(room, { t: 'match_start', limit: KILL_LIMIT, secs: MATCH_SECS });
@@ -230,7 +239,7 @@ setInterval(() => {
       if (!p.alive) {
         if (room.state === 'play' && now >= p.respawnAt) {
           p.alive = true; p.hp = 100; p.protectUntil = now + SPAWN_PROTECT_MS; p.allow = MOVE_BURST; p.lastState = now;
-          p.x = (Math.random() - .5) * 12; p.y = 0; p.z = -67 + Math.random() * 8;
+          [p.x, p.z] = mapOf(room).spawn(); p.y = 0;
           send(p.ws, { t: 'respawn', x: p.x, z: p.z });
         }
       } else if (p.hp < 100 && now - p.lastDmg > REGEN_DELAY_MS) {
