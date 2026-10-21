@@ -423,9 +423,9 @@ body.homeOn #start{display:none!important}
 #home .vlt{position:absolute;left:10.2%;top:56.4%;width:19.5%;height:5.6%;background:#0a110e;display:flex;align-items:center;gap:6%;padding-left:1.4%;pointer-events:none;color:#fff;font:900 calc(var(--aw)*.0185) Impact,'Arial Black',sans-serif;letter-spacing:.03em}
 #home .vlt i{font-style:normal;color:#a7ff45}
 .hp .sk{flex:1;text-align:center;align-self:center}.hp .sk b{display:block;font-size:14px}.hp .sk small{font-size:11px;color:#9fb3a8}
-#home .art{--aw:min(100vw,calc(100dvh*1.7768));position:absolute;top:50%;left:50%;width:min(100vw,calc(100dvh*1.7768));aspect-ratio:1672/941;transform:translate(-50%,-50%);user-select:none;-webkit-user-select:none}
-#home .art img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
-@media(orientation:portrait){#home .art{width:322vw;left:-9.7vw;transform:translateY(-50%)}}
+#home .art{--aw:min(100vw,calc(100dvh*2.05));position:absolute;inset:0;user-select:none;-webkit-user-select:none}   /* estica a arte 16:9 para a tela toda (sem faixas pretas) */
+#home .art img{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;-webkit-user-drag:none}
+@media(orientation:portrait){#home .art{inset:auto;top:50%;width:322vw;left:-9.7vw;aspect-ratio:1672/941;transform:translateY(-50%)}}
 #home .hs{position:absolute;border:0;background:transparent;border-radius:1.2%/6%;padding:0;outline:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 #home .hs:focus-visible,#home .hs:active{background:#a7ff4530;box-shadow:0 0 0 2px #a7ff45aa}
 #home .hs.rd{border-radius:50%}
