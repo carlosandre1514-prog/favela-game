@@ -398,8 +398,28 @@ body.adsOn #ctl #bfL,body.adsOn #ctl #zp,body.adsOn #ctl #zm{display:flex!import
 #hudEd .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:11px;color:#b8c9bd;text-align:center;width:90%}
 #home{position:fixed;inset:0;z-index:110;background:#000;overflow:hidden;display:none}
 body.homeOn #home{display:block}
-#home .bgb{position:absolute;inset:0;background:url(assets/menu/home.webp) center/cover;opacity:.35}
-#home .art{position:absolute;top:50%;left:50%;width:min(100vw,calc(100dvh*1.7768));aspect-ratio:1672/941;transform:translate(-50%,-50%);user-select:none;-webkit-user-select:none}
+body.homeOn #start{display:none!important}
+#home .prof{position:absolute;left:66.4%;top:3.4%;width:11%;height:7%;background:linear-gradient(90deg,#0d1714,#0a120f);border-radius:4px;display:flex;flex-direction:column;justify-content:center;padding-left:.4%;color:#fff;font-weight:900;pointer-events:none;overflow:hidden}
+#home .prof b{font-size:calc(var(--aw)*.0105);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home .prof small{font-size:calc(var(--aw)*.0068);color:#a7ff45;letter-spacing:.06em}
+.hp{position:fixed;inset:0;z-index:112;display:none;align-items:center;justify-content:center;padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom));background:#000a;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f2f6f3}
+.hp.on{display:flex}
+.hp .cd{width:min(560px,100%);max-height:100%;overflow-y:auto;background:#0b1411f5;border:1px solid #a7ff4566;border-radius:16px;padding:14px 16px;box-shadow:0 0 30px #000}
+.hp .hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.hp .hd h2{flex:1;margin:0;font:900 22px Impact,'Arial Black',sans-serif;letter-spacing:.04em}
+.hp .x{width:38px;height:38px;border-radius:10px;border:1px solid #ffffff33;background:#ffffff10;color:#fff;font-size:20px}
+.hp .lb{font-size:10px;font-weight:800;letter-spacing:.2em;color:#8fa79a;margin:12px 0 6px}
+.hp .rw{display:flex;gap:8px;align-items:stretch}
+.hp button.o{flex:1;padding:12px 8px;border-radius:10px;border:1px solid #ffffff2a;background:#ffffff0c;color:#fff;font-weight:800;font-size:13px;letter-spacing:.04em;cursor:pointer;touch-action:manipulation}
+.hp button.o small{display:block;font-size:10px;font-weight:600;color:#9fb3a8;margin-top:3px;letter-spacing:0}
+.hp button.o.on{border-color:#a7ff45;background:#a7ff4520;color:#d9ffb0}
+.hp button.o[disabled]{opacity:.45}
+.hp button.go{border-color:#a7ff45;background:linear-gradient(#b8ff45,#86d92c);color:#0a1404;font-weight:900;font-size:15px}
+.hp input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid #ffffff33;background:#020805;color:#fff;outline:0;text-transform:uppercase}
+.hp input:focus{border-color:#a7ff45}
+.hp .mg{min-height:18px;margin-top:10px;font-size:12px;color:#ffcf6b}
+.hp .sk{flex:1;text-align:center;align-self:center}.hp .sk b{display:block;font-size:14px}.hp .sk small{font-size:11px;color:#9fb3a8}
+#home .art{--aw:min(100vw,calc(100dvh*1.7768));position:absolute;top:50%;left:50%;width:min(100vw,calc(100dvh*1.7768));aspect-ratio:1672/941;transform:translate(-50%,-50%);user-select:none;-webkit-user-select:none}
 #home .art img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
 @media(orientation:portrait){#home .art{width:322vw;left:-9.7vw;transform:translateY(-50%)}}
 #home .hs{position:absolute;border:0;background:transparent;border-radius:1.2%/6%;padding:0;outline:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -457,7 +477,19 @@ body.homeOn #home{display:block}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="bgb"></div><div class="art"><img src="assets/menu/home.webp" alt="Favela FPS - menu inicial" decoding="async" fetchpriority="high"></div></div><div id="homeToast"></div>
+<div id="home"><div class="art"><div class="prof"><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small></div><img src="assets/menu/home.webp" alt="Favela FPS - menu inicial" decoding="async" fetchpriority="high"></div></div><div id="homeToast"></div>
+<div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR</h2><button class="x" data-close>×</button></div>
+  <div id="hpNickBox"><div class="lb">SEU NICK</div><div class="rw"><input id="hpNick" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o" id="hpNickOk" style="flex:none">SALVAR</button></div></div>
+  <div class="lb">MAPA</div><div class="rw"><button class="o on">FAVELA<small>Setor 04 · mata-mata</small></button><button class="o" disabled>COLÉGIO CENTRAL<small>em breve</small></button></div>
+  <div class="lb">LADO</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small id="hpSkB"></small></button><button class="o" data-side="sSideP">POLICIAL<small id="hpSkP"></small></button></div>
+  <div class="lb">OFFLINE</div><div class="rw"><button class="o go" id="hpOff">JOGAR OFFLINE</button></div>
+  <div class="lb">ONLINE (até 16 jogadores)</div><div class="rw"><button class="o" id="hpCreate">CRIAR SALA</button><input id="hpCode" maxlength="5" placeholder="CÓDIGO" autocomplete="off" spellcheck="false"><button class="o" id="hpJoin" style="flex:none">ENTRAR</button></div>
+  <div class="mg" id="hpMsg"></div></div></div>
+<div class="hp" id="hpChar"><div class="cd"><div class="hd"><h2>PERSONAGEM</h2><button class="x" data-close>×</button></div>
+  <div class="lb">NICK</div><div class="rw"><input id="hpNick2" maxlength="14" placeholder="SEU NICK" autocomplete="off" spellcheck="false"><button class="o" id="hpNick2Ok" style="flex:none">SALVAR</button></div>
+  <div class="lb">LADO</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small>Renasce na favela</small></button><button class="o" data-side="sSideP">POLICIAL<small>Renasce na quadra</small></button></div>
+  <div class="lb">SKIN</div><div class="rw"><button class="o" style="flex:none;width:52px" data-px="sPrev">‹</button><div class="sk"><b id="hpSk">—</b><small id="hpSkN">—</small></div><button class="o" style="flex:none;width:52px" data-px="sNext">›</button></div>
+  <div class="mg" id="hpMsg2"></div></div></div>
 <div id="start"><button id="lobbySettings" aria-label="Configurações">⚙ Configurações / HUD</button>
   <div id="sSun"></div>
   <div id="sGl"></div>
@@ -2903,7 +2935,7 @@ frame();
       ch=GameAssets3D.buildPlayer(THREE,opt);ch.position.y=.15;ch.rotation.y=spin;ch.scale.setScalar(1.25);scene.add(ch);bump=1;
     }};
   }
-  scene3d=build3d();
+  scene3d=null;   // palco 3D do lobby antigo desativado: a tela inicial é a única interface
   showNick();refreshSide();
 })();
 </script>
@@ -2922,7 +2954,7 @@ frame();
   $('lobbyBtn').addEventListener('click', () => {
     closeSettings();
     try { if(document.pointerLockElement) document.exitPointerLock(); } catch(e) {}
-    document.getElementById('start').classList.remove('off');
+    document.getElementById('start').classList.remove('off'); document.body.classList.add('homeOn');
     const msg = $('lobbyMsg'); if(msg) msg.textContent = 'Você voltou ao lobby. Escolha como jogar.';
   });
   // Atualiza o estado visual inicial depois que o motor gráfico criou os controles.
@@ -2977,20 +3009,51 @@ frame();
 })();
 </script>
 <script>
-/* Tela inicial (imagem + áreas clicáveis; valores em % da imagem 1672x941). Jogar/Multiplayer -> lobby; Configurações -> painel. */
+/* Tela inicial = única interface. Áreas clicáveis em % da imagem 1672x941. Os painéis comandam os controles do lobby antigo (#start, escondido),
+   que continua dono do nick, lado/skin e da entrada offline/online. */
 (function(){
-  const $ = id => document.getElementById(id), art = document.querySelector('#home .art');
-  let tm = 0; const toast = m => { const e = $('homeToast'); e.textContent = m; e.classList.add('on'); clearTimeout(tm); tm = setTimeout(() => e.classList.remove('on'), 1800); };
+  const $ = id => document.getElementById(id), art = document.querySelector('#home .art'), start = $('start');
+  let tm = 0; const toast = m => { const e = $('homeToast'); e.textContent = m; e.classList.add('on'); clearTimeout(tm); tm = setTimeout(() => e.classList.remove('on'), 2200); };
   const soon = n => () => toast(n + ' — em breve');
-  const lobby = () => { document.body.classList.remove('homeOn'); dispatchEvent(new Event('resize')); };   // resize: o palco 3D do lobby volta ao tamanho real
+  const show = id => () => { document.querySelectorAll('.hp').forEach(p => p.classList.toggle('on', p.id === id)); sync(); };
+  const closeAll = () => document.querySelectorAll('.hp').forEach(p => p.classList.remove('on'));
   const cfg = () => $('settingsBtn').click();
   const HS = [
-    ['Jogar',3.7,26.6,29.1,9.4,lobby], ['Multiplayer',3.7,37.4,28.9,7.4,lobby], ['Personagem',3.7,46.3,28.9,7.6,soon('Personagem')],
-    ['Armas',3.7,55.4,28.9,7.6,soon('Armas')], ['Loja',3.7,64.5,28.9,7.5,soon('Loja')], ['Configurações',3.7,73.3,28.9,7.6,cfg],
-    ['Perfil',65,2.9,29,8,soon('Perfil')], ['Comprar moedas',91.2,5.3,2.2,3.6,soon('Loja de moedas')], ['Ajustes',95.1,4.2,3.1,5.4,cfg,1]
+    ['Jogar',3.7,26.6,29.1,9.4,show('hpPlay')], ['Multiplayer',3.7,37.4,28.9,7.4,() => { show('hpPlay')(); $('hpCode').focus(); }],
+    ['Personagem',3.7,46.3,28.9,7.6,show('hpChar')], ['Armas',3.7,55.4,28.9,7.6,() => toast('Armas: compre e troque dentro da partida, nas lojinhas do mapa')],
+    ['Loja',3.7,64.5,28.9,7.5,soon('Loja')], ['Configurações',3.7,73.3,28.9,7.6,cfg],
+    ['Perfil',65,2.9,29,8,show('hpChar')], ['Comprar moedas',91.2,5.3,2.2,3.6,soon('Loja de moedas')], ['Ajustes',95.1,4.2,3.1,5.4,cfg,1]
   ];
   for (const [n,l,t,w,h,f,rd] of HS) { const b = document.createElement('button'); b.className = 'hs' + (rd ? ' rd' : ''); b.setAttribute('aria-label', n);
     b.style.cssText = 'left:'+l+'%;top:'+t+'%;width:'+w+'%;height:'+h+'%'; b.onclick = f; art.appendChild(b); }
+  document.querySelectorAll('.hp [data-close]').forEach(b => b.onclick = closeAll);
+  document.querySelectorAll('.hp').forEach(p => p.addEventListener('click', e => { if (e.target === p) closeAll(); }));
+  /* espelha o estado do lobby antigo nos painéis */
+  function sync(){
+    const has = !$('sProfCard').hidden, nm = has ? $('sNm').textContent : '';
+    $('hpNickBox').hidden = has; $('hpNick2').value = nm;
+    $('hpNm').textContent = nm || 'SEM NICK'; $('hpLv').textContent = ($('tLv').textContent || 'NÍVEL 1');
+    const bad = $('sSideB').classList.contains('on');
+    document.querySelectorAll('.hp [data-side]').forEach(b => b.classList.toggle('on', (b.dataset.side === 'sSideB') === bad));
+    $('hpSk').textContent = $('sSkName').textContent; $('hpSkN').textContent = $('sSkCount').textContent;
+    $('hpSkB').textContent = bad ? $('sSkName').textContent : 'Renasce na favela'; $('hpSkP').textContent = bad ? 'Renasce na quadra' : $('sSkName').textContent;
+    $('hpMsg').textContent = $('hpMsg2').textContent = $('lobbyMsg').textContent;
+  }
+  new MutationObserver(sync).observe($('lobbyMsg'), { childList: true, characterData: true, subtree: true });
+  addEventListener('favela-xp', () => setTimeout(sync, 0));
+  const saveNick = v => { $('playerName').value = v.trim(); $('sSaveNick').click(); sync(); };
+  $('hpNickOk').onclick = () => saveNick($('hpNick').value);
+  $('hpNick2Ok').onclick = () => { if (!$('sProfCard').hidden) $('sChg').click(); saveNick($('hpNick2').value); };
+  $('hpNick').addEventListener('keydown', e => { if (e.key === 'Enter') $('hpNickOk').click(); });
+  document.querySelectorAll('.hp [data-side]').forEach(b => b.onclick = () => { $(b.dataset.side).click(); sync(); });
+  document.querySelectorAll('.hp [data-px]').forEach(b => b.onclick = () => { $(b.dataset.px).click(); sync(); });
+  $('hpOff').onclick = () => $('startBtn').click();
+  $('hpCreate').onclick = () => $('createBtn').click();
+  $('hpJoin').onclick = () => { $('roomCode').value = $('hpCode').value.trim().toUpperCase(); $('joinBtn').click(); };
+  /* entrou na partida -> some o menu; voltou ao lobby -> menu de novo */
+  new MutationObserver(() => { const inGame = start.classList.contains('off'); document.body.classList.toggle('homeOn', !inGame); if (inGame) closeAll(); else sync(); })
+    .observe(start, { attributes: true, attributeFilter: ['class'] });
+  addEventListener('load', sync); sync();
 })();
 </script>
 <script>
