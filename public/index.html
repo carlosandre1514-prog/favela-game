@@ -399,9 +399,6 @@ body.adsOn #ctl #bfL,body.adsOn #ctl #zp,body.adsOn #ctl #zm{display:flex!import
 #home{position:fixed;inset:0;z-index:110;background:#000;overflow:hidden;display:none}
 body.homeOn #home{display:block}
 body.homeOn #start{display:none!important}
-#home .prof{position:absolute;left:66.4%;top:3.4%;width:11%;height:7%;background:linear-gradient(90deg,#0d1714,#0a120f);border-radius:4px;display:flex;flex-direction:column;justify-content:center;padding-left:.4%;color:#fff;font-weight:900;pointer-events:none;overflow:hidden}
-#home .prof b{font-size:calc(var(--aw)*.0105);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#home .prof small{font-size:calc(var(--aw)*.0068);color:#a7ff45;letter-spacing:.06em}
 .hp{position:fixed;inset:0;z-index:112;display:none;align-items:center;justify-content:center;padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom));background:#000a;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f2f6f3}
 .hp.on{display:flex}
 .hp .cd{width:min(560px,100%);max-height:100%;overflow-y:auto;background:#0b1411f5;border:1px solid #a7ff4566;border-radius:16px;padding:14px 16px;box-shadow:0 0 30px #000}
@@ -420,15 +417,59 @@ body.homeOn #start{display:none!important}
 .hp .mg{min-height:18px;margin-top:10px;font-size:12px;color:#ffcf6b}
 .hp .gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .hp .gr button i{display:block;height:18px;border-radius:5px;margin-bottom:6px;border:1px solid #ffffff33}
-#home .vlt{position:absolute;left:10.2%;top:56.4%;width:19.5%;height:5.6%;background:#0a110e;display:flex;align-items:center;gap:6%;padding-left:1.4%;pointer-events:none;color:#fff;font:900 calc(var(--aw)*.0185) Impact,'Arial Black',sans-serif;letter-spacing:.03em}
-#home .vlt i{font-style:normal;color:#a7ff45}
 .hp .sk{flex:1;text-align:center;align-self:center}.hp .sk b{display:block;font-size:14px}.hp .sk small{font-size:11px;color:#9fb3a8}
-#home .art{--aw:min(100vw,calc(100dvh*2.05));position:absolute;inset:0;user-select:none;-webkit-user-select:none}   /* estica a arte 16:9 para a tela toda (sem faixas pretas) */
-#home .art img{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;-webkit-user-drag:none}
-@media(orientation:portrait){#home .art{inset:auto;top:50%;width:322vw;left:-9.7vw;aspect-ratio:1672/941;transform:translateY(-50%)}}
-#home .hs{position:absolute;border:0;background:transparent;border-radius:1.2%/6%;padding:0;outline:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-#home .hs:focus-visible,#home .hs:active{background:#a7ff4530;box-shadow:0 0 0 2px #a7ff45aa}
-#home .hs.rd{border-radius:50%}
+/* ===== Tela inicial em código (sem imagem com botões) ===== */
+#home{--g:#a7ff45;--gd:#6fcf1f;--u:min(1vw,1.75vh);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f2f6f3}
+#home .bg{position:absolute;inset:0;background:#05080a url(assets/menu/bg.webp) right center/cover no-repeat}
+#home .bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#05080af2 0%,#05080ad0 26%,#05080a40 52%,transparent 70%),linear-gradient(0deg,#05080acc,transparent 30%)}
+#home .lg{position:absolute;left:calc(var(--u)*4);top:calc(var(--u)*3 + env(safe-area-inset-top,0px))}
+#home .lg h1{margin:0;font:italic 900 calc(var(--u)*7.2)/.9 Impact,'Arial Black',sans-serif;letter-spacing:-.01em;text-transform:uppercase;color:#fff;text-shadow:0 3px 0 #000}
+#home .lg h1 span{color:var(--g);text-shadow:0 0 18px #a7ff4566,0 3px 0 #000}
+#home .lg small{display:block;margin-top:calc(var(--u)*.8);font-weight:800;font-size:calc(var(--u)*1.6);letter-spacing:.35em;color:#dfe8e2}
+#home .lg small b{color:var(--g)}
+#home .mn{position:absolute;left:calc(var(--u)*4);top:calc(var(--u)*13.5 + env(safe-area-inset-top,0px));width:calc(var(--u)*30);display:flex;flex-direction:column;gap:calc(var(--u)*1)}
+#home .mb{display:flex;align-items:center;gap:calc(var(--u)*1.6);height:calc(var(--u)*5.4);padding:0 calc(var(--u)*1.8);border:1.5px solid #a7ff4588;border-radius:calc(var(--u)*.9);background:linear-gradient(90deg,#0b1612e8,#0b161299);color:#fff;font:900 calc(var(--u)*2.4) Impact,'Arial Black',sans-serif;letter-spacing:.04em;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;transition:transform .12s,background .12s}
+#home .mb:after{content:"";position:absolute;right:calc(var(--u)*1.2);bottom:calc(var(--u)*1);width:calc(var(--u)*3);height:calc(var(--u)*.7);background:repeating-linear-gradient(-55deg,var(--g) 0 3px,transparent 3px 6px);opacity:.7}
+#home .mb svg{width:calc(var(--u)*3);height:calc(var(--u)*3);flex:none;fill:var(--g)}
+#home .mb:active{transform:scale(.97);background:#a7ff4530}
+#home .mb.big{height:calc(var(--u)*7);font-size:calc(var(--u)*3.2);background:linear-gradient(90deg,#b8ff45,#86d92c);color:#071003;border-color:#d9ff9a;box-shadow:0 0 22px #a7ff4555}
+#home .mb.big svg{fill:#071003;width:calc(var(--u)*4);height:calc(var(--u)*4)}
+#home .mb.big:after{background:repeating-linear-gradient(-55deg,#071003 0 3px,transparent 3px 6px)}
+#home .tp{position:absolute;right:calc(var(--u)*3);top:calc(var(--u)*2.4 + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:calc(var(--u)*1.2)}
+#home .pf{display:flex;align-items:center;gap:calc(var(--u)*1.2);padding:calc(var(--u)*.7) calc(var(--u)*1.6) calc(var(--u)*.7) calc(var(--u)*.7);border:1.5px solid #a7ff4588;border-radius:calc(var(--u)*1);background:#0b1612e6;cursor:pointer;color:#fff}
+#home .av{width:calc(var(--u)*5);height:calc(var(--u)*5);display:grid;place-items:center;border-radius:calc(var(--u)*.8);background:linear-gradient(135deg,#d8ff6b,#80e93b);color:#071003;font:900 calc(var(--u)*2.6) Impact,sans-serif}
+#home .pf b{display:block;font-size:calc(var(--u)*1.8);letter-spacing:.05em;text-align:left;max-width:calc(var(--u)*16);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home .pf small{display:block;font-size:calc(var(--u)*1.2);font-weight:800;color:var(--g);letter-spacing:.06em;text-align:left}
+#home .xb{width:calc(var(--u)*16);height:calc(var(--u)*.7);margin-top:calc(var(--u)*.5);border-radius:9px;background:#ffffff22;overflow:hidden}
+#home .xb i{display:block;height:100%;width:0;background:var(--g)}
+#home .ic{width:calc(var(--u)*6);height:calc(var(--u)*6);display:grid;place-items:center;border:1.5px solid #a7ff4588;border-radius:calc(var(--u)*1);background:#0b1612e6;cursor:pointer}
+#home .ic svg{width:55%;height:55%;fill:#fff}
+#home .ft{position:absolute;right:calc(var(--u)*3);bottom:calc(var(--u)*2 + env(safe-area-inset-bottom,0px));font:italic 900 calc(var(--u)*2.2)/1 Impact,sans-serif;color:var(--g);text-shadow:0 2px 0 #000;text-align:right}
+#home .ft small{display:block;font:600 calc(var(--u)*1.1) system-ui,sans-serif;color:#9fb3a8;margin-top:4px;font-style:normal}
+@media(orientation:portrait){#home{--u:1.9vw}#home .mn{width:calc(100% - var(--u)*8);top:auto;bottom:calc(var(--u)*10 + env(safe-area-inset-bottom,0px))}#home .bg{background-position:60% center}#home .bg:after{background:linear-gradient(0deg,#05080af2 0%,#05080ac0 50%,transparent 80%)}#home .tp{top:calc(var(--u)*30)}}
+#home .co{display:flex;align-items:center;gap:calc(var(--u)*.8);height:calc(var(--u)*6);padding:0 calc(var(--u)*.8) 0 calc(var(--u)*1);border:1.5px solid #ffd84a88;border-radius:calc(var(--u)*1);background:#0b1612e6;color:#fff;font:900 calc(var(--u)*2) system-ui,sans-serif;cursor:pointer}
+#home .co .cn{width:calc(var(--u)*3);height:calc(var(--u)*3)}
+#home .co i{font-style:normal;display:grid;place-items:center;width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);border-radius:calc(var(--u)*.6);background:var(--g);color:#071003}
+.hp .bal{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#ffd84a12;border:1px solid #ffd84a55}
+.hp .bal .cn{width:26px;height:26px}.hp .bal span{flex:1;color:#cfd8d3;font-size:13px}.hp .bal b{font-size:20px;color:#ffd84a}
+.hp .pk{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.hp .pk button{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px 10px;border-radius:14px;border:1px solid #ffd84a44;background:linear-gradient(#1a1f12,#0d120c);color:#fff;cursor:pointer;touch-action:manipulation}
+.hp .pk button:active{transform:scale(.97)}
+.hp .pk .cn{width:34px;height:34px}.hp .pk b{font:900 22px Impact,'Arial Black',sans-serif;color:#ffd84a;letter-spacing:.02em}
+.hp .pk small{font-size:11px;color:#a7ff45;font-weight:800;min-height:14px}
+.hp .pk em{font-style:normal;margin-top:4px;width:100%;padding:8px 0;border-radius:9px;background:linear-gradient(#b8ff45,#86d92c);color:#071003;font-weight:900;font-size:15px}
+.hp .pk .tg{position:absolute;top:-8px;right:8px;padding:2px 8px;border-radius:99px;background:#ff4d3d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.05em}
+#home .lgn{height:calc(var(--u)*6);padding:0 calc(var(--u)*2.2);border:1.5px solid var(--g);border-radius:calc(var(--u)*1);background:linear-gradient(#b8ff45,#86d92c);color:#071003;font:900 calc(var(--u)*2) Impact,'Arial Black',sans-serif;letter-spacing:.06em;cursor:pointer}
+#home .av img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.hp input.nu{text-transform:none}
+.hp button.gg{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border-color:#fff;font-size:14px}
+.hp .or{display:flex;align-items:center;gap:10px;margin:14px 0 2px;color:#8fa79a;font-size:11px;letter-spacing:.1em}
+.hp .or:before,.hp .or:after{content:"";flex:1;height:1px;background:#ffffff22}
+.hp .lk{justify-content:space-between;margin-top:10px}
+.hp .lk button{background:none;border:0;color:#b8c9bd;font-size:12px;padding:6px 0;cursor:pointer}.hp .lk b{color:var(--g,#a7ff45)}
+#acctRow{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;border:1px solid #ffffff22;border-radius:12px;font-size:12px;color:#cfd8d3}
+#acctRow[hidden]{display:none}#acctRow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#logoutBtn{padding:8px 12px;border-radius:9px;border:1px solid #ff6b6b88;background:#ff6b6b18;color:#ffb3b3;font-weight:800;font-size:12px}
 #homeToast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#0d141bee;border:1px solid #a7ff4588;color:#f2f6f3;border-radius:12px;padding:12px 18px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:111;white-space:nowrap}
 #homeToast.on{opacity:1}
 </style>
@@ -481,16 +522,16 @@ body.homeOn #start{display:none!important}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="art"><div class="vlt">COFRE</div><div class="prof"><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small></div><img src="assets/menu/home.webp" alt="Favela FPS - menu inicial" decoding="async" fetchpriority="high"></div></div><div id="homeToast"></div>
+<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button></nav><div class="tp"><button class="lgn" id="hmLogin">ENTRAR</button><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="co" id="hmCoins"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><b id="hmCoinN">0</b><i>+</i></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v21</small></div></div><div id="homeToast"></div>
 <div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR OFFLINE</h2><button class="x" data-close>×</button></div>
   <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
-  <div class="lb">MAPA</div><div class="rw"><button class="o on">FAVELA<small>Setor 04 · mata-mata</small></button><button class="o" disabled>COLÉGIO CENTRAL<small>em breve</small></button></div>
+  <div class="lb">MAPA</div><div class="rw"><button class="o" data-map="favela">FAVELA<small>Setor 04 · labirinto</small></button><button class="o" data-map="colegio">COLÉGIO CENTRAL<small>Prédios · pátio · ginásio</small></button></div>
   <div class="lb">TIME</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small class="skB"></small></button><button class="o" data-side="sSideP">POLICIAL<small class="skP"></small></button></div>
   <div class="rw" style="margin-top:14px"><button class="o go" id="hpOff">JOGAR</button></div>
   <div class="mg"></div></div></div>
 <div class="hp" id="hpMp"><div class="cd"><div class="hd"><h2>MULTIPLAYER</h2><button class="x" data-close>×</button></div>
   <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
-  <div class="lb">CRIAR SALA (até 16 jogadores)</div><div class="rw"><button class="o go" id="hpCreate">CRIAR SALA</button></div>
+  <div class="lb">CRIAR SALA (até 16 jogadores · mapa Favela)</div><div class="rw"><button class="o go" id="hpCreate">CRIAR SALA</button></div>
   <div class="lb">ENTRAR EM UMA SALA</div><div class="rw"><input id="hpCode" maxlength="5" placeholder="CÓDIGO DA SALA" autocomplete="off" spellcheck="false"><button class="o" id="hpJoin" style="flex:none">ENTRAR</button></div>
   <div class="mg"></div></div></div>
 <div class="hp" id="hpVault"><div class="cd"><div class="hd"><h2>COFRE</h2><button class="x" data-close>×</button></div>
@@ -498,6 +539,19 @@ body.homeOn #start{display:none!important}
   <div class="lb">SKIN DO PERSONAGEM</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO</button><button class="o" data-side="sSideP">POLICIAL</button></div>
   <div class="rw" style="margin-top:8px"><button class="o" style="flex:none;width:52px" data-px="sPrev">‹</button><div class="sk"><b class="skN">—</b><small class="skC">—</small></div><button class="o" style="flex:none;width:52px" data-px="sNext">›</button></div>
   <div class="mg"></div></div></div>
+<div class="hp" id="hpLogin"><div class="cd"><div class="hd"><h2 id="lgTitle">ENTRAR</h2><button class="x" data-close>×</button></div>
+  <button class="o gg" id="lgGoogle"><svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>ENTRAR COM GOOGLE</button>
+  <div class="or"><span>ou com e-mail</span></div>
+  <div id="lgNameRow" hidden><div class="lb">NOME (vira seu nick)</div><div class="rw"><input id="lgName" class="nu" maxlength="14" placeholder="Seu nome no jogo" autocomplete="nickname"></div></div>
+  <div class="lb">E-MAIL</div><div class="rw"><input id="lgEmail" class="nu" type="email" placeholder="voce@email.com" autocomplete="email" inputmode="email"></div>
+  <div class="lb">SENHA</div><div class="rw"><input id="lgPass" class="nu" type="password" placeholder="mínimo 6 caracteres" autocomplete="current-password"></div>
+  <div class="rw" style="margin-top:12px"><button class="o go" id="lgGo">ENTRAR</button></div>
+  <div class="rw lk"><button id="lgSwap">Não tem conta? <b>Criar conta</b></button><button id="lgForgot">Esqueci a senha</button></div>
+  <div class="mg" id="lgMsg"></div></div></div>
+<div class="hp" id="hpShop"><div class="cd"><div class="hd"><h2>LOJA DE MOEDAS</h2><button class="x" data-close>×</button></div>
+  <div class="bal"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><span>Seu saldo</span><b id="shCoinN">0</b></div>
+  <div class="pk" id="shPacks"></div>
+  <div class="mg" id="shMsg"></div></div></div>
 <div class="hp" id="hpChar"><div class="cd"><div class="hd"><h2>PERSONAGEM</h2><button class="x" data-close>×</button></div>
   <div class="lb">NICK</div><div class="rw"><input id="hpNick2" maxlength="14" placeholder="SEU NICK" autocomplete="off" spellcheck="false"><button class="o" id="hpNick2Ok" style="flex:none">SALVAR</button></div>
   <div class="lb">TIME</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small>Renasce na favela</small></button><button class="o" data-side="sSideP">POLICIAL<small>Renasce na quadra</small></button></div>
@@ -533,7 +587,7 @@ body.homeOn #start{display:none!important}
     </div>
   </div>
 </div>
-<div id="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div id="settingsCard"><div id="settingsHead"><h2 id="settingsTitle">⚙ Configurações gráficas</h2><button id="settingsClose" aria-label="Fechar configurações">×</button></div><p>Escolha a qualidade visual. Ultra tenta renderizar em 1900 × 1080 (16:9); o desempenho depende do aparelho.</p><div class="qualityChoices"><button class="qualityChoice" data-quality="suave">SUAVE<small>Mais leve</small></button><button class="qualityChoice" data-quality="padrao">PADRÃO<small>Equilibrado</small></button><button class="qualityChoice" data-quality="ultra">ULTRA<small>1900 × 1080</small></button></div><div id="qualityStatus" aria-live="polite"></div><button id="hudEdBtn">🎮 Personalizar HUD (mover botões)</button><div id="hudNote"></div></div></div>
+<div id="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div id="settingsCard"><div id="settingsHead"><h2 id="settingsTitle">⚙ Configurações gráficas</h2><button id="settingsClose" aria-label="Fechar configurações">×</button></div><p>Escolha a qualidade visual. Ultra tenta renderizar em 1900 × 1080 (16:9); o desempenho depende do aparelho.</p><div class="qualityChoices"><button class="qualityChoice" data-quality="suave">SUAVE<small>Mais leve</small></button><button class="qualityChoice" data-quality="padrao">PADRÃO<small>Equilibrado</small></button><button class="qualityChoice" data-quality="ultra">ULTRA<small>1900 × 1080</small></button></div><div id="qualityStatus" aria-live="polite"></div><div id="acctRow" hidden><span id="acctTxt"></span><button id="logoutBtn">Sair da conta</button></div><button id="hudEdBtn">🎮 Personalizar HUD (mover botões)</button><div id="hudNote"></div></div></div>
 <div id="hudEd"><div class="bar"><b>Personalizar HUD</b><span>arraste os botões</span><button id="hudDef">Padrão</button><button id="hudCan">Cancelar</button><button class="ok" id="hudSave">Salvar</button></div><div class="hint">Borda amarela = botões que só aparecem quando você está mirando (atirar esquerdo, zoom + e −).</div></div>
 <div id="rot"><div class="ph">📱</div><b>GIRE O CELULAR</b><span>O jogo funciona apenas na horizontal</span></div>
 <div id="dead"><div><h1>Você morreu</h1><div id="dsub">Renascendo na quadra…</div></div></div>
@@ -543,6 +597,7 @@ body.homeOn #start{display:none!important}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<script src="maps/colegio.js"></script>
 <script>
 /* Assets 3D para Three.js
    Uso: const player = buildPlayer(THREE, { skin:'#b87950', shirt:'#283d35', shorts:'#202a26' });
@@ -1549,7 +1604,13 @@ scene.add(hemi, sun, sun.target);
 const sunOrb = new THREE.Mesh(new THREE.SphereGeometry(5,12,8), new THREE.MeshBasicMaterial({color:0xffe6a0}));
 const moonOrb = new THREE.Mesh(new THREE.SphereGeometry(3.6,12,8), new THREE.MeshBasicMaterial({color:0xdce7ff}));
 scene.add(sunOrb, moonOrb);
-const favela = buildFavela(THREE, scene, 7);
+// Mapa escolhido no menu (troca de mapa recarrega a página). 'favela' é o padrão e o único do online por enquanto.
+const MAP_ID = (() => { try { return localStorage.getItem('fv_map') === 'colegio' && window.buildColegioGame ? 'colegio' : 'favela'; } catch (e) { return 'favela'; } })();
+window.FAVELA_MAP = MAP_ID;
+const favela = MAP_ID === 'colegio' ? buildColegioGame(THREE, scene) : buildFavela(THREE, scene, 7);
+favela.cfg = favela.cfg || { name: 'Favela', safe: z => z < -36, pol: [-6, 6, -67, -59], pyaw: 0, pdir: 1, bx: 82, bz0: -84, bz1: 84,
+  shops: [['guns', 31, -63, Math.PI], ['skins', -31, -63, 0]], polMsg: 'Você renasceu na quadra', banMsg: 'Você renasceu na favela' };
+const MC = favela.cfg;
 const cols = favela.colliders;
 // Teste incremental: personagem e árvores desativados.
 // O carregador de granada será iniciado após GAME_ASSET_BASE ser definido.
@@ -1605,7 +1666,7 @@ function collideMove(e, dx, dz) {
       else { const a = [e.x - b[0], b[3] - e.x, e.z - b[2], b[5] - e.z], i = a.indexOf(Math.min(...a)); if (i < 2) e.x = i ? b[3] + RD : b[0] - RD; else e.z = i === 3 ? b[5] + RD : b[2] - RD; }
     }
   }
-  e.x = clamp(e.x, -82, 82); e.z = clamp(e.z, -84, 84);
+  e.x = clamp(e.x, -MC.bx, MC.bx); e.z = clamp(e.z, MC.bz0, MC.bz1);
 }
 function groundOf(e) {
   let gy = favela.heightAt(e.x, e.z); const list = near(e.x, e.z);
@@ -1759,8 +1820,7 @@ function makeShop(kind, cx, cz, rot) {
   wc(-4.6, 4.6, 5.2, -3.6, 3.6); wc(4.4, 5.7, 1.5, -3, 3); if (!guns) wc(5.45, 6.95, .65, -2.95, 2.95);
   shops.push({ kind, ix: cx + 9 * cs, iz: cz - 9 * sn, label: guns ? '🔫 Loja de armas' : '👕 Loja de skins' });
 }
-makeShop('guns', 31, -63, Math.PI);    // à esquerda de quem olha pra favela
-makeShop('skins', -31, -63, 0);        // à direita
+for (const [k, x, z, r] of MC.shops) makeShop(k, x, z, r);   // favela: quadra (armas à esquerda, skins à direita)
 indexCols();
 
 /* ---------- dia / noite ---------- */
@@ -1807,7 +1867,7 @@ loadFavelaGrenadeAsset();
 const me = { x: 0, z: -63, y: 0, vy: 0, yaw: 0, pit: 0, rd: .3, h: 1.7, eh: 1.65, crouch: false, hp: 100, alive: true, lastHit: -1e9, kills: 0, deaths: 0, score: 0, moving: false, grounded: true };
 const net = { on: false, id: 0, ws: null, code: '', players: new Map(), byRoot: new Map(), board: new Map(), over: false, sbOn: false, send() {}, shot() {}, tick() {} };
 let respawnAt = 0, wasSafe = true, lastSafeMsg = 0;
-const safe = () => me.z < -36;
+const safe = () => MC.safe(me.z);
 let slots = [], cur = 0, body = null, bodyGun = null;
 const makeSlot = t => ({ type: t, cfg: WC[t], mag: WC[t].ammo, res: WC[t].reserve, next: 0, reloading: false, reloadEnd: 0, swing: -1e9, gun: null });
 
@@ -2172,6 +2232,7 @@ function drawMiniMap() {
 }
 function hud() {
   if ((hud._f = (hud._f || 0) + 1) % (window.FAVELA_LOW ? 6 : 3) === 0) drawMiniMap();
+  if (favela.cull && hud._f % 20 === 0) favela.cull(me.x, me.y, me.z, false);   // colégio: só a mobília perto do jogador
   const s = slots[cur];
   $('hp').style.width = clamp(me.hp, 0, 100) + '%'; setT('hpt', Math.ceil(clamp(me.hp, 0, 100)));
   setT('sK', me.kills); setT('sD', me.deaths); setT('sS', me.score);
@@ -2217,7 +2278,7 @@ const BANDIT_LOOKS = [
 const botOpts = () => { const sk = pick(['#b87950', '#8d5a3b', '#d9a066', '#6b4429']);
   return teamOf(save.skin) === 'policia' ? Object.assign({ skin: sk, name: 'Bandido' }, pick(BANDIT_LOOKS))
     : { skin: sk, shirt: '#1b2a44', shorts: '#151b29', gear: '#14171b', helmet: true, helmetColor: '#10151f', police: true, name: 'Policial' }; };
-const botPool = () => teamOf(save.skin) === 'bandido' ? favela.spawns.slice().sort((a, b) => a[2] - b[2]).slice(0, 6) : favela.spawns;
+const botPool = () => teamOf(save.skin) === 'bandido' ? favela.spawns.slice().sort((a, b) => (a[2] - b[2]) * MC.pdir).slice(0, 6) : favela.spawns;
 function makeBotRoot() {
   const root = GA.buildPlayer(THREE, botOpts());
   const p = root.userData.parts; p.hitbox.position.y = .96; p.hitbox.scale.y = 1.08; p.headHit.position.y = 1.7; p.headHit.scale.setScalar(1.15);
@@ -2342,10 +2403,10 @@ function die() {
 }
 function respawn() {
   me.alive = true; me.vy = 0; me.pit = 0;
-  if (teamOf(save.skin) === 'policia') { me.x = rand(-6, 6); me.z = rand(-67, -59); me.y = favela.heightAt(me.x, me.z); me.yaw = 0; }
+  if (teamOf(save.skin) === 'policia') { me.x = rand(MC.pol[0], MC.pol[1]); me.z = rand(MC.pol[2], MC.pol[3]); me.y = favela.heightAt(me.x, me.z); me.yaw = MC.pyaw; }
   else { const cand = favela.spawns.filter(q => !bots.some(o => o.alive && Math.hypot(o.x - q[0], o.z - q[2]) < 14)), q = pick(cand.length ? cand : favela.spawns);
     me.x = q[0]; me.y = q[1]; me.z = q[2]; me.yaw = rand(0, 6.28); me.wvx = me.wvz = 0; }
-  refill(); select(0); body.rotation.x = 0; $('dead').classList.remove('on'); toast(teamOf(save.skin) === 'policia' ? 'Você renasceu na quadra' : 'Você renasceu na favela', 1800);
+  refill(); select(0); body.rotation.x = 0; $('dead').classList.remove('on'); toast(teamOf(save.skin) === 'policia' ? MC.polMsg : MC.banMsg, 1800);
 }
 
 /* ---------- entrada ---------- */
@@ -3056,20 +3117,31 @@ frame();
 /* Tela inicial = única interface. Áreas clicáveis em % da imagem 1672x941. Os painéis comandam os controles do lobby antigo (#start, escondido),
    que continua dono do nick, lado/skin e da entrada offline/online. */
 (function(){
-  const $ = id => document.getElementById(id), art = document.querySelector('#home .art'), start = $('start');
+  const $ = id => document.getElementById(id), start = $('start');
   let tm = 0; const toast = m => { const e = $('homeToast'); e.textContent = m; e.classList.add('on'); clearTimeout(tm); tm = setTimeout(() => e.classList.remove('on'), 2200); };
   const soon = n => () => toast(n + ' — em breve');
   const show = id => () => { document.querySelectorAll('.hp').forEach(p => p.classList.toggle('on', p.id === id)); sync(); };
   const closeAll = () => document.querySelectorAll('.hp').forEach(p => p.classList.remove('on'));
   const cfg = () => $('settingsBtn').click();
-  const HS = [
-    ['Jogar',3.7,26.6,29.1,9.4,show('hpPlay')], ['Multiplayer',3.7,37.4,28.9,7.4,show('hpMp')],
-    ['Personagem',3.7,46.3,28.9,7.6,show('hpChar')], ['Cofre',3.7,55.4,28.9,7.6,show('hpVault')],
-    ['Loja',3.7,64.5,28.9,7.5,soon('Loja')], ['Configurações',3.7,73.3,28.9,7.6,cfg],
-    ['Perfil',65,2.9,29,8,show('hpChar')], ['Comprar moedas',91.2,5.3,2.2,3.6,soon('Loja de moedas')], ['Ajustes',95.1,4.2,3.1,5.4,cfg,1]
+  /* ---------- moedas + loja ---------- */
+  const PACKS = [   // [moedas, preço em R$, bônus, destaque]
+    [100, 5.00], [300, 15.00], [600, 27.90, '+ economia'], [1200, 49.90, '+ economia', 'POPULAR'], [2500, 99.90, '+ economia'], [5200, 199.90, 'MELHOR VALOR', 'MELHOR']
   ];
-  for (const [n,l,t,w,h,f,rd] of HS) { const b = document.createElement('button'); b.className = 'hs' + (rd ? ' rd' : ''); b.setAttribute('aria-label', n);
-    b.style.cssText = 'left:'+l+'%;top:'+t+'%;width:'+w+'%;height:'+h+'%'; b.onclick = f; art.appendChild(b); }
+  const coins = { get: () => { try { return +localStorage.getItem('fv_coins') || 0; } catch (e) { return 0; } } };
+  window.FavelaCoins = coins;
+  const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+  const coinSvg = document.querySelector('#hmCoins .cn').outerHTML;
+  function paintCoins(){ const n = coins.get().toLocaleString('pt-BR'); $('hmCoinN').textContent = n; $('shCoinN').textContent = n; }
+  for (const [n, v, bonus, tag] of PACKS) { const b = document.createElement('button');
+    b.innerHTML = (tag ? '<span class="tg">' + tag + '</span>' : '') + coinSvg + '<b>' + n.toLocaleString('pt-BR') + '</b><small>' + (bonus || '') + '</small><em>' + brl(v) + '</em>';
+    b.onclick = () => { $('shMsg').textContent = 'Pagamento ainda não está ativo. Em breve você vai poder comprar ' + n.toLocaleString('pt-BR') + ' moedas por ' + brl(v) + ' (Pix/cartão).'; };
+    $('shPacks').appendChild(b); }
+  paintCoins();
+  window.FavelaHome = { show: id => show(id)(), sync: () => sync(), toast };
+  const on = (id, f) => $(id).addEventListener('click', f);
+  on('hmCoins', show('hpShop'));
+  on('hmPlay', show('hpPlay')); on('hmMp', show('hpMp')); on('hmChar', show('hpChar')); on('hmProf', show('hpChar'));
+  on('hmVault', show('hpVault')); on('hmShop', show('hpShop')); on('hmCfg2', cfg);
   document.querySelectorAll('.hp [data-close]').forEach(b => b.onclick = closeAll);
   document.querySelectorAll('.hp').forEach(p => p.addEventListener('click', e => { if (e.target === p) closeAll(); }));
   /* espelha o estado do lobby antigo nos painéis */
@@ -3077,10 +3149,10 @@ frame();
   function sync(){
     const has = !$('sProfCard').hidden, nm = has ? $('sNm').textContent : '', bad = $('sSideB').classList.contains('on'), sk = $('sSkName').textContent;
     all('.hp .nb').forEach(e => e.hidden = has); $('hpNick2').value = nm;
-    $('hpNm').textContent = nm || 'SEM NICK'; $('hpLv').textContent = ($('tLv').textContent || 'NÍVEL 1');
+    $('hpNm').textContent = nm || 'SEM NICK'; $('hpLv').textContent = ($('tLv').textContent || 'NÍVEL 1'); if (!(window.FavelaUser && window.FavelaUser.photoURL)) $('hpAv').textContent = nm ? nm.charAt(0) : '?'; $('hpXb').style.width = $('tBar').style.width || '0%';
     all('.hp [data-side]').forEach(b => b.classList.toggle('on', (b.dataset.side === 'sSideB') === bad));
     txt('.hp .skN', sk); txt('.hp .skC', $('sSkCount').textContent);
-    txt('.hp .skB', bad ? sk : 'Renasce na favela'); txt('.hp .skP', bad ? 'Renasce na quadra' : sk);
+    const col = selMap === 'colegio'; txt('.hp .skB', bad ? sk : (col ? 'Renasce no colégio' : 'Renasce na favela')); txt('.hp .skP', bad ? (col ? 'Renasce na portaria' : 'Renasce na quadra') : sk);
     txt('.hp .mg', $('lobbyMsg').textContent);
     const W = window.FavelaWeaponSkin; if (W) all('#hpWs button').forEach(b => b.classList.toggle('on', b.dataset.ws === W.get()));
   }
@@ -3094,13 +3166,94 @@ frame();
   $('hpNick2Ok').onclick = () => { if (!$('sProfCard').hidden) $('sChg').click(); saveNick($('hpNick2').value); };
   all('.hp [data-side]').forEach(b => b.onclick = () => { $(b.dataset.side).click(); sync(); });
   all('.hp [data-px]').forEach(b => b.onclick = () => { $(b.dataset.px).click(); sync(); });
-  $('hpOff').onclick = () => $('startBtn').click();
-  $('hpCreate').onclick = () => $('createBtn').click();
-  $('hpJoin').onclick = () => { $('roomCode').value = $('hpCode').value.trim().toUpperCase(); $('joinBtn').click(); };
+  /* mapa: trocar recarrega a página com o novo mapa e já executa a ação pedida (fv_auto) */
+  var selMap = window.FAVELA_MAP || 'favela';   // var: o sync() pode rodar antes desta linha
+  const paintMap = () => all('.hp [data-map]').forEach(b => b.classList.toggle('on', b.dataset.map === selMap));
+  all('.hp [data-map]').forEach(b => b.onclick = () => { selMap = b.dataset.map; paintMap(); sync(); });
+  paintMap();
+  function withMap(map, act){
+    if ((window.FAVELA_MAP || 'favela') === map) return act.run();
+    if ($('sProfCard').hidden) { txt('.hp .mg', 'Crie seu nick primeiro'); return; }
+    try { localStorage.setItem('fv_map', map); sessionStorage.setItem('fv_auto', JSON.stringify(act.save)); } catch (e) {}
+    txt('.hp .mg', 'Carregando o mapa…'); location.reload();
+  }
+  const doOff = () => $('startBtn').click(), doCreate = () => $('createBtn').click();
+  const doJoin = c => { $('roomCode').value = c; $('joinBtn').click(); };
+  $('hpOff').onclick = () => withMap(selMap, { run: doOff, save: { a: 'off' } });
+  $('hpCreate').onclick = () => withMap('favela', { run: doCreate, save: { a: 'create' } });
+  $('hpJoin').onclick = () => { const c = $('hpCode').value.trim().toUpperCase(); withMap('favela', { run: () => doJoin(c), save: { a: 'join', c } }); };
+  addEventListener('load', () => { let a = null; try { a = JSON.parse(sessionStorage.getItem('fv_auto') || 'null'); sessionStorage.removeItem('fv_auto'); } catch (e) {}
+    if (!a) return; setTimeout(() => { if (a.a === 'off') doOff(); else if (a.a === 'create') { show('hpMp')(); doCreate(); } else if (a.a === 'join') { show('hpMp')(); doJoin(a.c); } }, 300); });
   /* entrou na partida -> some o menu; voltou ao lobby -> menu de novo */
   new MutationObserver(() => { const inGame = start.classList.contains('off'); document.body.classList.toggle('homeOn', !inGame); if (inGame) closeAll(); else sync(); })
     .observe(start, { attributes: true, attributeFilter: ['class'] });
   addEventListener('load', sync); sync();
+})();
+</script>
+<script>
+/* Login (Firebase Auth: e-mail/senha e Google). Opcional: sem conta joga como convidado.
+   O SDK só é baixado quando precisa (abrir "Entrar" ou já ter entrado antes), para não pesar no celular fraco. */
+(function(){
+  const CFG = { apiKey: 'AIzaSyDRup9wl0iBDq7g4vAQQJ1s6fcicsst1ys', authDomain: 'navegador-f06a8.firebaseapp.com', databaseURL: 'https://navegador-f06a8-default-rtdb.firebaseio.com',
+    projectId: 'navegador-f06a8', storageBucket: 'navegador-f06a8.firebasestorage.app', messagingSenderId: '55916264760', appId: '1:55916264760:web:64599bf9d3d513526a15cd' };
+  const SDK = 'https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
+  const $ = id => document.getElementById(id), H = () => window.FavelaHome;
+  const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+  let auth = null, loading = null, mode = 'in';
+  const msg = t => { $('lgMsg').textContent = t; };
+  const ERR = { 'auth/invalid-email': 'E-mail inválido', 'auth/missing-email': 'Digite seu e-mail', 'auth/missing-password': 'Digite a senha',
+    'auth/invalid-credential': 'E-mail ou senha incorretos', 'auth/wrong-password': 'E-mail ou senha incorretos', 'auth/user-not-found': 'E-mail ou senha incorretos',
+    'auth/email-already-in-use': 'Esse e-mail já tem conta. Toque em Entrar.', 'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres',
+    'auth/too-many-requests': 'Muitas tentativas. Espere um pouco e tente de novo.', 'auth/network-request-failed': 'Sem conexão com a internet',
+    'auth/popup-closed-by-user': 'Login com Google cancelado', 'auth/unauthorized-domain': 'Este site não está liberado no Firebase (Authentication → Domínios autorizados)',
+    'auth/operation-not-allowed': 'Esse tipo de login não está ativado no Firebase' };
+  const err = e => ERR[e && e.code] || 'Erro: ' + ((e && (e.code || e.message)) || e);
+  function load(){
+    if (loading) return loading;
+    const add = src => new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); });
+    loading = add(SDK + 'firebase-app-compat.js').then(() => add(SDK + 'firebase-auth-compat.js')).then(() => {
+      if (!firebase.apps.length) firebase.initializeApp(CFG);
+      auth = firebase.auth(); auth.languageCode = 'pt';
+      auth.onAuthStateChanged(paint);
+      auth.getRedirectResult().catch(e => { H().show('hpLogin'); msg(err(e)); });
+      return auth;
+    }).catch(e => { loading = null; throw e; });
+    return loading;
+  }
+  function paint(u){
+    window.FavelaUser = u || null; store.set('fv_logged', u ? '1' : null);
+    $('hmLogin').hidden = !!u; $('acctRow').hidden = !u;
+    if (u) {
+      $('acctTxt').textContent = 'Conectado: ' + (u.email || u.displayName || 'conta');
+      const nm = (u.displayName || (u.email || '').split('@')[0] || '').replace(/[^\wÀ-ú .-]/g, '').trim().slice(0, 14);
+      if ($('sProfCard').hidden && nm.length >= 2) { $('playerName').value = nm; $('sSaveNick').click(); }
+      if ($('hpLogin').classList.contains('on')) $('hpLogin').classList.remove('on');
+    }
+    H().sync();
+    const av = $('hpAv'); if (u && u.photoURL) av.innerHTML = '<img src="' + u.photoURL.replace(/"/g, '') + '" alt="" referrerpolicy="no-referrer">';
+  }
+  function setMode(m){
+    mode = m; const up = m === 'up';
+    $('lgTitle').textContent = up ? 'CRIAR CONTA' : 'ENTRAR'; $('lgGo').textContent = up ? 'CRIAR CONTA' : 'ENTRAR';
+    $('lgNameRow').hidden = !up; $('lgPass').autocomplete = up ? 'new-password' : 'current-password';
+    $('lgSwap').innerHTML = up ? 'Já tem conta? <b>Entrar</b>' : 'Não tem conta? <b>Criar conta</b>'; $('lgForgot').hidden = up; msg('');
+  }
+  const busy = (on) => { for (const id of ['lgGo', 'lgGoogle']) $(id).disabled = on; };
+  const withAuth = f => { busy(true); msg('Conectando…'); return load().then(f).then(() => msg(''), e => msg(err(e))).finally(() => busy(false)); };
+  $('hmLogin').addEventListener('click', () => { setMode('in'); H().show('hpLogin'); load().catch(() => msg('Não foi possível carregar o login. Verifique a internet.')); });
+  $('lgSwap').onclick = () => setMode(mode === 'in' ? 'up' : 'in');
+  $('lgGo').onclick = () => { const em = $('lgEmail').value.trim(), pw = $('lgPass').value, nm = $('lgName').value.trim();
+    if (mode === 'up' && nm.length < 2) { msg('Escolha um nome com pelo menos 2 letras'); return; }
+    withAuth(a => mode === 'in' ? a.signInWithEmailAndPassword(em, pw)
+      : a.createUserWithEmailAndPassword(em, pw).then(r => r.user.updateProfile({ displayName: nm }).then(() => paint(a.currentUser)))); };
+  $('lgPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('lgGo').click(); });
+  $('lgForgot').onclick = () => { const em = $('lgEmail').value.trim(); if (!em) { msg('Digite seu e-mail acima e toque de novo em "Esqueci a senha"'); return; }
+    load().then(a => a.sendPasswordResetEmail(em)).then(() => msg('Enviamos um link para ' + em + ' trocar a senha. Veja também o spam.'), e => msg(err(e))); };
+  $('lgGoogle').onclick = () => withAuth(a => { const pv = new firebase.auth.GoogleAuthProvider(); pv.setCustomParameters({ prompt: 'select_account' });
+    return a.signInWithPopup(pv).catch(e => { if (/popup-blocked|operation-not-supported|cancelled-popup/.test(e.code || '')) return a.signInWithRedirect(pv); throw e; }); });
+  $('logoutBtn').onclick = () => load().then(a => a.signOut()).then(() => { $('hpAv').textContent = '?'; H().toast('Você saiu da conta'); });
+  // já entrou antes (ou voltando do Google): restaura a sessão depois que o jogo carregou
+  if (store.get('fv_logged')) addEventListener('load', () => setTimeout(() => load().catch(() => {}), 500));
 })();
 </script>
 <script>
