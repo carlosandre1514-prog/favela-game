@@ -398,10 +398,34 @@ body.adsOn #ctl #bfL,body.adsOn #ctl #zp,body.adsOn #ctl #zm{display:flex!import
 #hudEd .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:11px;color:#b8c9bd;text-align:center;width:90%}
 #home{position:fixed;inset:0;z-index:110;background:#000;overflow:hidden;display:none}
 body.homeOn #home{display:block}
-#home .bgb{position:absolute;inset:0;background:url(assets/menu/home.webp) center/cover;opacity:.35}
-#home .art{position:absolute;top:50%;left:50%;width:min(100vw,calc(100dvh*1.7768));aspect-ratio:1672/941;transform:translate(-50%,-50%);user-select:none;-webkit-user-select:none}
-#home .art img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
-@media(orientation:portrait){#home .art{width:322vw;left:-9.7vw;transform:translateY(-50%)}}
+body.homeOn #start{display:none!important}
+#home .prof{position:absolute;left:66.4%;top:3.4%;width:11%;height:7%;background:linear-gradient(90deg,#0d1714,#0a120f);border-radius:4px;display:flex;flex-direction:column;justify-content:center;padding-left:.4%;color:#fff;font-weight:900;pointer-events:none;overflow:hidden}
+#home .prof b{font-size:calc(var(--aw)*.0105);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home .prof small{font-size:calc(var(--aw)*.0068);color:#a7ff45;letter-spacing:.06em}
+.hp{position:fixed;inset:0;z-index:112;display:none;align-items:center;justify-content:center;padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom));background:#000a;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f2f6f3}
+.hp.on{display:flex}
+.hp .cd{width:min(560px,100%);max-height:100%;overflow-y:auto;background:#0b1411f5;border:1px solid #a7ff4566;border-radius:16px;padding:14px 16px;box-shadow:0 0 30px #000}
+.hp .hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.hp .hd h2{flex:1;margin:0;font:900 22px Impact,'Arial Black',sans-serif;letter-spacing:.04em}
+.hp .x{width:38px;height:38px;border-radius:10px;border:1px solid #ffffff33;background:#ffffff10;color:#fff;font-size:20px}
+.hp .lb{font-size:10px;font-weight:800;letter-spacing:.2em;color:#8fa79a;margin:12px 0 6px}
+.hp .rw{display:flex;gap:8px;align-items:stretch}
+.hp button.o{flex:1;padding:12px 8px;border-radius:10px;border:1px solid #ffffff2a;background:#ffffff0c;color:#fff;font-weight:800;font-size:13px;letter-spacing:.04em;cursor:pointer;touch-action:manipulation}
+.hp button.o small{display:block;font-size:10px;font-weight:600;color:#9fb3a8;margin-top:3px;letter-spacing:0}
+.hp button.o.on{border-color:#a7ff45;background:#a7ff4520;color:#d9ffb0}
+.hp button.o[disabled]{opacity:.45}
+.hp button.go{border-color:#a7ff45;background:linear-gradient(#b8ff45,#86d92c);color:#0a1404;font-weight:900;font-size:15px}
+.hp input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid #ffffff33;background:#020805;color:#fff;outline:0;text-transform:uppercase}
+.hp input:focus{border-color:#a7ff45}
+.hp .mg{min-height:18px;margin-top:10px;font-size:12px;color:#ffcf6b}
+.hp .gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.hp .gr button i{display:block;height:18px;border-radius:5px;margin-bottom:6px;border:1px solid #ffffff33}
+#home .vlt{position:absolute;left:10.2%;top:56.4%;width:19.5%;height:5.6%;background:#0a110e;display:flex;align-items:center;gap:6%;padding-left:1.4%;pointer-events:none;color:#fff;font:900 calc(var(--aw)*.0185) Impact,'Arial Black',sans-serif;letter-spacing:.03em}
+#home .vlt i{font-style:normal;color:#a7ff45}
+.hp .sk{flex:1;text-align:center;align-self:center}.hp .sk b{display:block;font-size:14px}.hp .sk small{font-size:11px;color:#9fb3a8}
+#home .art{--aw:min(100vw,calc(100dvh*2.05));position:absolute;inset:0;user-select:none;-webkit-user-select:none}   /* estica a arte 16:9 para a tela toda (sem faixas pretas) */
+#home .art img{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;-webkit-user-drag:none}
+@media(orientation:portrait){#home .art{inset:auto;top:50%;width:322vw;left:-9.7vw;aspect-ratio:1672/941;transform:translateY(-50%)}}
 #home .hs{position:absolute;border:0;background:transparent;border-radius:1.2%/6%;padding:0;outline:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 #home .hs:focus-visible,#home .hs:active{background:#a7ff4530;box-shadow:0 0 0 2px #a7ff45aa}
 #home .hs.rd{border-radius:50%}
@@ -457,7 +481,28 @@ body.homeOn #home{display:block}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="bgb"></div><div class="art"><img src="assets/menu/home.webp" alt="Favela FPS - menu inicial" decoding="async" fetchpriority="high"></div></div><div id="homeToast"></div>
+<div id="home"><div class="art"><div class="vlt">COFRE</div><div class="prof"><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small></div><img src="assets/menu/home.webp" alt="Favela FPS - menu inicial" decoding="async" fetchpriority="high"></div></div><div id="homeToast"></div>
+<div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR OFFLINE</h2><button class="x" data-close>×</button></div>
+  <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
+  <div class="lb">MAPA</div><div class="rw"><button class="o on">FAVELA<small>Setor 04 · mata-mata</small></button><button class="o" disabled>COLÉGIO CENTRAL<small>em breve</small></button></div>
+  <div class="lb">TIME</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small class="skB"></small></button><button class="o" data-side="sSideP">POLICIAL<small class="skP"></small></button></div>
+  <div class="rw" style="margin-top:14px"><button class="o go" id="hpOff">JOGAR</button></div>
+  <div class="mg"></div></div></div>
+<div class="hp" id="hpMp"><div class="cd"><div class="hd"><h2>MULTIPLAYER</h2><button class="x" data-close>×</button></div>
+  <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
+  <div class="lb">CRIAR SALA (até 16 jogadores)</div><div class="rw"><button class="o go" id="hpCreate">CRIAR SALA</button></div>
+  <div class="lb">ENTRAR EM UMA SALA</div><div class="rw"><input id="hpCode" maxlength="5" placeholder="CÓDIGO DA SALA" autocomplete="off" spellcheck="false"><button class="o" id="hpJoin" style="flex:none">ENTRAR</button></div>
+  <div class="mg"></div></div></div>
+<div class="hp" id="hpVault"><div class="cd"><div class="hd"><h2>COFRE</h2><button class="x" data-close>×</button></div>
+  <div class="lb">SKIN DAS ARMAS</div><div class="gr" id="hpWs"></div>
+  <div class="lb">SKIN DO PERSONAGEM</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO</button><button class="o" data-side="sSideP">POLICIAL</button></div>
+  <div class="rw" style="margin-top:8px"><button class="o" style="flex:none;width:52px" data-px="sPrev">‹</button><div class="sk"><b class="skN">—</b><small class="skC">—</small></div><button class="o" style="flex:none;width:52px" data-px="sNext">›</button></div>
+  <div class="mg"></div></div></div>
+<div class="hp" id="hpChar"><div class="cd"><div class="hd"><h2>PERSONAGEM</h2><button class="x" data-close>×</button></div>
+  <div class="lb">NICK</div><div class="rw"><input id="hpNick2" maxlength="14" placeholder="SEU NICK" autocomplete="off" spellcheck="false"><button class="o" id="hpNick2Ok" style="flex:none">SALVAR</button></div>
+  <div class="lb">TIME</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small>Renasce na favela</small></button><button class="o" data-side="sSideP">POLICIAL<small>Renasce na quadra</small></button></div>
+  <div class="rw" style="margin-top:8px"><button class="o" style="flex:none;width:52px" data-px="sPrev">‹</button><div class="sk"><b class="skN">—</b><small class="skC">—</small></div><button class="o" style="flex:none;width:52px" data-px="sNext">›</button></div>
+  <div class="mg"></div></div></div>
 <div id="start"><button id="lobbySettings" aria-label="Configurações">⚙ Configurações / HUD</button>
   <div id="sSun"></div>
   <div id="sGl"></div>
@@ -1794,6 +1839,27 @@ function fixM4a1(model) {
   } catch (e) { console.warn('Ajuste do M4A1 falhou', e); }
 }
 const weaponAssetCache = {};
+/* Skins de arma (Cofre). As cópias montadas dividem os materiais do modelo em cache, então pintar o cache pinta tudo. */
+const WEAPON_SKINS = [
+  { id: 'padrao', name: 'Padrão' }, { id: 'ouro', name: 'Ouro', c: 0xffc933, k: .85, m: .35, r: .3 },
+  { id: 'camo', name: 'Camuflado', c: 0x5d7a3a, k: .8 }, { id: 'deserto', name: 'Deserto', c: 0xc9a46c, k: .8 },
+  { id: 'artico', name: 'Ártico', c: 0xe9f0f4, k: .8 }, { id: 'favela', name: 'Vermelho Favela', c: 0xc0392b, k: .8 },
+  { id: 'neon', name: 'Neon', c: 0xa7ff45, k: .8, e: 0x2a5a0a }
+];
+let weaponSkin = 'padrao'; try { weaponSkin = localStorage.getItem('fv_wskin') || 'padrao'; } catch (e) {}
+function paintWeapon(model) {
+  const sk = WEAPON_SKINS.find(x => x.id === weaponSkin) || WEAPON_SKINS[0], seen = new Set();
+  model.traverse(o => { if (!o.isMesh || o.name === 'm4Fill') return; (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+    if (!m || seen.has(m) || !m.color || m.transparent) return; seen.add(m); const u = m.userData;
+    if (!u.c0) { u.c0 = m.color.getHex(); u.m0 = m.metalness; u.r0 = m.roughness; u.e0 = m.emissive ? m.emissive.getHex() : 0; u.map0 = m.map || null; }
+    const map = sk.c ? null : u.map0; if (m.map !== map) { m.map = map; m.needsUpdate = true; }   // textura escura escondia a cor da skin
+    m.color.setHex(sk.c ? new THREE.Color(sk.c).lerp(new THREE.Color(0x15171a), 1 - sk.k).getHex() : u.c0);
+    if (u.m0 != null) m.metalness = sk.m != null ? sk.m : u.m0; if (u.r0 != null) m.roughness = sk.r != null ? sk.r : u.r0;
+    if (m.emissive) m.emissive.setHex(sk.e || u.e0);
+  }); });
+}
+window.FavelaWeaponSkin = { list: WEAPON_SKINS, get: () => weaponSkin, cache: weaponAssetCache,
+  set(id) { weaponSkin = id; try { localStorage.setItem('fv_wskin', id); } catch (e) {} for (const f in weaponAssetCache) paintWeapon(weaponAssetCache[f]); } };
 function loadWeaponAsset(type, gunGroup) {
   const file = weaponAssetFiles[type];
   if (!file || !window.THREE || !THREE.GLTFLoader) return;
@@ -1818,7 +1884,7 @@ function loadWeaponAsset(type, gunGroup) {
     model.traverse(o => {
       if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; }
     });
-    weaponAssetCache[file] = model;
+    weaponAssetCache[file] = model; paintWeapon(model);
     for (const target of window.__favelaWeaponLoading[file] || []) mountWeaponAsset(model, target);
     delete window.__favelaWeaponLoading[file]; flushTpGuns(file);
   }, undefined, err => {
@@ -2679,14 +2745,24 @@ addEventListener('keydown', e => { if (e.code === 'Tab' && net.on) { e.preventDe
 addEventListener('keyup', e => { if (e.code === 'Tab' && net.on) { e.preventDefault(); showBoard(false); } });
 { const sb = $('sbBtn'); if (sb) sb.addEventListener('pointerdown', e => { e.preventDefault(); showBoard(!net.sbOn); }); }
 window.FavelaNet = {
-  connect(o, ok, fail) {
+  /* Render grátis dorme após 15 min: acorda com /health (até ~90 s) e tenta o WebSocket algumas vezes antes de desistir. */
+  connect(o, ok, fail, tries) {
     if (net.ws && net.ws.readyState === 0) return;
-    let settled = false; const finish = (good, msg) => { if (settled) return; settled = true; if (good) ok && ok(); else fail && fail(msg); };
+    if (tries == null) {
+      if (this._waking) return; this._waking = true; const t0 = Date.now();
+      const wake = () => fetch('/health', { cache: 'no-store' }).then(r => { if (!r.ok) throw 0; this._waking = false; this.connect(o, ok, fail, 3); })
+        .catch(() => { if (Date.now() - t0 > 90000) { this._waking = false; fail && fail('Servidor fora do ar. Tente de novo em instantes.'); return; }
+          fail && fail('Acordando o servidor… (' + Math.round((Date.now() - t0) / 1000) + ' s)'); setTimeout(wake, 3000); });
+      wake(); return;
+    }
+    let settled = false; const finish = (good, msg, netErr) => { if (settled) return; settled = true; if (good) ok && ok();
+      else if (netErr && tries > 1 && !net.on) { fail && fail('Conectando… tentando de novo'); setTimeout(() => this.connect(o, ok, fail, tries - 1), 2000); }
+      else fail && fail(msg); };
     const ws = net.ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
     ws.onopen = () => ws.send(JSON.stringify({ t: o.kind, code: o.code, name: o.name, lv: XP.info(save.xp).level }));
     ws.onmessage = e => { let m; try { m = JSON.parse(e.data); } catch (x) { return; } try { onNet(m, finish); } catch (err) { toast('Erro: ' + ((err && err.message) || err), 4000); } };
-    ws.onerror = () => finish(false, 'Não foi possível conectar ao servidor');
-    ws.onclose = () => { if (!settled) finish(false, 'Servidor não respondeu. Tente de novo.'); else if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); toast('Conexão perdida — recarregue a página', 6000); } };
+    ws.onerror = () => finish(false, 'Não foi possível conectar ao servidor', true);
+    ws.onclose = () => { if (!settled) finish(false, 'Servidor não respondeu. Tente de novo.', true); else if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); toast('Conexão perdida — recarregue a página', 6000); } };
   }
 };
 setInterval(() => { if (net.on && me.alive) net.send({ t: 'state', x: me.x, y: me.y, z: me.z, yaw: me.yaw, pit: me.pit, w: slots[cur].type }); }, 33);
@@ -2903,7 +2979,7 @@ frame();
       ch=GameAssets3D.buildPlayer(THREE,opt);ch.position.y=.15;ch.rotation.y=spin;ch.scale.setScalar(1.25);scene.add(ch);bump=1;
     }};
   }
-  scene3d=build3d();
+  scene3d=null;   // palco 3D do lobby antigo desativado: a tela inicial é a única interface
   showNick();refreshSide();
 })();
 </script>
@@ -2922,7 +2998,7 @@ frame();
   $('lobbyBtn').addEventListener('click', () => {
     closeSettings();
     try { if(document.pointerLockElement) document.exitPointerLock(); } catch(e) {}
-    document.getElementById('start').classList.remove('off');
+    document.getElementById('start').classList.remove('off'); document.body.classList.add('homeOn');
     const msg = $('lobbyMsg'); if(msg) msg.textContent = 'Você voltou ao lobby. Escolha como jogar.';
   });
   // Atualiza o estado visual inicial depois que o motor gráfico criou os controles.
@@ -2977,20 +3053,54 @@ frame();
 })();
 </script>
 <script>
-/* Tela inicial (imagem + áreas clicáveis; valores em % da imagem 1672x941). Jogar/Multiplayer -> lobby; Configurações -> painel. */
+/* Tela inicial = única interface. Áreas clicáveis em % da imagem 1672x941. Os painéis comandam os controles do lobby antigo (#start, escondido),
+   que continua dono do nick, lado/skin e da entrada offline/online. */
 (function(){
-  const $ = id => document.getElementById(id), art = document.querySelector('#home .art');
-  let tm = 0; const toast = m => { const e = $('homeToast'); e.textContent = m; e.classList.add('on'); clearTimeout(tm); tm = setTimeout(() => e.classList.remove('on'), 1800); };
+  const $ = id => document.getElementById(id), art = document.querySelector('#home .art'), start = $('start');
+  let tm = 0; const toast = m => { const e = $('homeToast'); e.textContent = m; e.classList.add('on'); clearTimeout(tm); tm = setTimeout(() => e.classList.remove('on'), 2200); };
   const soon = n => () => toast(n + ' — em breve');
-  const lobby = () => { document.body.classList.remove('homeOn'); dispatchEvent(new Event('resize')); };   // resize: o palco 3D do lobby volta ao tamanho real
+  const show = id => () => { document.querySelectorAll('.hp').forEach(p => p.classList.toggle('on', p.id === id)); sync(); };
+  const closeAll = () => document.querySelectorAll('.hp').forEach(p => p.classList.remove('on'));
   const cfg = () => $('settingsBtn').click();
   const HS = [
-    ['Jogar',3.7,26.6,29.1,9.4,lobby], ['Multiplayer',3.7,37.4,28.9,7.4,lobby], ['Personagem',3.7,46.3,28.9,7.6,soon('Personagem')],
-    ['Armas',3.7,55.4,28.9,7.6,soon('Armas')], ['Loja',3.7,64.5,28.9,7.5,soon('Loja')], ['Configurações',3.7,73.3,28.9,7.6,cfg],
-    ['Perfil',65,2.9,29,8,soon('Perfil')], ['Comprar moedas',91.2,5.3,2.2,3.6,soon('Loja de moedas')], ['Ajustes',95.1,4.2,3.1,5.4,cfg,1]
+    ['Jogar',3.7,26.6,29.1,9.4,show('hpPlay')], ['Multiplayer',3.7,37.4,28.9,7.4,show('hpMp')],
+    ['Personagem',3.7,46.3,28.9,7.6,show('hpChar')], ['Cofre',3.7,55.4,28.9,7.6,show('hpVault')],
+    ['Loja',3.7,64.5,28.9,7.5,soon('Loja')], ['Configurações',3.7,73.3,28.9,7.6,cfg],
+    ['Perfil',65,2.9,29,8,show('hpChar')], ['Comprar moedas',91.2,5.3,2.2,3.6,soon('Loja de moedas')], ['Ajustes',95.1,4.2,3.1,5.4,cfg,1]
   ];
   for (const [n,l,t,w,h,f,rd] of HS) { const b = document.createElement('button'); b.className = 'hs' + (rd ? ' rd' : ''); b.setAttribute('aria-label', n);
     b.style.cssText = 'left:'+l+'%;top:'+t+'%;width:'+w+'%;height:'+h+'%'; b.onclick = f; art.appendChild(b); }
+  document.querySelectorAll('.hp [data-close]').forEach(b => b.onclick = closeAll);
+  document.querySelectorAll('.hp').forEach(p => p.addEventListener('click', e => { if (e.target === p) closeAll(); }));
+  /* espelha o estado do lobby antigo nos painéis */
+  const all = q => document.querySelectorAll(q), txt = (q, t) => all(q).forEach(e => e.textContent = t);
+  function sync(){
+    const has = !$('sProfCard').hidden, nm = has ? $('sNm').textContent : '', bad = $('sSideB').classList.contains('on'), sk = $('sSkName').textContent;
+    all('.hp .nb').forEach(e => e.hidden = has); $('hpNick2').value = nm;
+    $('hpNm').textContent = nm || 'SEM NICK'; $('hpLv').textContent = ($('tLv').textContent || 'NÍVEL 1');
+    all('.hp [data-side]').forEach(b => b.classList.toggle('on', (b.dataset.side === 'sSideB') === bad));
+    txt('.hp .skN', sk); txt('.hp .skC', $('sSkCount').textContent);
+    txt('.hp .skB', bad ? sk : 'Renasce na favela'); txt('.hp .skP', bad ? 'Renasce na quadra' : sk);
+    txt('.hp .mg', $('lobbyMsg').textContent);
+    const W = window.FavelaWeaponSkin; if (W) all('#hpWs button').forEach(b => b.classList.toggle('on', b.dataset.ws === W.get()));
+  }
+  if (window.FavelaWeaponSkin) for (const w of window.FavelaWeaponSkin.list) { const b = document.createElement('button'); b.className = 'o'; b.dataset.ws = w.id;
+    b.innerHTML = '<i style="background:' + (w.c ? '#' + w.c.toString(16).padStart(6, '0') : 'linear-gradient(90deg,#222,#555)') + '"></i>' + w.name.toUpperCase();
+    b.onclick = () => { window.FavelaWeaponSkin.set(w.id); sync(); toast('Skin de arma: ' + w.name); }; $('hpWs').appendChild(b); }
+  new MutationObserver(sync).observe($('lobbyMsg'), { childList: true, characterData: true, subtree: true });
+  addEventListener('favela-xp', () => setTimeout(sync, 0));
+  const saveNick = v => { $('playerName').value = v.trim(); $('sSaveNick').click(); sync(); };
+  all('.hp .nb').forEach(n => { const i = n.querySelector('.nbI'); n.querySelector('.nbB').onclick = () => saveNick(i.value); i.addEventListener('keydown', e => { if (e.key === 'Enter') saveNick(i.value); }); });
+  $('hpNick2Ok').onclick = () => { if (!$('sProfCard').hidden) $('sChg').click(); saveNick($('hpNick2').value); };
+  all('.hp [data-side]').forEach(b => b.onclick = () => { $(b.dataset.side).click(); sync(); });
+  all('.hp [data-px]').forEach(b => b.onclick = () => { $(b.dataset.px).click(); sync(); });
+  $('hpOff').onclick = () => $('startBtn').click();
+  $('hpCreate').onclick = () => $('createBtn').click();
+  $('hpJoin').onclick = () => { $('roomCode').value = $('hpCode').value.trim().toUpperCase(); $('joinBtn').click(); };
+  /* entrou na partida -> some o menu; voltou ao lobby -> menu de novo */
+  new MutationObserver(() => { const inGame = start.classList.contains('off'); document.body.classList.toggle('homeOn', !inGame); if (inGame) closeAll(); else sync(); })
+    .observe(start, { attributes: true, attributeFilter: ['class'] });
+  addEventListener('load', sync); sync();
 })();
 </script>
 <script>
