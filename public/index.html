@@ -3104,7 +3104,9 @@ frame();
 })();
 </script>
 <script>
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+// Sem service worker: remove os antigos (cache velho impedia o jogo de atualizar). O sw.js atual só limpa e se desinstala.
+if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())).catch(() => {});
+try { if (window.caches) caches.keys().then(ks => ks.forEach(k => caches.delete(k))); } catch (e) {}
 </script>
 </body>
 </html>
