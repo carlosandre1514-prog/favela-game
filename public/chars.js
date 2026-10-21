@@ -120,9 +120,12 @@
     const t = tpl[kind], sk = THREE.SkeletonUtils.clone(t.scene);
     sk.rotation.y = Math.PI;                                   // o modelo olha para +Z; o boneco do jogo, para -Z
     let body = null;
-    sk.traverse(m => { if (!m.isSkinnedMesh) return; m.frustumCulled = false; m.castShadow = !low();
-      if (m.name === t.body) { body = m; m.material = outfitMat(kind, o); }
-      else if (m.name === t.brows) m.material = hairMat(o.hair || '#2a1d14', true); });
+    const face = [];
+    sk.traverse(m => { if (!m.isSkinnedMesh) return;
+      // culling ligado: esfera do bind pose folgada (cobre braços/pernas animados); quem está fora da tela não é desenhado
+      const g = m.geometry; if (!g.userData.bigBS) { g.computeBoundingSphere(); g.boundingSphere.radius = Math.max(g.boundingSphere.radius * 1.4, .9 * t.h); g.userData.bigBS = 1; }
+      if (m.name === t.body) { body = m; m.material = outfitMat(kind, o); m.castShadow = !low(); }
+      else { face.push(m); m.castShadow = false; if (m.name === t.brows) m.material = hairMat(o.hair || '#2a1d14', true); } });
     dressHead(sk, body, kind, o);
     // remove as malhas do boneco procedural (ficam só os grupos/articulações que mandam no esqueleto,
     // as hitboxes e o soquete da arma): menos objetos para atualizar e desenhar a cada quadro
@@ -139,7 +142,7 @@
     const rq = r.getWorldQuaternion(new Q()).invert(), relQ = b => rq.clone().multiply(b.getWorldQuaternion(new Q()));
     const leg = sd => { const th = B('thigh_' + sd), ca = B('calf_' + sd), ft = B('foot_' + sd);
       return { th, ca, ft, ik: { ua: th, la: ca, hd: ft }, ftQ: relQ(ft), foot0: inR(ft), right: sd === 'r' }; };
-    r.userData.sk = { root: sk, rest, phase: Math.random() * 6, acc: 0, n: (Math.random() * 6) | 0, pel0: inR(B('pelvis')), lean: 0,
+    r.userData.sk = { root: sk, face, far: -1, rest, phase: Math.random() * 6, acc: 0, n: (Math.random() * 6) | 0, pel0: inR(B('pelvis')), lean: 0,
       LL: leg('l'), LR: leg('r'),
       pelvis: B('pelvis'), sp1: B('spine_01'), sp2: B('spine_02'), spine: B('spine_03'), neck: B('neck_01'),
       R: { ua: B('upperarm_r'), la: B('lowerarm_r'), hd: B('hand_r'), sh: P.armR, el: P.elbowR, wr: handOf(P.elbowR), right: true },
@@ -217,6 +220,7 @@
     // nível de detalhe pela distância da câmera: longe anima menos vezes e sem ajuste fino
     let far = 0; if (camRef) { r.getWorldPosition(_w); const d2 = _w.distanceToSquared(camRef.position); far = d2 > 3600 ? 2 : d2 > 900 ? 1 : 0; }
     k.acc += dt; k.n++;
+    if (k.far !== far) { k.far = far; for (const m of k.face) m.visible = far === 0; }   // olhos/sobrancelhas só de perto
     if (far === 2 && k.n % 4) return; if (far === 1 && k.n % 2) return;
     dt = Math.min(k.acc, .2); k.acc = 0;
     const vf = st.vf || 0, vs = st.vs || 0, sp = Math.hypot(vf, vs), c = s.crouch, air = s.air, run = clamp((sp - 4.6) / 2, 0, 1);
