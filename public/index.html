@@ -2745,14 +2745,24 @@ addEventListener('keydown', e => { if (e.code === 'Tab' && net.on) { e.preventDe
 addEventListener('keyup', e => { if (e.code === 'Tab' && net.on) { e.preventDefault(); showBoard(false); } });
 { const sb = $('sbBtn'); if (sb) sb.addEventListener('pointerdown', e => { e.preventDefault(); showBoard(!net.sbOn); }); }
 window.FavelaNet = {
-  connect(o, ok, fail) {
+  /* Render grátis dorme após 15 min: acorda com /health (até ~90 s) e tenta o WebSocket algumas vezes antes de desistir. */
+  connect(o, ok, fail, tries) {
     if (net.ws && net.ws.readyState === 0) return;
-    let settled = false; const finish = (good, msg) => { if (settled) return; settled = true; if (good) ok && ok(); else fail && fail(msg); };
+    if (tries == null) {
+      if (this._waking) return; this._waking = true; const t0 = Date.now();
+      const wake = () => fetch('/health', { cache: 'no-store' }).then(r => { if (!r.ok) throw 0; this._waking = false; this.connect(o, ok, fail, 3); })
+        .catch(() => { if (Date.now() - t0 > 90000) { this._waking = false; fail && fail('Servidor fora do ar. Tente de novo em instantes.'); return; }
+          fail && fail('Acordando o servidor… (' + Math.round((Date.now() - t0) / 1000) + ' s)'); setTimeout(wake, 3000); });
+      wake(); return;
+    }
+    let settled = false; const finish = (good, msg, netErr) => { if (settled) return; settled = true; if (good) ok && ok();
+      else if (netErr && tries > 1 && !net.on) { fail && fail('Conectando… tentando de novo'); setTimeout(() => this.connect(o, ok, fail, tries - 1), 2000); }
+      else fail && fail(msg); };
     const ws = net.ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
     ws.onopen = () => ws.send(JSON.stringify({ t: o.kind, code: o.code, name: o.name, lv: XP.info(save.xp).level }));
     ws.onmessage = e => { let m; try { m = JSON.parse(e.data); } catch (x) { return; } try { onNet(m, finish); } catch (err) { toast('Erro: ' + ((err && err.message) || err), 4000); } };
-    ws.onerror = () => finish(false, 'Não foi possível conectar ao servidor');
-    ws.onclose = () => { if (!settled) finish(false, 'Servidor não respondeu. Tente de novo.'); else if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); toast('Conexão perdida — recarregue a página', 6000); } };
+    ws.onerror = () => finish(false, 'Não foi possível conectar ao servidor', true);
+    ws.onclose = () => { if (!settled) finish(false, 'Servidor não respondeu. Tente de novo.', true); else if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); toast('Conexão perdida — recarregue a página', 6000); } };
   }
 };
 setInterval(() => { if (net.on && me.alive) net.send({ t: 'state', x: me.x, y: me.y, z: me.z, yaw: me.yaw, pit: me.pit, w: slots[cur].type }); }, 33);
