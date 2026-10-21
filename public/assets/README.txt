@@ -14,3 +14,8 @@ Observação: os modelos externos são carregados de forma assíncrona. O teste 
 
 
 Armas (v11): AK-47, M4A1, MAC-10, escopeta, AWP e Barrett .50 — 6 armas, nenhuma repetida. M4A1 (m4a1_v2.glb, v22) e Barrett (barret.glb) vieram dos packs enviados; os modelos novos são redimensionados automaticamente pelo jogo (WEAPON_NORM no index.html).
+
+Personagens (v26): Quaternius — "Universal Base Characters" (Superhero Male/Female, cabelos) e
+"Universal Animation Library [Standard]" — licença CC0 (quaternius.com). Arquivos em assets/chars/:
+male.glb, female.glb (texturas WebP 1024, corpo simplificado ~55%), anims.glb (parado, andar, trotar,
+correr, agachado, pulo, morte — só os ossos usados), hair.glb + hair.webp. Código: public/chars.js.
