@@ -7,6 +7,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 const { WebSocketServer } = require('ws');
 
 const PORT = process.env.PORT || 3000;
@@ -40,10 +41,12 @@ const giveXp = (p, n, why) => { if (n > 0) send(p.ws, { t: 'xp', n, why }); };
 const PUBLIC = path.join(__dirname, 'public');
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json',
-  '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.css': 'text/css'
+  '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.css': 'text/css',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.glb': 'model/gltf-binary'
 };
 
 /* ---------- servidor HTTP (entrega o jogo) ---------- */
+const GZ = new Map();   // cache do gzip em memória (arquivo:tamanho -> buffer)
 const server = http.createServer((req, res) => {
   const url = decodeURIComponent((req.url || '/').split('?')[0]);
   if (url === '/health') { res.writeHead(200, { 'Content-Type': 'text/plain' }); res.end('ok'); return; }
@@ -54,6 +57,13 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(file).toLowerCase();
     const headers = { 'Content-Type': MIME[ext] || 'application/octet-stream' };
     if (path.basename(file) === 'sw.js' || ext === '.html') headers['Cache-Control'] = 'no-cache';
+    else headers['Cache-Control'] = 'public, max-age=604800';   // armas .glb, imagens: celular não baixa de novo a cada partida
+    // gzip para texto (index.html ~300KB vira ~70KB): carrega bem mais rápido em 3G/4G fraco
+    if (/^(text\/|application\/(json|manifest))/.test(headers['Content-Type']) && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+      const key = file + ':' + data.length; let gz = GZ.get(key);
+      if (!gz) { gz = zlib.gzipSync(data, { level: 9 }); GZ.set(key, gz); }
+      headers['Content-Encoding'] = 'gzip'; headers['Vary'] = 'Accept-Encoding'; data = gz;
+    }
     res.writeHead(200, headers); res.end(data);
   });
 });
