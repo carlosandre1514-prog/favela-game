@@ -270,7 +270,7 @@
 
   /* ---------- 1ª pessoa: os braços do próprio personagem segurando a arma ---------- */
   let fp = null;
-  function fpArms(scene, cam, gun, opt, show) {
+  function fpArms(scene, cam, gun, opt, show, aimK) {
     opt = opt || {}; const kind = opt.female ? 'female' : 'male';
     const ok = show && gun && gun.userData.fpR && tpl[kind];
     if (!ok) { if (fp) fp.sk.visible = false; return false; }
@@ -283,11 +283,14 @@
       fp = { key, sk, R: { ua: B('upperarm_r'), la: B('lowerarm_r'), hd: B('hand_r'), right: true }, L: { ua: B('upperarm_l'), la: B('lowerarm_l'), hd: B('hand_l'), right: false } };
       // como em todo FPS, os braços da câmera são um pouco maiores (x1,3) e os ombros ficam logo abaixo/à frente do olho,
       // senão a mão da frente não alcança o guarda-mão; as mãos voltam a ~1,1x (proporção com a arma, que é 15% maior)
-      sk.scale.setScalar(1.3); sk.position.set(.05, -.25 - 1.45 * 1.3, -.3); sk.rotation.y = Math.PI; cam.add(sk);
+      sk.scale.setScalar(1.3); sk.rotation.y = Math.PI; cam.add(sk);
       curlFingers(body, 1);
       for (const sd of ['l', 'r']) B('hand_' + sd).scale.setScalar(.85);   // mãos um pouco menores (proporção com a arma)
       if (!cam.parent) scene.add(cam);
     }
+    // ombros: na cintura ficam abaixo/à frente do olho; mirando vão para trás (coronha no ombro, rosto na arma)
+    const a = clamp(aimK || 0, 0, 1), FPS = 1.3;
+    fp.sk.position.set(.05 - .04 * a, -.25 - 1.45 * FPS + .06 * a, -.3 + .34 * a);
     fp.sk.visible = true; fp.sk.updateMatrixWorld(true);
     gun.updateMatrixWorld(true);
     armIK(fp.R, gun.userData.fpR.getWorldPosition(_w), cam.localToWorld(_pl.set(.55, -.75, .05)));
