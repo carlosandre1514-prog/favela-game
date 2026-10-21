@@ -447,6 +447,18 @@ body.homeOn #start{display:none!important}
 #home .ft{position:absolute;right:calc(var(--u)*3);bottom:calc(var(--u)*2 + env(safe-area-inset-bottom,0px));font:italic 900 calc(var(--u)*2.2)/1 Impact,sans-serif;color:var(--g);text-shadow:0 2px 0 #000;text-align:right}
 #home .ft small{display:block;font:600 calc(var(--u)*1.1) system-ui,sans-serif;color:#9fb3a8;margin-top:4px;font-style:normal}
 @media(orientation:portrait){#home{--u:1.9vw}#home .mn{width:calc(100% - var(--u)*8);top:auto;bottom:calc(var(--u)*10 + env(safe-area-inset-bottom,0px))}#home .bg{background-position:60% center}#home .bg:after{background:linear-gradient(0deg,#05080af2 0%,#05080ac0 50%,transparent 80%)}#home .tp{top:calc(var(--u)*30)}}
+#home .co{display:flex;align-items:center;gap:calc(var(--u)*.8);height:calc(var(--u)*6);padding:0 calc(var(--u)*.8) 0 calc(var(--u)*1);border:1.5px solid #ffd84a88;border-radius:calc(var(--u)*1);background:#0b1612e6;color:#fff;font:900 calc(var(--u)*2) system-ui,sans-serif;cursor:pointer}
+#home .co .cn{width:calc(var(--u)*3);height:calc(var(--u)*3)}
+#home .co i{font-style:normal;display:grid;place-items:center;width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);border-radius:calc(var(--u)*.6);background:var(--g);color:#071003}
+.hp .bal{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#ffd84a12;border:1px solid #ffd84a55}
+.hp .bal .cn{width:26px;height:26px}.hp .bal span{flex:1;color:#cfd8d3;font-size:13px}.hp .bal b{font-size:20px;color:#ffd84a}
+.hp .pk{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.hp .pk button{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px 10px;border-radius:14px;border:1px solid #ffd84a44;background:linear-gradient(#1a1f12,#0d120c);color:#fff;cursor:pointer;touch-action:manipulation}
+.hp .pk button:active{transform:scale(.97)}
+.hp .pk .cn{width:34px;height:34px}.hp .pk b{font:900 22px Impact,'Arial Black',sans-serif;color:#ffd84a;letter-spacing:.02em}
+.hp .pk small{font-size:11px;color:#a7ff45;font-weight:800;min-height:14px}
+.hp .pk em{font-style:normal;margin-top:4px;width:100%;padding:8px 0;border-radius:9px;background:linear-gradient(#b8ff45,#86d92c);color:#071003;font-weight:900;font-size:15px}
+.hp .pk .tg{position:absolute;top:-8px;right:8px;padding:2px 8px;border-radius:99px;background:#ff4d3d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.05em}
 #homeToast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#0d141bee;border:1px solid #a7ff4588;color:#f2f6f3;border-radius:12px;padding:12px 18px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:111;white-space:nowrap}
 #homeToast.on{opacity:1}
 </style>
@@ -499,7 +511,7 @@ body.homeOn #start{display:none!important}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button><button class="mb" id="hmCfg"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>CONFIGURAÇÕES</button></nav><div class="tp"><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v18</small></div></div><div id="homeToast"></div>
+<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button></nav><div class="tp"><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="co" id="hmCoins"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><b id="hmCoinN">0</b><i>+</i></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v19</small></div></div><div id="homeToast"></div>
 <div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR OFFLINE</h2><button class="x" data-close>×</button></div>
   <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
   <div class="lb">MAPA</div><div class="rw"><button class="o on">FAVELA<small>Setor 04 · mata-mata</small></button><button class="o" disabled>COLÉGIO CENTRAL<small>em breve</small></button></div>
@@ -516,6 +528,10 @@ body.homeOn #start{display:none!important}
   <div class="lb">SKIN DO PERSONAGEM</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO</button><button class="o" data-side="sSideP">POLICIAL</button></div>
   <div class="rw" style="margin-top:8px"><button class="o" style="flex:none;width:52px" data-px="sPrev">‹</button><div class="sk"><b class="skN">—</b><small class="skC">—</small></div><button class="o" style="flex:none;width:52px" data-px="sNext">›</button></div>
   <div class="mg"></div></div></div>
+<div class="hp" id="hpShop"><div class="cd"><div class="hd"><h2>LOJA DE MOEDAS</h2><button class="x" data-close>×</button></div>
+  <div class="bal"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><span>Seu saldo</span><b id="shCoinN">0</b></div>
+  <div class="pk" id="shPacks"></div>
+  <div class="mg" id="shMsg"></div></div></div>
 <div class="hp" id="hpChar"><div class="cd"><div class="hd"><h2>PERSONAGEM</h2><button class="x" data-close>×</button></div>
   <div class="lb">NICK</div><div class="rw"><input id="hpNick2" maxlength="14" placeholder="SEU NICK" autocomplete="off" spellcheck="false"><button class="o" id="hpNick2Ok" style="flex:none">SALVAR</button></div>
   <div class="lb">TIME</div><div class="rw"><button class="o" data-side="sSideB">BANDIDO<small>Renasce na favela</small></button><button class="o" data-side="sSideP">POLICIAL<small>Renasce na quadra</small></button></div>
@@ -3080,9 +3096,24 @@ frame();
   const show = id => () => { document.querySelectorAll('.hp').forEach(p => p.classList.toggle('on', p.id === id)); sync(); };
   const closeAll = () => document.querySelectorAll('.hp').forEach(p => p.classList.remove('on'));
   const cfg = () => $('settingsBtn').click();
+  /* ---------- moedas + loja ---------- */
+  const PACKS = [   // [moedas, preço em R$, bônus, destaque]
+    [100, 5.00], [300, 15.00], [600, 27.90, '+ economia'], [1200, 49.90, '+ economia', 'POPULAR'], [2500, 99.90, '+ economia'], [5200, 199.90, 'MELHOR VALOR', 'MELHOR']
+  ];
+  const coins = { get: () => { try { return +localStorage.getItem('fv_coins') || 0; } catch (e) { return 0; } } };
+  window.FavelaCoins = coins;
+  const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+  const coinSvg = document.querySelector('#hmCoins .cn').outerHTML;
+  function paintCoins(){ const n = coins.get().toLocaleString('pt-BR'); $('hmCoinN').textContent = n; $('shCoinN').textContent = n; }
+  for (const [n, v, bonus, tag] of PACKS) { const b = document.createElement('button');
+    b.innerHTML = (tag ? '<span class="tg">' + tag + '</span>' : '') + coinSvg + '<b>' + n.toLocaleString('pt-BR') + '</b><small>' + (bonus || '') + '</small><em>' + brl(v) + '</em>';
+    b.onclick = () => { $('shMsg').textContent = 'Pagamento ainda não está ativo. Em breve você vai poder comprar ' + n.toLocaleString('pt-BR') + ' moedas por ' + brl(v) + ' (Pix/cartão).'; };
+    $('shPacks').appendChild(b); }
+  paintCoins();
   const on = (id, f) => $(id).addEventListener('click', f);
+  on('hmCoins', show('hpShop'));
   on('hmPlay', show('hpPlay')); on('hmMp', show('hpMp')); on('hmChar', show('hpChar')); on('hmProf', show('hpChar'));
-  on('hmVault', show('hpVault')); on('hmShop', soon('Loja')); on('hmCfg', cfg); on('hmCfg2', cfg);
+  on('hmVault', show('hpVault')); on('hmShop', show('hpShop')); on('hmCfg2', cfg);
   document.querySelectorAll('.hp [data-close]').forEach(b => b.onclick = closeAll);
   document.querySelectorAll('.hp').forEach(p => p.addEventListener('click', e => { if (e.target === p) closeAll(); }));
   /* espelha o estado do lobby antigo nos painéis */
