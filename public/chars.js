@@ -181,7 +181,7 @@
   }
   // pegada do fuzil a partir dos eixos da arma (frente, cima, direita do atirador)
   function gripHands(R, L, fwd, up, right, across) {
-    orientHand(R, _F.copy(fwd).addScaledVector(up, -.45).addScaledVector(right, -.15), _P.copy(right).negate().addScaledVector(fwd, .25));   // punho: palma envolve pela direita
+    orientHand(R, _F.copy(fwd).multiplyScalar(.55).addScaledVector(right, -.6).addScaledVector(up, -.5), _P.copy(right).negate());   // punho: palma pela direita, dedos envolvem o punho para a esquerda
     if (across) orientHand(L, _F.copy(right).multiplyScalar(.85).addScaledVector(up, .45).addScaledVector(fwd, .3), _P.copy(up).multiplyScalar(.8).addScaledVector(right, .35));   // 1ª pessoa: mão atravessa por baixo do guarda-mão e os dedos fecham por cima
     else orientHand(L, _F.copy(fwd).addScaledVector(right, .12).addScaledVector(up, .05), _P.copy(up).addScaledVector(right, .3));     // 3ª pessoa: palma por baixo, dedos sobem pelo lado esquerdo
   }
@@ -281,10 +281,11 @@
       sk.traverse(m => { if (m.isSkinnedMesh) { m.frustumCulled = false; if (m.name === tpl[kind].body) { body = m; m.material = outfitMat(kind, opt, true); } else m.visible = false; } });
       const B = n => body.skeleton.bones.find(b => b.name === n);
       fp = { key, sk, R: { ua: B('upperarm_r'), la: B('lowerarm_r'), hd: B('hand_r'), right: true }, L: { ua: B('upperarm_l'), la: B('lowerarm_l'), hd: B('hand_l'), right: false } };
-      // como em todo FPS, os braços da câmera são maiores (x1,5) e os ombros ficam logo abaixo/à frente do olho,
-      // senão a mão da frente não alcança o guarda-mão
-      sk.scale.setScalar(1.65); sk.position.set(.04, -.27 - 1.45 * 1.65, -.24); sk.rotation.y = Math.PI; cam.add(sk);
-      curlFingers(body, 1);   // 1ª pessoa: dedos menos fechados (mão aberta sob o guarda-mão)
+      // como em todo FPS, os braços da câmera são um pouco maiores (x1,3) e os ombros ficam logo abaixo/à frente do olho,
+      // senão a mão da frente não alcança o guarda-mão; as mãos voltam a ~1,1x (proporção com a arma, que é 15% maior)
+      sk.scale.setScalar(1.3); sk.position.set(.05, -.25 - 1.45 * 1.3, -.3); sk.rotation.y = Math.PI; cam.add(sk);
+      curlFingers(body, 1);
+      for (const sd of ['l', 'r']) B('hand_' + sd).scale.setScalar(.85);   // mãos um pouco menores (proporção com a arma)
       if (!cam.parent) scene.add(cam);
     }
     fp.sk.visible = true; fp.sk.updateMatrixWorld(true);
