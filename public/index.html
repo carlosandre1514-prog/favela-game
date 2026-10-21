@@ -399,9 +399,6 @@ body.adsOn #ctl #bfL,body.adsOn #ctl #zp,body.adsOn #ctl #zm{display:flex!import
 #home{position:fixed;inset:0;z-index:110;background:#000;overflow:hidden;display:none}
 body.homeOn #home{display:block}
 body.homeOn #start{display:none!important}
-#home .prof{position:absolute;left:66.4%;top:3.4%;width:11%;height:7%;background:linear-gradient(90deg,#0d1714,#0a120f);border-radius:4px;display:flex;flex-direction:column;justify-content:center;padding-left:.4%;color:#fff;font-weight:900;pointer-events:none;overflow:hidden}
-#home .prof b{font-size:calc(var(--aw)*.0105);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#home .prof small{font-size:calc(var(--aw)*.0068);color:#a7ff45;letter-spacing:.06em}
 .hp{position:fixed;inset:0;z-index:112;display:none;align-items:center;justify-content:center;padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom));background:#000a;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f2f6f3}
 .hp.on{display:flex}
 .hp .cd{width:min(560px,100%);max-height:100%;overflow-y:auto;background:#0b1411f5;border:1px solid #a7ff4566;border-radius:16px;padding:14px 16px;box-shadow:0 0 30px #000}
@@ -420,15 +417,36 @@ body.homeOn #start{display:none!important}
 .hp .mg{min-height:18px;margin-top:10px;font-size:12px;color:#ffcf6b}
 .hp .gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .hp .gr button i{display:block;height:18px;border-radius:5px;margin-bottom:6px;border:1px solid #ffffff33}
-#home .vlt{position:absolute;left:10.2%;top:56.4%;width:19.5%;height:5.6%;background:#0a110e;display:flex;align-items:center;gap:6%;padding-left:1.4%;pointer-events:none;color:#fff;font:900 calc(var(--aw)*.0185) Impact,'Arial Black',sans-serif;letter-spacing:.03em}
-#home .vlt i{font-style:normal;color:#a7ff45}
 .hp .sk{flex:1;text-align:center;align-self:center}.hp .sk b{display:block;font-size:14px}.hp .sk small{font-size:11px;color:#9fb3a8}
-#home .art{--aw:min(100vw,calc(100dvh*2.05));position:absolute;inset:0;user-select:none;-webkit-user-select:none}   /* estica a arte 16:9 para a tela toda (sem faixas pretas) */
-#home .art img{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;-webkit-user-drag:none}
-@media(orientation:portrait){#home .art{inset:auto;top:50%;width:322vw;left:-9.7vw;aspect-ratio:1672/941;transform:translateY(-50%)}}
-#home .hs{position:absolute;border:0;background:transparent;border-radius:1.2%/6%;padding:0;outline:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-#home .hs:focus-visible,#home .hs:active{background:#a7ff4530;box-shadow:0 0 0 2px #a7ff45aa}
-#home .hs.rd{border-radius:50%}
+/* ===== Tela inicial em código (sem imagem com botões) ===== */
+#home{--g:#a7ff45;--gd:#6fcf1f;--u:min(1vw,1.75vh);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f2f6f3}
+#home .bg{position:absolute;inset:0;background:#05080a url(assets/menu/bg.webp) right center/cover no-repeat}
+#home .bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#05080af2 0%,#05080ad0 26%,#05080a40 52%,transparent 70%),linear-gradient(0deg,#05080acc,transparent 30%)}
+#home .lg{position:absolute;left:calc(var(--u)*4);top:calc(var(--u)*3 + env(safe-area-inset-top,0px))}
+#home .lg h1{margin:0;font:italic 900 calc(var(--u)*7.2)/.9 Impact,'Arial Black',sans-serif;letter-spacing:-.01em;text-transform:uppercase;color:#fff;text-shadow:0 3px 0 #000}
+#home .lg h1 span{color:var(--g);text-shadow:0 0 18px #a7ff4566,0 3px 0 #000}
+#home .lg small{display:block;margin-top:calc(var(--u)*.8);font-weight:800;font-size:calc(var(--u)*1.6);letter-spacing:.35em;color:#dfe8e2}
+#home .lg small b{color:var(--g)}
+#home .mn{position:absolute;left:calc(var(--u)*4);top:calc(var(--u)*13.5 + env(safe-area-inset-top,0px));width:calc(var(--u)*30);display:flex;flex-direction:column;gap:calc(var(--u)*1)}
+#home .mb{display:flex;align-items:center;gap:calc(var(--u)*1.6);height:calc(var(--u)*5.4);padding:0 calc(var(--u)*1.8);border:1.5px solid #a7ff4588;border-radius:calc(var(--u)*.9);background:linear-gradient(90deg,#0b1612e8,#0b161299);color:#fff;font:900 calc(var(--u)*2.4) Impact,'Arial Black',sans-serif;letter-spacing:.04em;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;transition:transform .12s,background .12s}
+#home .mb:after{content:"";position:absolute;right:calc(var(--u)*1.2);bottom:calc(var(--u)*1);width:calc(var(--u)*3);height:calc(var(--u)*.7);background:repeating-linear-gradient(-55deg,var(--g) 0 3px,transparent 3px 6px);opacity:.7}
+#home .mb svg{width:calc(var(--u)*3);height:calc(var(--u)*3);flex:none;fill:var(--g)}
+#home .mb:active{transform:scale(.97);background:#a7ff4530}
+#home .mb.big{height:calc(var(--u)*7);font-size:calc(var(--u)*3.2);background:linear-gradient(90deg,#b8ff45,#86d92c);color:#071003;border-color:#d9ff9a;box-shadow:0 0 22px #a7ff4555}
+#home .mb.big svg{fill:#071003;width:calc(var(--u)*4);height:calc(var(--u)*4)}
+#home .mb.big:after{background:repeating-linear-gradient(-55deg,#071003 0 3px,transparent 3px 6px)}
+#home .tp{position:absolute;right:calc(var(--u)*3);top:calc(var(--u)*2.4 + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:calc(var(--u)*1.2)}
+#home .pf{display:flex;align-items:center;gap:calc(var(--u)*1.2);padding:calc(var(--u)*.7) calc(var(--u)*1.6) calc(var(--u)*.7) calc(var(--u)*.7);border:1.5px solid #a7ff4588;border-radius:calc(var(--u)*1);background:#0b1612e6;cursor:pointer;color:#fff}
+#home .av{width:calc(var(--u)*5);height:calc(var(--u)*5);display:grid;place-items:center;border-radius:calc(var(--u)*.8);background:linear-gradient(135deg,#d8ff6b,#80e93b);color:#071003;font:900 calc(var(--u)*2.6) Impact,sans-serif}
+#home .pf b{display:block;font-size:calc(var(--u)*1.8);letter-spacing:.05em;text-align:left;max-width:calc(var(--u)*16);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home .pf small{display:block;font-size:calc(var(--u)*1.2);font-weight:800;color:var(--g);letter-spacing:.06em;text-align:left}
+#home .xb{width:calc(var(--u)*16);height:calc(var(--u)*.7);margin-top:calc(var(--u)*.5);border-radius:9px;background:#ffffff22;overflow:hidden}
+#home .xb i{display:block;height:100%;width:0;background:var(--g)}
+#home .ic{width:calc(var(--u)*6);height:calc(var(--u)*6);display:grid;place-items:center;border:1.5px solid #a7ff4588;border-radius:calc(var(--u)*1);background:#0b1612e6;cursor:pointer}
+#home .ic svg{width:55%;height:55%;fill:#fff}
+#home .ft{position:absolute;right:calc(var(--u)*3);bottom:calc(var(--u)*2 + env(safe-area-inset-bottom,0px));font:italic 900 calc(var(--u)*2.2)/1 Impact,sans-serif;color:var(--g);text-shadow:0 2px 0 #000;text-align:right}
+#home .ft small{display:block;font:600 calc(var(--u)*1.1) system-ui,sans-serif;color:#9fb3a8;margin-top:4px;font-style:normal}
+@media(orientation:portrait){#home{--u:1.9vw}#home .mn{width:calc(100% - var(--u)*8);top:auto;bottom:calc(var(--u)*10 + env(safe-area-inset-bottom,0px))}#home .bg{background-position:60% center}#home .bg:after{background:linear-gradient(0deg,#05080af2 0%,#05080ac0 50%,transparent 80%)}#home .tp{top:calc(var(--u)*30)}}
 #homeToast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#0d141bee;border:1px solid #a7ff4588;color:#f2f6f3;border-radius:12px;padding:12px 18px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:111;white-space:nowrap}
 #homeToast.on{opacity:1}
 </style>
@@ -481,7 +499,7 @@ body.homeOn #start{display:none!important}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="art"><div class="vlt">COFRE</div><div class="prof"><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small></div><img src="assets/menu/home.webp" alt="Favela FPS - menu inicial" decoding="async" fetchpriority="high"></div></div><div id="homeToast"></div>
+<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button><button class="mb" id="hmCfg"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>CONFIGURAÇÕES</button></nav><div class="tp"><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v18</small></div></div><div id="homeToast"></div>
 <div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR OFFLINE</h2><button class="x" data-close>×</button></div>
   <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
   <div class="lb">MAPA</div><div class="rw"><button class="o on">FAVELA<small>Setor 04 · mata-mata</small></button><button class="o" disabled>COLÉGIO CENTRAL<small>em breve</small></button></div>
@@ -3056,20 +3074,15 @@ frame();
 /* Tela inicial = única interface. Áreas clicáveis em % da imagem 1672x941. Os painéis comandam os controles do lobby antigo (#start, escondido),
    que continua dono do nick, lado/skin e da entrada offline/online. */
 (function(){
-  const $ = id => document.getElementById(id), art = document.querySelector('#home .art'), start = $('start');
+  const $ = id => document.getElementById(id), start = $('start');
   let tm = 0; const toast = m => { const e = $('homeToast'); e.textContent = m; e.classList.add('on'); clearTimeout(tm); tm = setTimeout(() => e.classList.remove('on'), 2200); };
   const soon = n => () => toast(n + ' — em breve');
   const show = id => () => { document.querySelectorAll('.hp').forEach(p => p.classList.toggle('on', p.id === id)); sync(); };
   const closeAll = () => document.querySelectorAll('.hp').forEach(p => p.classList.remove('on'));
   const cfg = () => $('settingsBtn').click();
-  const HS = [
-    ['Jogar',3.7,26.6,29.1,9.4,show('hpPlay')], ['Multiplayer',3.7,37.4,28.9,7.4,show('hpMp')],
-    ['Personagem',3.7,46.3,28.9,7.6,show('hpChar')], ['Cofre',3.7,55.4,28.9,7.6,show('hpVault')],
-    ['Loja',3.7,64.5,28.9,7.5,soon('Loja')], ['Configurações',3.7,73.3,28.9,7.6,cfg],
-    ['Perfil',65,2.9,29,8,show('hpChar')], ['Comprar moedas',91.2,5.3,2.2,3.6,soon('Loja de moedas')], ['Ajustes',95.1,4.2,3.1,5.4,cfg,1]
-  ];
-  for (const [n,l,t,w,h,f,rd] of HS) { const b = document.createElement('button'); b.className = 'hs' + (rd ? ' rd' : ''); b.setAttribute('aria-label', n);
-    b.style.cssText = 'left:'+l+'%;top:'+t+'%;width:'+w+'%;height:'+h+'%'; b.onclick = f; art.appendChild(b); }
+  const on = (id, f) => $(id).addEventListener('click', f);
+  on('hmPlay', show('hpPlay')); on('hmMp', show('hpMp')); on('hmChar', show('hpChar')); on('hmProf', show('hpChar'));
+  on('hmVault', show('hpVault')); on('hmShop', soon('Loja')); on('hmCfg', cfg); on('hmCfg2', cfg);
   document.querySelectorAll('.hp [data-close]').forEach(b => b.onclick = closeAll);
   document.querySelectorAll('.hp').forEach(p => p.addEventListener('click', e => { if (e.target === p) closeAll(); }));
   /* espelha o estado do lobby antigo nos painéis */
@@ -3077,7 +3090,7 @@ frame();
   function sync(){
     const has = !$('sProfCard').hidden, nm = has ? $('sNm').textContent : '', bad = $('sSideB').classList.contains('on'), sk = $('sSkName').textContent;
     all('.hp .nb').forEach(e => e.hidden = has); $('hpNick2').value = nm;
-    $('hpNm').textContent = nm || 'SEM NICK'; $('hpLv').textContent = ($('tLv').textContent || 'NÍVEL 1');
+    $('hpNm').textContent = nm || 'SEM NICK'; $('hpLv').textContent = ($('tLv').textContent || 'NÍVEL 1'); $('hpAv').textContent = nm ? nm.charAt(0) : '?'; $('hpXb').style.width = $('tBar').style.width || '0%';
     all('.hp [data-side]').forEach(b => b.classList.toggle('on', (b.dataset.side === 'sSideB') === bad));
     txt('.hp .skN', sk); txt('.hp .skC', $('sSkCount').textContent);
     txt('.hp .skB', bad ? sk : 'Renasce na favela'); txt('.hp .skP', bad ? 'Renasce na quadra' : sk);
