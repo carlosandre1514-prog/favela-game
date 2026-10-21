@@ -13,4 +13,4 @@ Se os modelos não carregarem (por exemplo, se a conexão com o CDN estiver bloq
 Observação: os modelos externos são carregados de forma assíncrona. O teste final de escala, orientação e desempenho deve ser feito no navegador/celular em que o jogo será publicado.
 
 
-Armas (v11): AK-47, M4A1, MAC-10, escopeta, AWP e Barrett .50 — 6 armas, nenhuma repetida. M4A1 (m4a1.glb) e Barrett (barret.glb) vieram dos packs enviados; os modelos novos são redimensionados automaticamente pelo jogo (WEAPON_NORM no index.html).
+Armas (v11): AK-47, M4A1, MAC-10, escopeta, AWP e Barrett .50 — 6 armas, nenhuma repetida. M4A1 (m4a1_v2.glb, v22) e Barrett (barret.glb) vieram dos packs enviados; os modelos novos são redimensionados automaticamente pelo jogo (WEAPON_NORM no index.html).
