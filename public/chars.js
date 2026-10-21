@@ -1,16 +1,15 @@
-/* Personagens 3D (Quaternius Universal Base Characters + Universal Animation Library, licença CC0).
-   O boneco procedural (GameAssets3D.buildHumanoid) continua existindo e mandando em tudo: hitboxes, soquete da
-   arma, IK dos braços e estado (andar/agachar/pular). Quando os modelos carregam, ele fica invisível e um corpo
-   com esqueleto (SkinnedMesh) passa a ser desenhado no lugar:
-   - pernas/tronco: animações reais (parado, andar, trotar, correr, agachado, pulo), misturadas pela velocidade;
-   - braços: IK de 2 ossos até as mãos do boneco procedural (que já seguram a arma no lugar certo);
-   - roupa: pintada por região do corpo (camisa/calça/tênis) na textura, com as cores de cada skin. */
+/* Personagens 3D (Quaternius Universal Base Characters, licença CC0) com animação própria, feita por código.
+   O boneco procedural (GameAssets3D.buildHumanoid) continua mandando no jogo: hitboxes, soquete da arma, IK dos
+   braços até a arma e estado (velocidade, agachar, pulo, mira). O corpo com esqueleto (SkinnedMesh) é desenhado no lugar:
+   - pernas: passada procedural — cada pé tem um alvo que vai e volta na direção do movimento (frente, lado, costas,
+     diagonais), sobe na fase de balanço e o joelho dobra por IK; correr = passada maior e mais rápida, tronco inclinado;
+     agachado = quadril baixo (joelhos dobram sozinhos); pulo = pernas recolhidas;
+   - braços: IK de 2 ossos até as mãos do boneco procedural (as duas mãos na arma), mãos viradas pela arma;
+   - roupa: shader que pinta camisa/calça/tênis/luva por região do corpo, com as cores de cada skin. */
 (function () {
   const GA = window.GameAssets3D, THREE = window.THREE;
   if (!GA || !THREE || !THREE.GLTFLoader || !THREE.SkeletonUtils) return;
   const BASE = 'assets/chars/';
-  const CLIPS = { idle: 'Idle_Loop', walk: 'Walk_Loop', jog: 'Jog_Fwd_Loop', sprint: 'Sprint_Loop', cIdle: 'Crouch_Idle_Loop', cFwd: 'Crouch_Fwd_Loop', jump: 'Jump_Loop' };
-  const SPEED = { walk: 2.2, jog: 4.8, sprint: 7, cFwd: 1.6 };   // m/s em que cada animação fica natural
   const V3 = THREE.Vector3, Q = THREE.Quaternion;
   const loader = new THREE.GLTFLoader();
   const load = url => new Promise((ok, no) => loader.load(BASE + url, ok, undefined, no));
@@ -22,13 +21,12 @@
   let shared = null, sharedP = null;
   function loadShared() {
     if (sharedP) return sharedP;
-    sharedP = Promise.all([load('anims.glb'), load('hair.glb'), new Promise(ok => new THREE.TextureLoader().load(BASE + 'hair.webp', ok, undefined, () => ok(null)))])
-      .then(([an, hr, ht]) => {
-        const clips = {}; for (const k in CLIPS) clips[k] = THREE.AnimationClip.findByName(an.animations, CLIPS[k]);
+    sharedP = Promise.all([load('hair.glb'), new Promise(ok => new THREE.TextureLoader().load(BASE + 'hair.webp', ok, undefined, () => ok(null)))])
+      .then(([hr, ht]) => {
         const hair = {}; hr.scene.updateMatrixWorld(true);
         hr.scene.traverse(o => { if (o.isMesh) { const m = o.clone(); m.matrixAutoUpdate = false; m.matrix.copy(o.matrixWorld); hair[o.name || o.parent.name] = m; } });
         if (ht) { ht.flipY = false; ht.encoding = THREE.sRGBEncoding; }
-        return (shared = { clips, hair, hairTex: ht });
+        return (shared = { hair, hairTex: ht });
       });
     return sharedP;
   }
@@ -132,16 +130,22 @@
     r.traverse(m => { if (m.isMesh && !m.userData.hitZone && m.name.indexOf('hitbox') < 0) { let p = m; while (p && p !== mount) p = p.parent; if (!p) drop.push(m); } });
     for (const m of drop) m.parent.remove(m);
     r.add(sk);
-    const mixer = new THREE.AnimationMixer(sk), acts = {};
-    for (const k in shared.clips) { const c = shared.clips[k]; if (!c) continue; const a = mixer.clipAction(c); a.play(); a.setEffectiveWeight(k === 'idle' ? 1 : 0); acts[k] = a; }
     const B = n => body.skeleton.bones.find(b => b.name === n);
     const P = r.userData.parts, handOf = el => el.children.find(c => c.isGroup) || el;
-    r.userData.sk = { root: sk, mixer, acts, yaw: 0, acc: 0, n: (Math.random() * 6) | 0,
+    // pose de origem (T): cada quadro parte dela; posições/rotações de referência no espaço do boneco
+    const rest = body.skeleton.bones.map(b => [b, b.quaternion.clone()]);
+    r.updateMatrixWorld(true);
+    const inR = (o, v) => r.worldToLocal(o.getWorldPosition(v || new V3()));
+    const rq = r.getWorldQuaternion(new Q()).invert(), relQ = b => rq.clone().multiply(b.getWorldQuaternion(new Q()));
+    const leg = sd => { const th = B('thigh_' + sd), ca = B('calf_' + sd), ft = B('foot_' + sd);
+      return { th, ca, ft, ik: { ua: th, la: ca, hd: ft }, ftQ: relQ(ft), foot0: inR(ft), right: sd === 'r' }; };
+    r.userData.sk = { root: sk, rest, phase: Math.random() * 6, acc: 0, n: (Math.random() * 6) | 0, pel0: inR(B('pelvis')), lean: 0,
+      LL: leg('l'), LR: leg('r'),
       pelvis: B('pelvis'), sp1: B('spine_01'), sp2: B('spine_02'), spine: B('spine_03'), neck: B('neck_01'),
       R: { ua: B('upperarm_r'), la: B('lowerarm_r'), hd: B('hand_r'), sh: P.armR, el: P.elbowR, wr: handOf(P.elbowR), right: true },
       L: { ua: B('upperarm_l'), la: B('lowerarm_l'), hd: B('hand_l'), sh: P.armL, el: P.elbowL, wr: handOf(P.elbowL), right: false } };
-    curlFingers(body);
-    mixer.update(Math.random() * 2);   // começa parado (e fora de sincronia com os outros)
+    curlFingers(body); r.userData.sk.fingers = body.skeleton.bones.filter(b => /^(index|middle|ring|pinky|thumb)_/.test(b.name));
+    r.userData.sk.rest = rest.filter(([b]) => !/^(index|middle|ring|pinky|thumb)_/.test(b.name));   // dedos ficam fechados
   }
 
   /* ---------- ferramentas de ossos (sem criar objetos por quadro) ---------- */
@@ -178,7 +182,8 @@
   // pegada do fuzil a partir dos eixos da arma (frente, cima, direita do atirador)
   function gripHands(R, L, fwd, up, right, across) {
     orientHand(R, _F.copy(fwd).addScaledVector(up, -.45).addScaledVector(right, -.15), _P.copy(right).negate().addScaledVector(fwd, .25));   // punho: palma envolve pela direita
-    orientHand(L, _F.copy(fwd).addScaledVector(right, .12 + (across || 0)).addScaledVector(up, .05), _P.copy(up).addScaledVector(right, .3));                // guarda-mão: palma por baixo, dedos sobem pelo lado esquerdo
+    if (across) orientHand(L, _F.copy(right).multiplyScalar(.85).addScaledVector(up, .45).addScaledVector(fwd, .3), _P.copy(up).multiplyScalar(.8).addScaledVector(right, .35));   // 1ª pessoa: mão atravessa por baixo do guarda-mão e os dedos fecham por cima
+    else orientHand(L, _F.copy(fwd).addScaledVector(right, .12).addScaledVector(up, .05), _P.copy(up).addScaledVector(right, .3));     // 3ª pessoa: palma por baixo, dedos sobem pelo lado esquerdo
   }
   // dedos fechados em volta da arma (as animações não mexem nos dedos, então basta uma vez)
   function curlFingers(body, k) {
@@ -194,45 +199,68 @@
     return w;
   }
 
-  /* ---------- por quadro: animação, pernas na direção do movimento, mira e mãos na arma ---------- */
+  /* ---------- por quadro: animação própria (passada procedural) + mira + mãos na arma ----------
+     Espaço do boneco (r): frente = -Z, direita = +X, cima = +Y. */
   let camRef = null;
+  const _fw = new V3(), _mv = new V3(), _ft = new V3(), _hp = new V3(), _kn = new V3(), _tmpQ = new Q(), _tq = new Q();
+  function legIK(L, foot, swing, r, rq) {
+    _ft.copy(foot); r.localToWorld(_ft);                               // alvo do tornozelo -> mundo
+    L.th.getWorldPosition(_kn); _kn.addScaledVector(_fw.set(L.right ? .2 : -.2, -.3, -1).applyQuaternion(rq), 1);   // joelho: para a frente
+    armIK(L.ik, _ft, _kn);
+    // pé paralelo ao chão (alinhado ao corpo); no balanço a ponta sobe um pouco
+    _tq.copy(rq).multiply(L.ftQ);
+    if (swing > 0) _tq.premultiply(_tmpQ.setFromAxisAngle(_ax, swing * .45));
+    L.ft.parent.getWorldQuaternion(_q3).invert(); L.ft.quaternion.copy(_q3.multiply(_tq)); L.ft.updateMatrixWorld(true);
+  }
   function drive(r, dt, st) {
-    const k = r.userData.sk, s = r.userData.s, A = k.acts; if (!s) return;
+    const k = r.userData.sk, s = r.userData.s; if (!s) return;
     // nível de detalhe pela distância da câmera: longe anima menos vezes e sem ajuste fino
     let far = 0; if (camRef) { r.getWorldPosition(_w); const d2 = _w.distanceToSquared(camRef.position); far = d2 > 3600 ? 2 : d2 > 900 ? 1 : 0; }
     k.acc += dt; k.n++;
     if (far === 2 && k.n % 4) return; if (far === 1 && k.n % 2) return;
     dt = Math.min(k.acc, .2); k.acc = 0;
-    const vf = st.vf || 0, vs = st.vs || 0, spd = s.spd, c = s.crouch, air = s.air, stand = (1 - c) * (1 - air);
-    // andando para trás: animação ao contrário; de lado: o quadril gira para o lado do movimento
-    const moving = Math.hypot(vf, vs) > .35, back = vf < -.3, dir = back ? -1 : 1;
-    const tYaw = !moving ? 0 : back ? clamp(Math.atan2(vs, -vf), -1.2, 1.2) : clamp(-Math.atan2(vs, Math.max(vf, 0)), -1.45, 1.45);
-    k.yaw += (tYaw - k.yaw) * (1 - Math.exp(-dt * 10));
-    const [wi, ww, wj, ws] = lin(spd, [0, SPEED.walk, SPEED.jog, SPEED.sprint]), m = clamp(spd / SPEED.cFwd, 0, 1);
-    const W = { idle: wi * stand, walk: ww * stand, jog: wj * stand, sprint: ws * stand * (back ? 0 : 1), cIdle: (1 - m) * c * (1 - air), cFwd: m * c * (1 - air), jump: air };
-    if (back) W.jog += ws * stand;
-    for (const n in A) A[n].setEffectiveWeight(W[n] || 0);
-    if (A.walk) A.walk.timeScale = dir * clamp(spd / SPEED.walk, .6, 1.5);
-    if (A.jog) A.jog.timeScale = dir * clamp(spd / SPEED.jog, .7, 1.4);
-    if (A.sprint) A.sprint.timeScale = clamp(spd / SPEED.sprint, .8, 1.3);
-    if (A.cFwd) A.cFwd.timeScale = dir * clamp(spd / SPEED.cFwd, .6, 1.6);
-    k.mixer.update(dt);
-    if (far === 2) return;                         // longe: só a animação
-    k.root.updateMatrixWorld(true);
-    _up.set(0, 1, 0).applyQuaternion(r.getWorldQuaternion(_q)); _ax.set(1, 0, 0).applyQuaternion(_q);
-    // quadril para o lado do movimento e tronco de volta para a mira
-    if (Math.abs(k.yaw) > .01 && k.pelvis) {
-      rotWorld(k.pelvis, _q2.setFromAxisAngle(_up, k.yaw).clone(), true);
-      rotWorld(k.sp1, _q2.setFromAxisAngle(_up, -k.yaw * .45).clone(), true);
-      rotWorld(k.sp2, _q2.setFromAxisAngle(_up, -k.yaw * .35).clone(), true);
-      rotWorld(k.spine, _q2.setFromAxisAngle(_up, -k.yaw * .2).clone(), true);
-      k.pelvis.updateMatrixWorld(true);
+    const vf = st.vf || 0, vs = st.vs || 0, sp = Math.hypot(vf, vs), c = s.crouch, air = s.air, run = clamp((sp - 4.6) / 2, 0, 1);
+    // 1) volta à pose de origem
+    for (const [b, q] of k.rest) b.quaternion.copy(q);
+    r.getWorldQuaternion(_q); const rq = _q.clone();
+    _up.set(0, 1, 0).applyQuaternion(rq); _ax.set(1, 0, 0).applyQuaternion(rq);
+    // 2) fase da passada: meia passada S cresce com a velocidade; cadência = pi*v/(2S)
+    const moving = sp > .25, amp = clamp(sp / 1.2, 0, 1) * (1 - air);
+    const S = clamp(.16 + .055 * sp, .16, .5) * (1 - c * .35);
+    if (moving && !air) k.phase += dt * Math.PI * sp / (2 * S);
+    else k.phase += dt * 1.2 * (1 - amp);   // parado: respiração lenta
+    const p = k.phase;
+    _mv.set(vs, 0, -vf); if (sp > .01) _mv.multiplyScalar(1 / sp);   // direção do movimento no espaço do boneco
+    // 3) quadril: altura (agachar, quique da passada, pulo) e balanço
+    const bob = Math.abs(Math.cos(p)) * .035 * amp * (1 + run * .6), breath = Math.sin(p * 1.0) * .004 * (1 - amp);
+    const pelY = k.pel0.y - .36 * c - bob + .03 * amp * (1 - c) + breath - air * .05;
+    _hp.set(k.pel0.x + Math.sin(p) * .015 * amp, pelY, k.pel0.z - run * .06); r.localToWorld(_hp);
+    k.pelvis.position.copy(k.pelvis.parent.worldToLocal(_hp));
+    k.pelvis.updateMatrixWorld(true);
+    rotWorld(k.pelvis, _tq.setFromAxisAngle(_up, Math.sin(p) * .08 * amp).clone());
+    // 4) pernas: pés vão e voltam na direção do movimento; sobem no balanço
+    if (far < 2) {
+      for (const [L, off] of [[k.LL, 0], [k.LR, Math.PI]]) {
+        const ph = p + off, cs = Math.cos(ph), lift = Math.max(0, -Math.sin(ph)) * amp;
+        _e.set(L.foot0.x * (1 + c * .3), L.foot0.y, L.foot0.z + c * .1);                 // pé de apoio (agachado: base mais larga)
+        _e.addScaledVector(_mv, cs * S * amp); _e.y += lift * (.09 + .1 * run);            // vai/volta na direção do movimento; sobe no balanço
+        if (air) { _e.y += .3 * air + (L.right ? .06 : 0); _e.z -= .1 * air; }              // pulo: pernas recolhidas
+        legIK(L, _e, lift, r, rq);
+      }
     }
-    // mira: inclina peito e pescoço
+    // 5) tronco: inclina correndo/agachado, contra-gira com a passada, segue a mira
     const pit = clamp(st.pitch || 0, -1.2, 1.2);
-    if (pit && k.spine) { rotWorld(k.spine, _q2.setFromAxisAngle(_ax, pit * .45).clone()); if (k.neck) rotWorld(k.neck, _q2.setFromAxisAngle(_ax, pit * .3).clone()); }
-    if (far || st.armed === false) return;        // médio: sem IK dos braços (fica a animação)
-    // braços: mãos onde o boneco procedural segura a arma; mãos viradas pela orientação da arma
+    k.lean += ((run * .28 + c * .22 + amp * .05) - k.lean) * (1 - Math.exp(-dt * 8));
+    rotWorld(k.sp1, _tq.setFromAxisAngle(_ax, -k.lean * .5).clone(), true);
+    rotWorld(k.sp2, _tq.setFromAxisAngle(_up, -Math.sin(p) * .07 * amp).clone(), true);
+    rotWorld(k.spine, _tq.setFromAxisAngle(_ax, pit * .45 - k.lean * .3).clone());
+    if (k.neck) rotWorld(k.neck, _tq.setFromAxisAngle(_ax, pit * .3 + k.lean * .6).clone());
+    if (st.armed === false || far === 2) {   // sem arma (ou muito longe): braços para baixo
+      _fw.set(0, 0, -1).applyQuaternion(rq);
+      rotWorld(k.R.ua, _tq.setFromAxisAngle(_fw, 1.25).clone()); rotWorld(k.L.ua, _tq.setFromAxisAngle(_fw, -1.25).clone());
+      return;
+    }
+    // 6) braços: as duas mãos onde o boneco procedural segura a arma; mãos viradas pela arma
     k.R.sh.updateMatrixWorld(true); k.L.sh.updateMatrixWorld(true);
     armIK(k.R, k.R.wr.getWorldPosition(_w), k.R.el.getWorldPosition(_pl));
     armIK(k.L, k.L.wr.getWorldPosition(_w), k.L.el.getWorldPosition(_pl));
@@ -256,7 +284,7 @@
       // como em todo FPS, os braços da câmera são maiores (x1,5) e os ombros ficam logo abaixo/à frente do olho,
       // senão a mão da frente não alcança o guarda-mão
       sk.scale.setScalar(1.65); sk.position.set(.04, -.27 - 1.45 * 1.65, -.24); sk.rotation.y = Math.PI; cam.add(sk);
-      curlFingers(body, .55);   // 1ª pessoa: dedos menos fechados (mão aberta sob o guarda-mão)
+      curlFingers(body, 1);   // 1ª pessoa: dedos menos fechados (mão aberta sob o guarda-mão)
       if (!cam.parent) scene.add(cam);
     }
     fp.sk.visible = true; fp.sk.updateMatrixWorld(true);
