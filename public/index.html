@@ -458,6 +458,12 @@ body.homeOn #start{display:none!important}
 .hp .pk .cn{width:34px;height:34px}.hp .pk b{font:900 22px Impact,'Arial Black',sans-serif;color:#ffd84a;letter-spacing:.02em}
 .hp .pk small{font-size:11px;color:#a7ff45;font-weight:800;min-height:14px}
 .hp .pk em{font-style:normal;margin-top:4px;width:100%;padding:8px 0;border-radius:9px;background:linear-gradient(#b8ff45,#86d92c);color:#071003;font-weight:900;font-size:15px}
+.hp .sks{display:flex;gap:12px;align-items:center;padding:10px;border-radius:14px;border:1px solid #3d8bff66;background:linear-gradient(120deg,#0a1222,#060a12)}
+.hp .sks img{width:46%;max-width:240px;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#000}
+.hp .sks div{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}.hp .sks b{font:900 16px Impact,'Arial Black',sans-serif;color:#fff;letter-spacing:.03em}
+.hp .sks small{font-size:10px;font-weight:800;letter-spacing:.15em;color:#6fb0ff}.hp .sks .pr{display:flex;align-items:center;gap:6px;font-weight:900;color:#ffd84a;font-size:18px}.hp .sks .pr .cn{width:22px;height:22px}
+.hp .sks button{padding:9px 0;border-radius:9px;border:0;background:linear-gradient(#5aa2ff,#1f6fff);color:#fff;font-weight:900;font-size:14px;cursor:pointer;touch-action:manipulation}
+.hp .sks button.eq{background:#1c2a3f;color:#9fd2ff}.hp .gr button.lk{opacity:.75}
 .hp .pk .tg{position:absolute;top:-8px;right:8px;padding:2px 8px;border-radius:99px;background:#ff4d3d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.05em}
 #home .lgn{height:calc(var(--u)*6);padding:0 calc(var(--u)*2.2);border:1.5px solid var(--g);border-radius:calc(var(--u)*1);background:linear-gradient(#b8ff45,#86d92c);color:#071003;font:900 calc(var(--u)*2) Impact,'Arial Black',sans-serif;letter-spacing:.06em;cursor:pointer}
 #home .av img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
@@ -522,7 +528,7 @@ body.homeOn #start{display:none!important}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button></nav><div class="tp"><button class="lgn" id="hmLogin">ENTRAR</button><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="co" id="hmCoins"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><b id="hmCoinN">0</b><i>+</i></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v34</small></div></div><div id="homeToast"></div>
+<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button></nav><div class="tp"><button class="lgn" id="hmLogin">ENTRAR</button><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="co" id="hmCoins"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><b id="hmCoinN">0</b><i>+</i></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v35</small></div></div><div id="homeToast"></div>
 <div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR OFFLINE</h2><button class="x" data-close>×</button></div>
   <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
   <div class="lb">MAPA</div><div class="rw"><button class="o" data-map="favela">FAVELA<small>Setor 04 · labirinto</small></button><button class="o" data-map="colegio">COLÉGIO CENTRAL<small>Prédios · pátio · ginásio</small></button></div>
@@ -549,9 +555,10 @@ body.homeOn #start{display:none!important}
   <div class="rw" style="margin-top:12px"><button class="o go" id="lgGo">ENTRAR</button></div>
   <div class="rw lk"><button id="lgSwap">Não tem conta? <b>Criar conta</b></button><button id="lgForgot">Esqueci a senha</button></div>
   <div class="mg" id="lgMsg"></div></div></div>
-<div class="hp" id="hpShop"><div class="cd"><div class="hd"><h2>LOJA DE MOEDAS</h2><button class="x" data-close>×</button></div>
+<div class="hp" id="hpShop"><div class="cd"><div class="hd"><h2>LOJA</h2><button class="x" data-close>×</button></div>
   <div class="bal"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><span>Seu saldo</span><b id="shCoinN">0</b></div>
-  <div class="pk" id="shPacks"></div>
+  <div class="lb">SKIN EXCLUSIVA</div><div class="sks"><img src="assets/menu/ak_tempestade.webp" alt="AK-47 Tempestade Ártica" loading="lazy"><div><small>AK-47 · SKIN EXCLUSIVA</small><b>TEMPESTADE ÁRTICA</b><span class="pr" id="shSkP"></span><button id="shSkB">COMPRAR</button></div></div>
+  <div class="lb">PACOTES DE MOEDAS</div><div class="pk" id="shPacks" style="margin-top:0"></div>
   <div class="mg" id="shMsg"></div></div></div>
 <div class="hp" id="hpChar"><div class="cd"><div class="hd"><h2>PERSONAGEM</h2><button class="x" data-close>×</button></div>
   <div class="lb">NICK</div><div class="rw"><input id="hpNick2" maxlength="14" placeholder="SEU NICK" autocomplete="off" spellcheck="false"><button class="o" id="hpNick2Ok" style="flex:none">SALVAR</button></div>
@@ -598,7 +605,7 @@ body.homeOn #start{display:none!important}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
-<script src="maps/colegio.js?v=34"></script>
+<script src="maps/colegio.js?v=35"></script>
 <script>
 /* Assets 3D para Three.js
    Uso: const player = buildPlayer(THREE, { skin:'#b87950', shirt:'#283d35', shorts:'#202a26' });
@@ -1198,7 +1205,7 @@ body.homeOn #start{display:none!important}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
-<script src="chars.js?v=34"></script>
+<script src="chars.js?v=35"></script>
 <script>
 /* ===== ASSET: buildFavela(THREE, scene, seed) =====
    Retorna { group, colliders:[[minX,minY,minZ,maxX,maxY,maxZ]], heightAt(x,z), windows, lamps }.
@@ -1922,13 +1929,57 @@ const WEAPON_SKINS = [
   { id: 'padrao', name: 'Padrão' }, { id: 'ouro', name: 'Ouro', c: 0xffc933, k: .85, m: .35, r: .3 },
   { id: 'camo', name: 'Camuflado', c: 0x5d7a3a, k: .8 }, { id: 'deserto', name: 'Deserto', c: 0xc9a46c, k: .8 },
   { id: 'artico', name: 'Ártico', c: 0xe9f0f4, k: .8 }, { id: 'favela', name: 'Vermelho Favela', c: 0xc0392b, k: .8 },
-  { id: 'neon', name: 'Neon', c: 0xa7ff45, k: .8, e: 0x2a5a0a }
+  { id: 'neon', name: 'Neon', c: 0xa7ff45, k: .8, e: 0x2a5a0a },
+  // skin exclusiva (Loja, 350 moedas): só na AK-47; as outras armas ficam no padrão
+  { id: 'tempestade', name: 'AK-47 Tempestade Ártica', only: 'weapons/ak47_v2.glb', price: 350, storm: 1, sw: 'linear-gradient(115deg,#05070c 20%,#1f6fff 35%,#0a0d14 50%,#c9d2dc 62%,#0a0d14 70%,#3d8bff 85%)' }
 ];
-let weaponSkin = 'padrao'; try { weaponSkin = localStorage.getItem('fv_wskin') || 'padrao'; } catch (e) {}
+const WS_OWN = (() => { try { return JSON.parse(localStorage.getItem('fv_wsown') || '[]'); } catch (e) { return []; } })();
+const wsOwns = id => { const w = WEAPON_SKINS.find(x => x.id === id); return !!w && (!w.price || WS_OWN.indexOf(id) >= 0); };
+let weaponSkin = 'padrao'; try { weaponSkin = localStorage.getItem('fv_wskin') || 'padrao'; } catch (e) {} if (!wsOwns(weaponSkin)) weaponSkin = 'padrao';
+/* Tempestade Ártica: estampa desenhada aqui (preto + raios azuis + lascas prata) e projetada de lado no corpo da AK,
+   contínua do cano à coronha; os raios brilham (emissivo). A textura original continua dando o relevo. */
+let stormTex = null;
+function stormTexture() {
+  if (stormTex) return stormTex;
+  const W = 1024, H = 512, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  let sd = 7; const R = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  x.fillStyle = '#0a0e17'; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 900; i++) { x.fillStyle = 'rgba(' + (R() < .5 ? '30,40,60' : '0,0,0') + ',' + (.15 + R() * .3) + ')'; x.fillRect(R() * W, R() * H, 1 + R() * 3, 1 + R() * 2); }
+  const bolt = (px, py, ang, len, w, depth) => {
+    const pts = [[px, py]]; for (let i = 0; i < len; i++) { ang += (R() - .5) * 1.1; px += Math.cos(ang) * 14; py += Math.sin(ang) * 14; pts.push([px, py]);
+      if (depth < 2 && R() < .16) bolt(px, py, ang + (R() < .5 ? -1 : 1) * (.5 + R() * .7), len * .45 | 0, w * .55, depth + 1); }
+    const line = (col, lw, blur) => { x.strokeStyle = col; x.lineWidth = lw; x.shadowColor = '#1f6fff'; x.shadowBlur = blur; x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.stroke(); };
+    line('rgba(20,70,200,.35)', w * 2.2, 8); line('#1d63f0', w, 4); line('#a8d6ff', Math.max(1, w * .28), 2); x.shadowBlur = 0; };
+  x.lineCap = x.lineJoin = 'round';
+  for (let i = 0; i < 11; i++) bolt(R() * W, R() * H, (R() - .5) * .9 + (R() < .5 ? 0 : Math.PI), 14 + R() * 24 | 0, 1.6 + R() * 2.4, 0);
+  for (let i = 0; i < 5; i++) bolt(740 + R() * 260, 140 + R() * 260, (R() - .5) * 1.2, 12 + R() * 14 | 0, 2 + R() * 2.5, 0);   // coronha
+  // lascas prata (asas/garras) — mais na coronha (lado +X do modelo = direita da textura) e no corpo
+  const shard = (cx, cy, s, a) => { const g = x.createLinearGradient(cx - s, cy - s, cx + s, cy + s); g.addColorStop(0, '#f1f4f7'); g.addColorStop(1, '#7d8896');
+    x.fillStyle = g; x.beginPath(); x.moveTo(cx, cy); const n = 4 + (R() * 3 | 0);
+    for (let i = 0; i <= n; i++) { const t = i / n, r = s * (i % 2 ? .45 : 1); x.lineTo(cx + Math.cos(a + t * .9) * r * 2.2, cy + Math.sin(a + t * .9) * r); }
+    x.closePath(); x.fill(); };
+  for (let i = 0; i < 5; i++) shard(800 + R() * 150, 200 + R() * 200, 40 + R() * 30, -.55 + R() * .4);
+  for (let i = 0; i < 9; i++) shard(300 + R() * 380, 120 + R() * 300, 12 + R() * 18, -.5 + R() * .6);
+  stormTex = new THREE.CanvasTexture(c); stormTex.wrapS = stormTex.wrapT = THREE.RepeatWrapping; stormTex.anisotropy = window.FAVELA_LOW ? 1 : 4;
+  return stormTex;
+}
+function stormify(m) {
+  if (m.userData.uStorm) return m.userData.uStorm;
+  const u = m.userData.uStorm = { value: 0 }, tex = { value: stormTexture() };
+  m.onBeforeCompile = sh => { sh.uniforms.uStorm = u; sh.uniforms.uStormTex = tex;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vSP;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvSP = position;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uStorm; uniform sampler2D uStormTex; varying vec3 vSP;')
+      .replace('#include <map_fragment>', '#include <map_fragment>\nvec3 stC = vec3(0.);\nif (uStorm > .5) { stC = pow(texture2D(uStormTex, vec2((vSP.x + .72) / 1.74, vSP.z / .87 + .2)).rgb, vec3(2.2));\n  float lum = dot(diffuseColor.rgb, vec3(.3, .59, .11)); diffuseColor.rgb = stC * clamp(.75 + lum, .75, 1.15); }')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\nif (uStorm > .5) { float gl = clamp((stC.b - stC.r) * 2. - .15, 0., 1.); totalEmissiveRadiance += vec3(.05, .25, 1.) * gl * .45; }'); };
+  m.customProgramCacheKey = () => 'storm'; m.needsUpdate = true;
+  return u;
+}
 function paintWeapon(model) {
-  const sk = WEAPON_SKINS.find(x => x.id === weaponSkin) || WEAPON_SKINS[0], seen = new Set();
+  let sk = WEAPON_SKINS.find(x => x.id === weaponSkin) || WEAPON_SKINS[0]; const seen = new Set(), file = model.userData.file;
+  if (sk.only && sk.only !== file) sk = WEAPON_SKINS[0];
   model.traverse(o => { if (!o.isMesh || o.name === 'm4Fill') return; (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
     if (!m || seen.has(m) || !m.color || m.transparent) return; seen.add(m); const u = m.userData;
+    if (file === 'weapons/ak47_v2.glb') stormify(m).value = sk.storm ? 1 : 0;
     if (!u.c0) { u.c0 = m.color.getHex(); u.m0 = m.metalness; u.r0 = m.roughness; u.e0 = m.emissive ? m.emissive.getHex() : 0; u.map0 = m.map || null; }
     const map = sk.c ? null : u.map0; if (m.map !== map) { m.map = map; m.needsUpdate = true; }   // textura escura escondia a cor da skin
     m.color.setHex(sk.c ? new THREE.Color(sk.c).lerp(new THREE.Color(0x15171a), 1 - sk.k).getHex() : u.c0);
@@ -1936,8 +1987,10 @@ function paintWeapon(model) {
     if (m.emissive) m.emissive.setHex(sk.e || u.e0);
   }); });
 }
-window.FavelaWeaponSkin = { list: WEAPON_SKINS, get: () => weaponSkin, cache: weaponAssetCache,
-  set(id) { weaponSkin = id; try { localStorage.setItem('fv_wskin', id); } catch (e) {} for (const f in weaponAssetCache) paintWeapon(weaponAssetCache[f]); } };
+window.FavelaWeaponSkin = { list: WEAPON_SKINS, get: () => weaponSkin, cache: weaponAssetCache, owns: wsOwns,
+  buy(id) { const w = WEAPON_SKINS.find(x => x.id === id); if (!w || wsOwns(id)) return 'ok'; const c = window.FavelaCoins ? FavelaCoins.get() : 0;
+    if (c < w.price) return 'falta'; try { localStorage.setItem('fv_coins', String(c - w.price)); WS_OWN.push(id); localStorage.setItem('fv_wsown', JSON.stringify(WS_OWN)); } catch (e) { return 'erro'; } return 'ok'; },
+  set(id) { if (!wsOwns(id)) return; weaponSkin = id; try { localStorage.setItem('fv_wskin', id); } catch (e) {} for (const f in weaponAssetCache) paintWeapon(weaponAssetCache[f]); } };
 function loadWeaponAsset(type, gunGroup) {
   const file = weaponAssetFiles[type];
   if (!file || !window.THREE || !THREE.GLTFLoader) return;
@@ -1962,7 +2015,7 @@ function loadWeaponAsset(type, gunGroup) {
     model.traverse(o => {
       if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; }
     });
-    weaponAssetCache[file] = model; paintWeapon(model);
+    model.userData.file = file; weaponAssetCache[file] = model; paintWeapon(model);
     for (const target of window.__favelaWeaponLoading[file] || []) mountWeaponAsset(model, target);
     delete window.__favelaWeaponLoading[file]; flushTpGuns(file);
   }, undefined, err => {
@@ -3208,10 +3261,21 @@ frame();
     const col = selMap === 'colegio'; txt('.hp .skB', bad ? sk : (col ? 'Renasce no colégio' : 'Renasce na favela')); txt('.hp .skP', bad ? (col ? 'Renasce na portaria' : 'Renasce na quadra') : sk);
     txt('.hp .mg', $('lobbyMsg').textContent);
     const W = window.FavelaWeaponSkin; if (W) all('#hpWs button').forEach(b => b.classList.toggle('on', b.dataset.ws === W.get()));
+    if (typeof paintSkinShop === 'function') { paintSkinShop(); paintCoins(); }
   }
   if (window.FavelaWeaponSkin) for (const w of window.FavelaWeaponSkin.list) { const b = document.createElement('button'); b.className = 'o'; b.dataset.ws = w.id;
-    b.innerHTML = '<i style="background:' + (w.c ? '#' + w.c.toString(16).padStart(6, '0') : 'linear-gradient(90deg,#222,#555)') + '"></i>' + w.name.toUpperCase();
-    b.onclick = () => { window.FavelaWeaponSkin.set(w.id); sync(); toast('Skin de arma: ' + w.name); }; $('hpWs').appendChild(b); }
+    b.innerHTML = '<i style="background:' + (w.sw || (w.c ? '#' + w.c.toString(16).padStart(6, '0') : 'linear-gradient(90deg,#222,#555)')) + '"></i>' + w.name.toUpperCase() + (w.price ? '<small class="wsL"></small>' : '');
+    b.onclick = () => { const W = window.FavelaWeaponSkin; if (!W.owns(w.id)) { show('hpShop')(); return; } W.set(w.id); sync(); toast('Skin de arma: ' + w.name); }; $('hpWs').appendChild(b); }
+  /* skin exclusiva na loja: compra com moedas, depois vira "equipar" */
+  function paintSkinShop() { const W = window.FavelaWeaponSkin; if (!W) return; const own = W.owns('tempestade'), on = W.get() === 'tempestade';
+    $('shSkP').innerHTML = own ? 'COMPRADA' : coinSvg + '350'; const b = $('shSkB'); b.textContent = !own ? 'COMPRAR' : on ? 'EQUIPADA' : 'EQUIPAR'; b.classList.toggle('eq', own && on);
+    all('#hpWs button').forEach(x => { const l = x.querySelector('.wsL'); if (l) l.textContent = W.owns(x.dataset.ws) ? '' : '🔒 350 moedas'; x.classList.toggle('lk', !W.owns(x.dataset.ws)); }); }
+  $('shSkB').onclick = () => { const W = window.FavelaWeaponSkin; if (!W) return;
+    if (!W.owns('tempestade')) { const r = W.buy('tempestade');
+      if (r === 'falta') { $('shMsg').textContent = 'Moedas insuficientes: a skin custa 350 e você tem ' + coins.get().toLocaleString('pt-BR') + '.'; return; }
+      if (r !== 'ok') { $('shMsg').textContent = 'Não deu para comprar agora. Tente de novo.'; return; }
+      toast('Comprou: AK-47 Tempestade Ártica'); }
+    W.set('tempestade'); $('shMsg').textContent = 'AK-47 Tempestade Ártica equipada.'; paintCoins(); sync(); };
   new MutationObserver(sync).observe($('lobbyMsg'), { childList: true, characterData: true, subtree: true });
   addEventListener('favela-xp', () => setTimeout(sync, 0));
   const saveNick = v => { $('playerName').value = v.trim(); $('sSaveNick').click(); sync(); };
