@@ -65,7 +65,7 @@ function serve(req, res) {
     else headers['Cache-Control'] = 'public, max-age=604800';   // armas .glb, imagens: celular não baixa de novo a cada partida
     // gzip para texto (index.html ~300KB vira ~70KB): carrega bem mais rápido em 3G/4G fraco
     if (/^(text\/|application\/(json|manifest))/.test(headers['Content-Type']) && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
-      const key = file + ':' + data.length; let gz = GZ.get(key);
+      const key = file + ':' + require('crypto').createHash('sha1').update(data).digest('base64'); let gz = GZ.get(key);   // pelo conteúdo: arquivo editado com o mesmo tamanho não serve versão velha
       if (!gz) { gz = zlib.gzipSync(data, { level: 9 }); GZ.set(key, gz); }
       headers['Content-Encoding'] = 'gzip'; headers['Vary'] = 'Accept-Encoding'; data = gz;
     }

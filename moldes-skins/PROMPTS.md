@@ -15,6 +15,9 @@ O arquivo `<arma>_guia.png` é só para você entender o molde. Cada cor é uma 
 - **Linhas do molde, números ou texto na imagem:** viram parte da pintura.
 - **Sombras, brilho e perspectiva** (imagem com "cara de foto 3D"): o jogo já faz a luz. A textura tem que ser plana.
 - **Fundo colorido entre as peças:** não aparece, mas atrapalha. Peça fundo preto.
+- **Painel de apresentação ou arma de exemplo junto:** a IA encolhe ou achata o molde para caber, e as peças saem do lugar. A resposta tem que ser **só a textura**, quadrada.
+
+Se a IA mexer um pouco nas peças, eu consigo realinhar automaticamente, peça por peça (foi o que fiz com o Dragão de Jade). Mas quanto mais fiel ao molde, mais perfeito fica.
 
 ---
 
@@ -27,6 +30,7 @@ Pinte uma skin com o tema: [TEMA].
 
 Regras obrigatórias:
 - Mesmo tamanho e enquadramento da imagem anexada (quadrada, 2048x2048). NÃO mova, gire, redimensione, corte, junte ou crie peças.
+- Entregue SOMENTE a textura, ocupando a imagem inteira: sem arma de exemplo, sem painel de apresentação, sem textos ou molduras extras, sem achatar o molde.
 - Pinte SOMENTE dentro das peças cinza, avançando 6 pixels além da borda de cada peça. Fora das peças: preto liso.
 - Textura plana (albedo): sem sombras, sem reflexos, sem perspectiva, sem render 3D, sem fundo de cenário.
 - Sem texto, sem números, sem marca d'água e sem as linhas de contorno do molde.
@@ -51,6 +55,7 @@ Pinte uma skin com o tema: [TEMA].
 
 Regras obrigatórias:
 - Mesmo tamanho e enquadramento da imagem anexada (quadrada, 2048x2048). NÃO mova, gire, redimensione, corte, junte ou crie peças.
+- Entregue SOMENTE a textura, ocupando a imagem inteira: sem arma de exemplo, sem painel de apresentação, sem textos ou molduras extras, sem achatar o molde.
 - Pinte SOMENTE dentro das peças cinza, avançando 6 pixels além da borda de cada peça. Fora das peças: preto liso.
 - Textura plana (albedo): sem sombras, sem reflexos, sem perspectiva, sem render 3D.
 - Sem texto, sem números, sem marca d'água e sem as linhas de contorno do molde.
@@ -74,6 +79,7 @@ Pinte uma skin com o tema: [TEMA].
 
 Regras obrigatórias:
 - Mesmo tamanho e enquadramento da imagem anexada (quadrada, 2048x2048). NÃO mova, gire, redimensione, corte, junte ou crie peças.
+- Entregue SOMENTE a textura, ocupando a imagem inteira: sem arma de exemplo, sem painel de apresentação, sem textos ou molduras extras, sem achatar o molde.
 - Pinte SOMENTE dentro das peças cinza, avançando 6 pixels além da borda de cada peça. Fora das peças: preto liso.
 - Textura plana (albedo): sem sombras, sem reflexos, sem perspectiva, sem render 3D.
 - Sem texto, sem números, sem marca d'água e sem as linhas de contorno do molde.
@@ -96,6 +102,7 @@ Pinte uma skin com o tema: [TEMA].
 
 Regras obrigatórias:
 - Mesmo tamanho e enquadramento da imagem anexada (quadrada, 2048x2048). NÃO mova, gire, redimensione, corte, junte ou crie peças.
+- Entregue SOMENTE a textura, ocupando a imagem inteira: sem arma de exemplo, sem painel de apresentação, sem textos ou molduras extras, sem achatar o molde.
 - Pinte SOMENTE dentro das peças cinza, avançando 6 pixels além da borda de cada peça. Fora das peças: preto liso.
 - Textura plana (albedo): sem sombras, sem reflexos, sem perspectiva, sem render 3D.
 - Sem texto, sem números, sem marca d'água e sem as linhas de contorno do molde.
@@ -117,6 +124,7 @@ Pinte uma skin com o tema: [TEMA].
 
 Regras obrigatórias:
 - Mesmo tamanho e enquadramento da imagem anexada (quadrada, 2048x2048). NÃO mova, gire, redimensione, corte, junte ou crie peças.
+- Entregue SOMENTE a textura, ocupando a imagem inteira: sem arma de exemplo, sem painel de apresentação, sem textos ou molduras extras, sem achatar o molde.
 - Pinte SOMENTE dentro das peças cinza, avançando 6 pixels além da borda de cada peça. Fora das peças: preto liso.
 - Textura plana (albedo): sem sombras, sem reflexos, sem perspectiva, sem render 3D.
 - Sem texto, sem números, sem marca d'água e sem as linhas de contorno do molde.
@@ -140,6 +148,7 @@ Pinte uma skin com o tema: [TEMA].
 
 Regras obrigatórias:
 - Mesmo tamanho e enquadramento da imagem anexada (quadrada, 2048x2048). NÃO mova, gire, redimensione, corte, junte ou crie peças.
+- Entregue SOMENTE a textura, ocupando a imagem inteira: sem arma de exemplo, sem painel de apresentação, sem textos ou molduras extras, sem achatar o molde.
 - Pinte SOMENTE dentro das formas cinza, avançando 6 pixels além da borda. Fora delas: preto liso.
 - Textura plana (albedo): sem sombras, sem reflexos, sem perspectiva, sem render 3D.
 - Sem texto, sem números, sem marca d'água e sem as linhas de contorno do molde.
