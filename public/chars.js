@@ -45,7 +45,7 @@
     scene.traverse(o => { if (o.isSkinnedMesh && o !== body) { if (/eye/i.test(o.material.name)) eyes = o; else brows = o; } });
     body.geometry.computeBoundingBox();
     const map = body.material.map; map.anisotropy = low() ? 1 : 4;
-    return { scene, body: body.name, eyes: eyes && eyes.name, brows: brows && brows.name, map, h: body.geometry.boundingBox.max.y };
+    return { scene, body: body.name, geo: body.geometry, eyes: eyes && eyes.name, brows: brows && brows.name, map, h: body.geometry.boundingBox.max.y };
   }
 
   /* ---------- roupa: shader que pinta por região do corpo na pose de origem (T) ----------
@@ -55,12 +55,12 @@
   const matCache = {};
   const linC = c => new THREE.Color(c).convertSRGBToLinear();
   function outfitMat(kind, o, onlyArms) {
-    const police = !!(o.police || o.helmet), key = [kind, o.skin, o.shirt, o.shorts, o.gear, o.sleeveless, police, !!onlyArms].join('|');
+    const police = !!(o.police || o.helmet), key = [kind, o.skin, o.shirt, o.shorts, o.gear, o.shoes, o.sleeveless, police, !!onlyArms].join('|');
     if (matCache[key]) return matCache[key];
     const t = tpl[kind], sc = t.h / 1.81, sk = new THREE.Color(o.skin || '#b07850');
     const U = {
       uShirt: { value: linC(o.shirt || '#34443b') }, uPants: { value: linC(o.shorts || '#202a26') },
-      uShoes: { value: linC(police ? '#121315' : '#e9e7e0') }, uGlove: { value: linC(o.gear || '#1c1f24') },
+      uShoes: { value: linC(o.shoes || (police ? '#16181c' : '#ecebe6')) }, uGlove: { value: linC(o.gear || '#1c1f24') },
       uSkin: { value: new THREE.Vector3(Math.min(1.25, sk.r / .69), Math.min(1.25, sk.g / .47), Math.min(1.25, sk.b / .33)) },   // tom médio da pele da textura ≈ (.69,.47,.33)
       uCut: { value: new THREE.Vector4(o.sleeveless ? .19 : police ? .67 : .37, police ? .1 : .52, police ? .67 : 9, sc) },   // manga até x, calça até y, luva a partir de x, escala
       uArms: { value: onlyArms ? 1 : 0 }   // 1ª pessoa: desenha só os braços
@@ -112,6 +112,41 @@
       const sp = body.skeleton.bones.find(b => b.name === 'spine_03'); if (sp) { const h2 = new THREE.Group(); h2.matrixAutoUpdate = false; h2.matrix.copy(body.skeleton.boneInverses[body.skeleton.bones.indexOf(sp)]); sp.add(h2); h2.add(ch); } }
   }
 
+  /* ---------- tênis ----------
+     O modelo tem pé descalço (com dedos). Cada pé ganha um tênis preso ao osso do pé (no espaço do bind pose, como o cabelo):
+     forma arredondada que cobre os dedos, sola achatada e clara, faixa lateral na cor da camisa. Cores vão nos vértices,
+     então todos os tênis dividem um único material. */
+  const shoeGeoC = {}, shoeMat = new THREE.MeshLambertMaterial({ vertexColors: true });
+  function shoeGeo(kind, right, up, sole, acc) {
+    const key = [kind, right, up, sole, acc].join('|'); if (shoeGeoC[key]) return shoeGeoC[key];
+    const P = tpl[kind].geo.attributes.position, mn = new V3(1e9, 1e9, 1e9), mx = new V3(-1e9, -1e9, -1e9), v = new V3();
+    for (let i = 0; i < P.count; i++) { v.fromBufferAttribute(P, i); if (v.y > .1 || (v.x < 0) !== right) continue; mn.min(v); mx.max(v); }   // pé direito do modelo: x < 0 (olha para +Z)
+    const c = mn.clone().add(mx).multiplyScalar(.5), h = mx.clone().sub(mn).multiplyScalar(.5);
+    // caixa subdividida moldada: calcanhar alto (gola), bico baixo e arredondado, sola reta um pouco mais larga
+    const g = new THREE.BoxGeometry(1, 1, 1, 6, 5, 12), A = g.attributes.position, col = new Float32Array(A.count * 3);
+    const cu = linC(up), cs = linC(sole), ca = linC(acc), ct = linC('#2a2a2a'), y0 = mn.y - .006, L = h.z * 1.16, W = h.x * 1.3;
+    for (let i = 0; i < A.count; i++) {
+      v.fromBufferAttribute(A, i);
+      const u = v.z * 2, w = v.x * 2, t = v.y + .5;
+      let top = u < -.25 ? .118 : .118 - (u + .25) / 1.25 * .06; if (u > .6) top *= 1 - .4 * ((u - .6) / .4) ** 2;
+      let wid = W * (u > .5 ? Math.sqrt(Math.max(.12, 1 - ((u - .5) / .5) ** 2)) : u < -.7 ? Math.sqrt(Math.max(.3, 1 - ((u + .7) / .3) ** 2)) : 1);
+      wid *= t < .24 ? 1.06 : 1 - .28 * t * t;
+      A.setXYZ(i, c.x + w * wid, y0 + t * top, c.z + .012 + u * L * (t > .7 ? 1 - .1 * (t - .7) / .3 : 1));
+      const k = t < .1 ? ct : t < .24 ? cs : ((Math.abs(w) > .9 && t > .32 && t < .6 && u > -.6 && u < .4) || (u < -.9 && t > .65)) ? ca : cu;
+      col[i * 3] = k.r; col[i * 3 + 1] = k.g; col[i * 3 + 2] = k.b;
+    }
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.computeVertexNormals(); g.computeBoundingSphere();
+    return (shoeGeoC[key] = g);
+  }
+  function putShoes(body, kind, o) {
+    const police = !!(o.police || o.helmet), up = o.shoes || (police ? '#16181c' : '#ecebe6'), sole = police ? '#2c2c2c' : '#fbfbf8', acc = police ? '#2c2c2c' : (o.shirt || '#2d5d9e');
+    for (const [n, right] of [['foot_l', false], ['foot_r', true]]) {
+      const i = body.skeleton.bones.findIndex(b => b.name === n); if (i < 0) continue;
+      const hold = new THREE.Group(); hold.matrixAutoUpdate = false; hold.matrix.copy(body.skeleton.boneInverses[i]); body.skeleton.bones[i].add(hold);
+      const m = new THREE.Mesh(shoeGeo(kind, right, up, sole, acc), shoeMat); m.castShadow = false; hold.add(m);
+    }
+  }
+
   /* ---------- troca do boneco procedural pelo personagem ---------- */
   function upgrade(r) {
     const o = r.userData.opt || {}, kind = o.female ? 'female' : 'male';
@@ -126,7 +161,7 @@
       const g = m.geometry; if (!g.userData.bigBS) { g.computeBoundingSphere(); g.boundingSphere.radius = Math.max(g.boundingSphere.radius * 1.4, .9 * t.h); g.userData.bigBS = 1; }
       if (m.name === t.body) { body = m; m.material = outfitMat(kind, o); m.castShadow = !low(); }
       else { face.push(m); m.castShadow = false; if (m.name === t.brows) m.material = hairMat(o.hair || '#2a1d14', true); } });
-    dressHead(sk, body, kind, o);
+    dressHead(sk, body, kind, o); putShoes(body, kind, o);
     // remove as malhas do boneco procedural (ficam só os grupos/articulações que mandam no esqueleto,
     // as hitboxes e o soquete da arma): menos objetos para atualizar e desenhar a cada quadro
     const mount = r.userData.hand, drop = [];
@@ -278,13 +313,13 @@
     opt = opt || {}; const kind = opt.female ? 'female' : 'male';
     const ok = show && gun && gun.userData.fpR && tpl[kind];
     if (!ok) { if (fp) fp.sk.visible = false; return false; }
-    const key = kind + JSON.stringify(opt);
+    const key = fp && fp.opt === opt ? fp.key : kind + JSON.stringify(opt);   // mesma skin: não serializa a cada quadro (lixo de memória)
     if (!fp || fp.key !== key) {
       if (fp) fp.sk.parent && fp.sk.parent.remove(fp.sk);
       const sk = THREE.SkeletonUtils.clone(tpl[kind].scene); let body = null;
       sk.traverse(m => { if (m.isSkinnedMesh) { m.frustumCulled = false; if (m.name === tpl[kind].body) { body = m; m.material = outfitMat(kind, opt, true); } else m.visible = false; } });
       const B = n => body.skeleton.bones.find(b => b.name === n);
-      fp = { key, sk, R: { ua: B('upperarm_r'), la: B('lowerarm_r'), hd: B('hand_r'), right: true }, L: { ua: B('upperarm_l'), la: B('lowerarm_l'), hd: B('hand_l'), right: false } };
+      fp = { key, opt, sk, R: { ua: B('upperarm_r'), la: B('lowerarm_r'), hd: B('hand_r'), right: true }, L: { ua: B('upperarm_l'), la: B('lowerarm_l'), hd: B('hand_l'), right: false } };
       // como em todo FPS, os braços da câmera são um pouco maiores (x1,3) e os ombros ficam logo abaixo/à frente do olho,
       // senão a mão da frente não alcança o guarda-mão; as mãos voltam a ~1,1x (proporção com a arma, que é 15% maior)
       sk.scale.setScalar(1.3); sk.rotation.y = Math.PI; cam.add(sk);

@@ -33,6 +33,8 @@ const WEAPONS = {
   barrett: { dmg: 100, rate: 1200, pellets: 1, range: 350 }
 };
 const HEAD_MULT = 2;
+const NADES = 2;                 // granadas por vida (igual ao jogo)
+const NADE_RANGE = 35;           // distância máxima do arremesso
 /* XP (o servidor só concede XP por eventos reais de partida contra outros jogadores) */
 const XP_KILL = 100, XP_HEAD = 50, XP_PLAY = 100;
 const XP_STREAK = { 3: [50, 'SEQUÊNCIA x3'], 5: [100, 'SEQUÊNCIA x5'], 7: [150, 'SEQUÊNCIA x7'], 10: [250, 'SEQUÊNCIA x10'] };
@@ -47,11 +49,14 @@ const MIME = {
 
 /* ---------- servidor HTTP (entrega o jogo) ---------- */
 const GZ = new Map();   // cache do gzip em memória (arquivo:tamanho -> buffer)
-const server = http.createServer((req, res) => {
-  const url = decodeURIComponent((req.url || '/').split('?')[0]);
+const server = http.createServer((req, res) => { try { serve(req, res); } catch (e) { try { res.writeHead(400); res.end(); } catch (x) {} } });
+function serve(req, res) {
+  // URL malformada (ex.: "/%" ou com caractere nulo) derrubava o processo inteiro: agora só responde 400
+  let url; try { url = decodeURIComponent((req.url || '/').split('?')[0]); } catch (e) { res.writeHead(400); res.end(); return; }
+  if (url.includes('\0')) { res.writeHead(400); res.end(); return; }
   if (url === '/health') { res.writeHead(200, { 'Content-Type': 'text/plain' }); res.end('ok'); return; }
   let file = path.normalize(path.join(PUBLIC, url === '/' ? 'index.html' : url));
-  if (!file.startsWith(PUBLIC)) { res.writeHead(403); res.end('forbidden'); return; }
+  if (file !== PUBLIC && !file.startsWith(PUBLIC + path.sep)) { res.writeHead(403); res.end('forbidden'); return; }
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('nao encontrado'); return; }
     const ext = path.extname(file).toLowerCase();
@@ -66,14 +71,15 @@ const server = http.createServer((req, res) => {
     }
     res.writeHead(200, headers); res.end(data);
   });
-});
+}
 
 /* ---------- mapas: zona segura (sem dano) e onde a polícia renasce ---------- */
 const MAPS = {
-  favela:  { safe: z => z < -37, spawn: () => [(Math.random() - .5) * 12, -67 + Math.random() * 8] },     // quadra
-  colegio: { safe: z => z > 66,  spawn: () => [28 + Math.random() * 12, 71 + Math.random() * 7] }        // portaria
+  favela:  { safe: z => z < -36, spawn: () => [(Math.random() - .5) * 12, -67 + Math.random() * 8] },     // quadra
+  colegio: { safe: z => z > 67,  spawn: () => [28 + Math.random() * 12, 71 + Math.random() * 7] }        // portaria
 };
-const mapOf = room => MAPS[room.map] || MAPS.favela;
+const has = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);   // 'constructor'/'toString' não são mapa nem arma
+const mapOf = room => (has(MAPS, room.map) ? MAPS[room.map] : MAPS.favela);
 
 /* ---------- salas ---------- */
 const rooms = new Map();   // code -> { code, players, state, endsAt, overUntil }
@@ -83,6 +89,9 @@ const newCode = () => { for (;;) { let c = ''; for (let i = 0; i < 5; i++) c += 
 const cleanName = n => String(n || 'Jogador').replace(/[^\p{L}\p{N} _.-]/gu, '').trim().slice(0, 14) || 'Jogador';
 const cleanLv = v => Math.max(1, Math.min(100, Math.floor(+v) || 1));
 const num = (v, lim) => (typeof v === 'number' && isFinite(v) ? Math.max(-lim, Math.min(lim, v)) : 0);
+// distância de um ponto à linha do tiro [ox,oy,oz,ex,ey,ez]
+const segDist = (r, x, y, z) => { const dx = r[3] - r[0], dy = r[4] - r[1], dz = r[5] - r[2], L2 = dx * dx + dy * dy + dz * dz || 1;
+  const t = Math.max(0, Math.min(1, ((x - r[0]) * dx + (y - r[1]) * dy + (z - r[2]) * dz) / L2)); return Math.hypot(r[0] + dx * t - x, r[1] + dy * t - y, r[2] + dz * t - z); };
 const send = (ws, obj) => { if (ws.readyState === 1) ws.send(JSON.stringify(obj)); };
 const broadcast = (room, obj, except) => { const s = JSON.stringify(obj); for (const p of room.players.values()) if (p.ws !== except && p.ws.readyState === 1) p.ws.send(s); };
 
@@ -90,9 +99,10 @@ function joinRoom(ws, room, name, lv) {
   if (room.players.size >= MAX_PLAYERS) { send(ws, { t: 'error', msg: 'Sala cheia (16 jogadores)' }); return; }
   const [sx, sz] = mapOf(room).spawn();
   const p = { id: nextId++, ws, name: cleanName(name), x: sx, y: 0, z: sz, yaw: 0, pit: 0, w: 'rifle', hp: 100, alive: true, k: 0, d: 0, lv: cleanLv(lv), streak: 0, lastShot: 0, respawnAt: 0,
-             lastState: Date.now(), allow: MOVE_BURST, budget: 0, budgetAt: Date.now(), protectUntil: 0, lastDmg: 0, lastFix: 0 };
+             lastState: Date.now(), allow: MOVE_BURST, tickets: 0, ticketAt: 0, ray: null, nades: NADES, tp: 1, protectUntil: Date.now() + SPAWN_PROTECT_MS, lastDmg: 0, lastFix: 0 };
   ws.player = p; ws.room = room; room.players.set(p.id, p);
-  send(ws, { t: 'joined', id: p.id, code: room.code, name: p.name, players: room.players.size, map: room.map });
+  // posição de nascimento vai junto (antes o cliente escolhia outra e levava um "puxão" de ~14 m na 1ª atualização)
+  send(ws, { t: 'joined', id: p.id, code: room.code, name: p.name, players: room.players.size, map: room.map, x: p.x, z: p.z, tp: p.tp });
   broadcast(room, { t: 'player_join', id: p.id, name: p.name }, ws);
 }
 
@@ -114,7 +124,7 @@ function onMessage(ws, raw) {
 
   if (m.t === 'create') {
     if (ws.room) return;
-    const room = { code: newCode(), map: MAPS[m.map] ? m.map : 'favela', players: new Map(), state: 'play', endsAt: Date.now() + MATCH_SECS * 1000, overUntil: 0 }; rooms.set(room.code, room); joinRoom(ws, room, m.name, m.lv); return;
+    const room = { code: newCode(), map: has(MAPS, m.map) ? m.map : 'favela', players: new Map(), state: 'play', endsAt: Date.now() + MATCH_SECS * 1000, overUntil: 0 }; rooms.set(room.code, room); joinRoom(ws, room, m.name, m.lv); return;
   }
   if (m.t === 'join') {
     if (ws.room) return;
@@ -127,6 +137,7 @@ function onMessage(ws, raw) {
 
   if (m.t === 'state') {                                 // posição e direção do jogador
     if (!p.alive) return;
+    if (m.tp !== undefined && m.tp !== p.tp) return;      // pacote de antes do último renascer/teleporte: ignora (evita puxar de volta)
     const nx = num(m.x, 400), ny = num(m.y, 200), nz = num(m.z, 400);
     const dt = Math.min(1, Math.max(0, (now - p.lastState) / 1000)); p.lastState = now;
     p.allow = Math.min(MOVE_BURST, p.allow + dt * MAX_SPEED);     // "crédito" de deslocamento, evita falso positivo com lag
@@ -139,23 +150,28 @@ function onMessage(ws, raw) {
     const maxDy = MAX_VSPEED * Math.max(dt, .05) + 1;
     p.y = Math.abs(ny - p.y) <= maxDy ? ny : p.y + Math.sign(ny - p.y) * maxDy;
     p.yaw = num(m.yaw, 100); p.pit = num(m.pit, 3);
-    if (typeof m.w === 'string' && WEAPONS[m.w]) p.w = m.w;
+    if (has(WEAPONS, m.w)) p.w = m.w;
     return;
   }
   if (m.t === 'shot') {                                  // efeito visual do tiro (para os outros verem)
     if (!p.alive || room.state !== 'play') return;
+    if (has(WEAPONS, m.w)) p.w = m.w;                     // arma do próprio tiro (troca de arma não confunde dano/cadência)
     const W = WEAPONS[p.w] || WEAPONS.rifle;
     if (now - p.lastShot < W.rate * 0.6) return; p.lastShot = now;   // 60% da cadência real: tolera jitter de rede
-    broadcast(room, { t: 'shot', id: p.id, ox: num(m.ox, 400), oy: num(m.oy, 200), oz: num(m.oz, 400), ex: num(m.ex, 600), ey: num(m.ey, 300), ez: num(m.ez, 600) }, ws); return;
+    const ox = num(m.ox, 400), oy = num(m.oy, 200), oz = num(m.oz, 400), ex = num(m.ex, 600), ey = num(m.ey, 300), ez = num(m.ez, 600);
+    if (Math.hypot(ox - p.x, oz - p.z) > 5 || Math.abs(oy - p.y) > 5) return;   // o tiro tem que sair de perto do atirador
+    // cada tiro dá direito a acertar só nessa linha, logo em seguida (o "hit" chega na mesma conexão, depois do "shot")
+    p.tickets = W.pellets; p.ticketAt = now; p.ray = [ox, oy, oz, ex, ey, ez];
+    broadcast(room, { t: 'shot', id: p.id, ox, oy, oz, ex, ey, ez }, ws); return;
   }
   if (m.t === 'hit') {                                   // cliente diz que acertou; o servidor decide o dano
     if (!p.alive || room.state !== 'play') return;
     const target = room.players.get(m.target);
     if (!target || !target.alive || target === p) return;
     const W = WEAPONS[p.w] || WEAPONS.rifle;
-    // orçamento de acertos: cada tiro dá direito a `pellets` acertos; recarrega conforme a cadência da arma
-    p.budget = Math.min(W.pellets * 3, p.budget + (now - p.budgetAt) / W.rate * W.pellets); p.budgetAt = now;
-    if (p.budget < 1) return; p.budget -= 1;
+    // acerto só vale logo depois de um tiro aceito, e o alvo tem que estar perto da linha desse tiro (folga para o atraso da rede)
+    if (!p.ray || now - p.ticketAt > 1000 || p.tickets < 1) return; p.tickets--;
+    if (segDist(p.ray, target.x, target.y + 1, target.z) > (W.pellets > 1 ? 4.5 : 3.5)) return;
     const dist = Math.hypot(p.x - target.x, p.y - target.y, p.z - target.z);
     if (dist > W.range + 6) return;                      // além do alcance da arma
     const SF = mapOf(room).safe; if (SF(p.z) || SF(target.z)) return;             // zona segura: sem dano
@@ -177,9 +193,10 @@ function onMessage(ws, raw) {
   }
   if (m.t === 'nade') {                                  // granada: o servidor calcula quem está no raio
     if (!p.alive || room.state !== 'play') return;
-    if (now - (p.lastNade || 0) < 1500) return; p.lastNade = now;
+    if (now - (p.lastNade || 0) < 1500 || p.nades < 1) return; p.lastNade = now;
     const cx = num(m.x, 400), cy = num(m.y, 200), cz = num(m.z, 400);
-    const SF = mapOf(room).safe; if (Math.hypot(cx - p.x, cz - p.z) > 60 || SF(p.z) || SF(cz)) return;
+    const SF = mapOf(room).safe; if (Math.hypot(cx - p.x, cz - p.z) > NADE_RANGE || SF(p.z) || SF(cz)) return;
+    p.nades--;
     broadcast(room, { t: 'boom', x: cx, y: cy, z: cz }, ws);
     for (const target of room.players.values()) {
       if (target === p || !target.alive || SF(target.z) || now < target.protectUntil) continue;
@@ -222,9 +239,9 @@ function endMatch(room, now) {
 function startMatch(room, now) {
   room.state = 'play'; room.endsAt = now + MATCH_SECS * 1000;
   for (const p of room.players.values()) {
-    p.k = 0; p.d = 0; p.streak = 0; p.hp = 100; p.alive = true; p.protectUntil = now + SPAWN_PROTECT_MS; p.allow = MOVE_BURST; p.lastState = now;
+    p.k = 0; p.d = 0; p.streak = 0; p.hp = 100; p.alive = true; p.protectUntil = now + SPAWN_PROTECT_MS; p.allow = MOVE_BURST; p.lastState = now; p.nades = NADES; p.tp++;
     [p.x, p.z] = mapOf(room).spawn(); p.y = 0;
-    send(p.ws, { t: 'respawn', x: p.x, z: p.z });
+    send(p.ws, { t: 'respawn', x: p.x, z: p.z, tp: p.tp });
   }
   broadcast(room, { t: 'match_start', limit: KILL_LIMIT, secs: MATCH_SECS });
 }
@@ -238,9 +255,9 @@ setInterval(() => {
     for (const p of room.players.values()) {
       if (!p.alive) {
         if (room.state === 'play' && now >= p.respawnAt) {
-          p.alive = true; p.hp = 100; p.protectUntil = now + SPAWN_PROTECT_MS; p.allow = MOVE_BURST; p.lastState = now;
+          p.alive = true; p.hp = 100; p.protectUntil = now + SPAWN_PROTECT_MS; p.allow = MOVE_BURST; p.lastState = now; p.nades = NADES; p.tp++;
           [p.x, p.z] = mapOf(room).spawn(); p.y = 0;
-          send(p.ws, { t: 'respawn', x: p.x, z: p.z });
+          send(p.ws, { t: 'respawn', x: p.x, z: p.z, tp: p.tp });
         }
       } else if (p.hp < 100 && now - p.lastDmg > REGEN_DELAY_MS) {
         p.hp = Math.min(100, p.hp + REGEN_PER_SEC * TICK_MS / 1000);
@@ -248,7 +265,12 @@ setInterval(() => {
     }
     const list = [];
     for (const p of room.players.values()) list.push({ id: p.id, n: p.name, x: +p.x.toFixed(2), y: +p.y.toFixed(2), z: +p.z.toFixed(2), yaw: +p.yaw.toFixed(3), pit: +p.pit.toFixed(2), w: p.w, hp: Math.round(p.hp), a: p.alive ? 1 : 0, k: p.k, d: p.d, lv: p.lv });
-    broadcast(room, { t: 'snap', p: list, m: { s: room.state, tl: Math.max(0, Math.round(((room.state === 'play' ? room.endsAt : room.overUntil) - now) / 1000)), lim: KILL_LIMIT } });
+    const snap = JSON.stringify({ t: 'snap', p: list, m: { s: room.state, tl: Math.max(0, Math.round(((room.state === 'play' ? room.endsAt : room.overUntil) - now) / 1000)), lim: KILL_LIMIT } });
+    for (const p of room.players.values()) {             // conexão lenta: pula snapshots em vez de acumular memória; travada de vez: derruba
+      const ws = p.ws; if (ws.readyState !== 1) continue;
+      if (ws.bufferedAmount > 1e6) { ws.terminate(); continue; }
+      if (ws.bufferedAmount < 64e3) ws.send(snap);
+    }
   }
 }, TICK_MS);
 
@@ -258,7 +280,7 @@ wss.on('connection', ws => {
   ws.isAlive = true;
   try { ws._socket.setNoDelay(true); } catch (e) {}
   ws.on('pong', () => { ws.isAlive = true; });
-  ws.on('message', data => onMessage(ws, data.toString()));
+  ws.on('message', data => { try { onMessage(ws, data.toString()); } catch (e) { console.error('mensagem com erro:', e && e.message); } });
   ws.on('close', () => leaveRoom(ws));
   ws.on('error', () => leaveRoom(ws));
 });
@@ -267,3 +289,5 @@ setInterval(() => {                                      // derruba conexões mo
 }, 15000);
 
 server.listen(PORT, () => console.log('Favela Game online na porta ' + PORT));
+
+process.on('uncaughtException', e => console.error('erro não tratado (servidor continua):', e && e.stack || e));

@@ -12,16 +12,19 @@
 <title>Favela Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <style>
-:root{--bg:#10131a;--fg:#fff;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--acc:#ffd400}
+:root{--bg:#10131a;--fg:#fff;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);--acc:#ffd400}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:system-ui,sans-serif;color:var(--fg);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 canvas{display:block;touch-action:none}
 button{font:inherit;color:var(--fg);touch-action:manipulation}
-#hud{position:fixed;inset:0;pointer-events:none;z-index:4}
+#hud{position:fixed;inset:0;left:var(--sal);right:var(--sar);pointer-events:none;z-index:4}   /* furo da câmera nas laterais */
 #hud button{pointer-events:auto}
 #hit{position:absolute;left:50%;top:50%;width:30px;height:30px;transform:translate(-50%,-50%) rotate(45deg);border:2px solid #fff;opacity:0;border-radius:3px}
 #hit.on{animation:hm .25s}
 #hit.kill{border-color:#ff3d3d}
+#hit.head{border-color:#ffd24a;box-shadow:0 0 8px #ffd24a}
+.dd{position:absolute;left:50%;top:50%;width:min(46vh,300px);height:min(46vh,300px);margin:calc(min(46vh,300px)/-2) 0 0 calc(min(46vh,300px)/-2);border-radius:50%;border-top:5px solid rgba(255,45,40,.9);pointer-events:none;filter:drop-shadow(0 0 6px #f00);animation:ddf 1.1s forwards}
+@keyframes ddf{0%{opacity:1}70%{opacity:.8}100%{opacity:0}}
 @keyframes hm{0%{opacity:1;transform:translate(-50%,-50%) rotate(45deg) scale(.6)}100%{opacity:0;transform:translate(-50%,-50%) rotate(45deg) scale(1.3)}}
 #hurt{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(230,20,20,.6));opacity:0}
 #hurt.on{animation:hu .5s}
@@ -39,8 +42,10 @@ body.map #pad{display:none}
 #mh{background:#12161f;padding:calc(var(--sat) + 10px) 14px 10px;display:flex;justify-content:space-between;align-items:center;font-size:18px}
 #mh button{background:rgba(255,255,255,.14);border:0;border-radius:50%;width:38px;height:38px;font-size:18px}
 #pv{flex:0 0 34vh;min-height:150px}
-#fcUI{display:none;position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;gap:10px}
+#fcUI{display:none;position:fixed;left:50%;bottom:calc(var(--sab) + 2.5vh);transform:translateX(-50%);z-index:5;gap:10px}
 #fcUI.on{display:flex}
+/* câmera livre: não atira, então sem mira e sem barra de armas (os botões −/VISUAL/+ ficavam por cima dela) */
+body.freeCam #cross,body.freeCam #cards,body.freeCam #ctl,body.freeCam #act{display:none!important}
 #fcUI button{min-width:54px;height:44px;border:1px solid #ffffff90;background:#050909d9;color:#fff;font-weight:800;font-size:16px;padding:0 16px;letter-spacing:.06em}
 #ml{flex:1;background:#12161f;overflow:auto;padding:10px 10px calc(var(--sab) + 14px);display:grid;gap:8px;align-content:start;touch-action:pan-y}
 .card{background:#1c2230;border:2px solid transparent;border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;justify-content:space-between}
@@ -66,6 +71,8 @@ body.kbm #ctl{display:none!important} body.kbm #pad{display:none!important} body
 #hud{font-family:Inter,'Segoe UI',Roboto,Arial,sans-serif;text-shadow:0 2px 5px #000;color:var(--white)}
 #perfHud{position:absolute;left:2.4%;top:calc(var(--sat) + 3.5% + var(--mapW) + 10px);padding:6px 9px;font:800 10px/1.4 ui-monospace,monospace;letter-spacing:.4px;color:#eaf5ed;background:rgba(5,10,9,.78);border:1px solid #a7ff4555;pointer-events:none;text-shadow:none;white-space:nowrap}
 #perfHud b{color:var(--green)}
+#perfHud i{display:none;font-style:normal;color:#b9c9c0;font-weight:600}body.perfOn #perfHud i{display:block}
+@media(pointer:coarse){.panel,.wc,#start .s-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}   /* desfoque sobre o 3D custa caro na GPU do celular */
 @media(max-width:600px){#perfHud{top:calc(var(--sat) + 3.5% + 100px);font-size:9px;padding:5px 7px}}
 .panel{position:absolute;background:linear-gradient(135deg,rgba(7,12,13,.88),rgba(12,17,18,.64));border:1px solid var(--line);clip-path:polygon(0 0,calc(100% - 11px) 0,100% 11px,100% 100%,11px 100%,0 calc(100% - 11px));box-shadow:0 8px 26px #0005,inset 0 1px 0 #ffffff0d;backdrop-filter:blur(7px)}
 .panel:before{content:'';position:absolute;left:0;top:0;width:26px;height:2px;background:var(--green);opacity:.9}
@@ -380,8 +387,8 @@ body.online #sbBtn{display:block} body.kbm #sbBtn{display:none}
 body.adsOn #ctl #bfL,body.adsOn #ctl #zp,body.adsOn #ctl #zm{display:flex!important}
 #ctl #bfL{width:max(70px,calc(var(--u)*80));left:calc(var(--u)*34);bottom:calc(var(--sab) + var(--u)*120);border:2px solid var(--green)!important}
 #ctl #bfL b{font-size:28px}
-#ctl #zp{width:max(44px,calc(var(--u)*46));left:74%;top:38%}
-#ctl #zm{width:max(44px,calc(var(--u)*46));left:74%;top:56%}
+#ctl #zp{width:max(44px,calc(var(--u)*46));aspect-ratio:1;left:68%;top:38%}
+#ctl #zm{width:max(44px,calc(var(--u)*46));aspect-ratio:1;left:68%;top:56%}   /* antes ficava em cima do PULAR */
 #ctl #zp b,#ctl #zm b{font-size:24px}
 #lobbySettings{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:5;height:38px;padding:0 14px;border:1px solid #a7ff4580;background:#07100de8;color:#f4fff6;font-weight:800;font-size:13px;border-radius:10px;cursor:pointer}
 #hudEdBtn{width:100%;margin-top:14px;padding:12px;border:1px solid #a7ff45aa;background:#a7ff4518;color:#f3fff5;font-weight:800;font-size:14px;border-radius:12px}
@@ -485,7 +492,7 @@ body.homeOn #start{display:none!important}
 #settingsBtn{font-size:18px;min-width:38px;padding:0}
 #settingsPanel{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:18px;background:#020605cc;backdrop-filter:blur(8px);pointer-events:auto}
 #settingsPanel.on{display:flex}
-#settingsCard{width:min(440px,94vw);background:linear-gradient(145deg,#17211d,#090e0d);border:1px solid #a7ff4577;border-radius:18px;padding:20px;box-shadow:0 20px 70px #000c;color:#f3fff5}
+#settingsCard{max-height:calc(100dvh - 36px);overflow-y:auto;width:min(440px,94vw);background:linear-gradient(145deg,#17211d,#090e0d);border:1px solid #a7ff4577;border-radius:18px;padding:20px;box-shadow:0 20px 70px #000c;color:#f3fff5}
 #settingsHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 #settingsHead h2{font-size:22px;margin:0}
 #settingsClose{width:38px;height:38px;border:1px solid #ffffff44;background:#ffffff12;color:white;border-radius:10px;font-size:20px}
@@ -504,7 +511,7 @@ body.homeOn #start{display:none!important}
   <div id="scope"><i class="sv"></i><i class="sh"></i><i class="sd"></i></div>
   <div id="minimapWrap" aria-label="Radar tático"><canvas id="minimap" width="220" height="220"></canvas><b class="mk n">N</b><b class="mk">L</b><b class="mk">S</b><b class="mk">O</b><i class="tri"></i></div>
   <div id="zone"></div>
-  <div id="perfHud" aria-live="off">FPS <b id="fpsValue">--</b> · PING <b id="pingValue">--</b></div>
+  <div id="perfHud" aria-live="off">FPS <b id="fpsValue">--</b> · PING <b id="pingValue">--</b><i id="perfInfo"></i></div>
   <div id="score" class="panel"><span class="team blue"><span id="sK">0</span><small>ABATES</small></span><span class="mid"><small>PONTOS</small><span id="sS">0</span></span><span class="team red"><span id="sD">0</span><small>MORTES</small></span><i class="scoreline"></i><i class="scoreline r"></i></div>
   <div id="status"><span style="color:var(--green)">●</span> OPERAÇÃO FAVELA <span style="color:#82918a">/</span> SETOR 04 <span style="color:#82918a">/</span> AO VIVO</div>
   <div id="roomBadge" class="panel"></div>
@@ -528,7 +535,7 @@ body.homeOn #start{display:none!important}
   <button id="act">Loja</button>
   <div id="ctl"><button id="bad" title="Mirar (luneta)" aria-label="Mirar"><b>⊕</b><small>MIRAR</small></button><button id="bf" title="Atirar" aria-label="Atirar"><b>✣</b><small>ATIRAR</small></button><button id="bj" title="Pular" aria-label="Pular"><b>↑</b><small>PULAR</small></button><button id="bs" title="Agachar" aria-label="Agachar"><b>↓</b><small>AGACHAR</small></button><button id="br2" title="Recarregar" aria-label="Recarregar"><b>↻</b></button><button id="bw" title="Trocar arma (Q)" aria-label="Trocar arma"><b>⇄</b><small>ARMA</small></button><button id="bg" title="Granada (G)" aria-label="Granada"><b>✹</b><small>GRANADA</small></button><button id="bfL" title="Atirar (esquerda)" aria-label="Atirar esquerda"><b>✣</b><small>ATIRAR</small></button><button id="zp" title="Aumentar zoom" aria-label="Aumentar zoom"><b>+</b><small id="zlv">x2</small></button><button id="zm" title="Diminuir zoom" aria-label="Diminuir zoom"><b>−</b><small>ZOOM</small></button></div>
 </div>
-<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button></nav><div class="tp"><button class="lgn" id="hmLogin">ENTRAR</button><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="co" id="hmCoins"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><b id="hmCoinN">0</b><i>+</i></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v39</small></div></div><div id="homeToast"></div>
+<div id="home"><div class="bg"></div><div class="lg"><h1>Favela <span>FPS</span></h1><small>POLÍCIA <b>✕</b> BANDIDOS</small></div><nav class="mn"><button class="mb big" id="hmPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>JOGAR</button><button class="mb" id="hmMp"><svg viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1a4.2 4.2 0 0 1 2 3.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg>MULTIPLAYER</button><button class="mb" id="hmChar"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v1h10V7a5 5 0 0 0-5-5zm-6 8a6 6 0 0 0 12 0zm-2 12a8 8 0 0 1 16 0z"/></svg>PERSONAGEM</button><button class="mb" id="hmVault"><svg viewBox="0 0 24 24"><path d="M3 4h18v15H3zm2 2v11h14V6zm7 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 20h3v1H5zm11 0h3v1h-3z"/></svg>COFRE</button><button class="mb" id="hmShop"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h3.3l.9 2H21l-3.5 7H8.1l-.9 2H19v2H4l2.2-4.3L2.7 4H1z"/></svg>LOJA</button></nav><div class="tp"><button class="lgn" id="hmLogin">ENTRAR</button><button class="pf" id="hmProf"><div class="av" id="hpAv">?</div><div><b id="hpNm">—</b><small id="hpLv">NÍVEL 1</small><div class="xb"><i id="hpXb"></i></div></div></button><button class="co" id="hmCoins"><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#f5b800"/><circle cx="12" cy="12" r="8.2" fill="#ffd84a" stroke="#c98a00" stroke-width="1.2"/><path d="M13.6 7.5c-2.6-.6-4.9.9-4.9 4.5s2.3 5.1 4.9 4.5" fill="none" stroke="#a86a00" stroke-width="2" stroke-linecap="round"/></svg><b id="hmCoinN">0</b><i>+</i></button><button class="ic" id="hmCfg2" aria-label="Configurações"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button></div><div class="ft">RESPEITO É TUDO<small>v40</small></div></div><div id="homeToast"></div>
 <div class="hp" id="hpPlay"><div class="cd"><div class="hd"><h2>JOGAR OFFLINE</h2><button class="x" data-close>×</button></div>
   <div class="nb"><div class="lb">SEU NICK</div><div class="rw"><input class="nbI" maxlength="14" placeholder="ESCOLHA SEU NICK" autocomplete="off" spellcheck="false" enterkeyhint="done"><button class="o nbB" style="flex:none">SALVAR</button></div></div>
   <div class="lb">MAPA</div><div class="rw"><button class="o" data-map="favela">FAVELA<small>Setor 04 · labirinto</small></button><button class="o" data-map="colegio">COLÉGIO CENTRAL<small>Prédios · pátio · ginásio</small></button></div>
@@ -605,7 +612,7 @@ body.homeOn #start{display:none!important}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
-<script src="maps/colegio.js?v=39"></script>
+<script src="maps/colegio.js?v=40"></script>
 <script>
 /* Assets 3D para Three.js
    Uso: const player = buildPlayer(THREE, { skin:'#b87950', shirt:'#283d35', shorts:'#202a26' });
@@ -1205,7 +1212,7 @@ body.homeOn #start{display:none!important}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
-<script src="chars.js?v=39"></script>
+<script src="chars.js?v=40"></script>
 <script>
 /* ===== ASSET: buildFavela(THREE, scene, seed) =====
    Retorna { group, colliders:[[minX,minY,minZ,maxX,maxY,maxZ]], heightAt(x,z), windows, lamps }.
@@ -1563,17 +1570,21 @@ const GRAPHICS_PRESETS = {
   padrao: { scale: 1.0, shadows: true, shadowSize: 768, exposure: 1.03, label: 'Padrão' },
   ultra:  { scale: 1900 / Math.max(1, innerWidth), shadows: true, shadowSize: 1536, exposure: 1.07, label: 'Ultra · alvo 1900 × 1080' }
 };
-const LOW_END = (() => { try { const mob = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent); return mob && ((navigator.hardwareConcurrency || 8) <= 6 || (navigator.deviceMemory || 8) <= 4); } catch (e) { return false; } })();
+const IS_MOBILE = (() => { try { return /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && matchMedia('(pointer:coarse)').matches); } catch (e) { return false; } })();
+// GPU fraca pelo nome (celulares baratos dizem ter 8 núcleos e deviceMemory só existe no Chrome em https)
+const GPU_NAME = (() => { try { const gl = renderer.getContext(), x = gl.getExtension('WEBGL_debug_renderer_info'); return x ? String(gl.getParameter(x.UNMASKED_RENDERER_WEBGL)) : ''; } catch (e) { return ''; } })();
+const GPU_LOW = /Mali-(T\d+|G(31|51|52|57|71|72|76))\b|Adreno \(TM\) ([1-5]\d\d|6[0-2]\d)\b|PowerVR|GE8\d\d|IMG /i.test(GPU_NAME);
+const LOW_END = IS_MOBILE && (GPU_LOW || (navigator.hardwareConcurrency || 8) <= 6 || (navigator.deviceMemory || 8) <= 4);
 window.FAVELA_LOW = LOW_END;
-let dynK = 1, dynLow = 0, dynHigh = 0;   // resolução dinâmica (1 = cheia)
+let dynK = 1, dynLow = 0, dynHigh = 0, autoDown = 0, frameMs = 0, perfCalls = 0, perfTris = 0;   // resolução dinâmica (1 = cheia)
 let graphicsQuality = LOW_END ? 'suave' : 'padrao';
-try { const savedQuality = localStorage.getItem('favelaGraphicsQuality'); if (GRAPHICS_PRESETS[savedQuality]) graphicsQuality = savedQuality; } catch(e) {}
-function applyGraphicsQuality(quality) {
+try { const savedQuality = localStorage.getItem('favelaGfx2'); if (GRAPHICS_PRESETS[savedQuality]) graphicsQuality = savedQuality; } catch(e) {}   // só existe se o jogador escolheu
+function applyGraphicsQuality(quality, persist) {
   if (!GRAPHICS_PRESETS[quality]) quality = 'padrao';
   graphicsQuality = quality;
   const preset = GRAPHICS_PRESETS[quality];
   // Limite de pixels: celular 3x não renderiza 9x pixels. Resolução dinâmica reduz mais se o FPS cair.
-  const ratio = quality === 'ultra' ? Math.max(1, 1900 / Math.max(1, innerWidth)) : Math.min((window.devicePixelRatio || 1) * preset.scale, quality === 'suave' ? 1 : 1.5) * dynK;
+  const ratio = quality === 'ultra' ? Math.max(1, 1900 / Math.max(1, innerWidth)) : Math.min((window.devicePixelRatio || 1) * preset.scale, quality === 'suave' ? 1 : IS_MOBILE ? 1.25 : 1.5) * dynK;
   renderer.setPixelRatio(ratio);
   renderer.setSize(innerWidth, innerHeight);
   const shadowsChanged = renderer.shadowMap.enabled !== preset.shadows;
@@ -1582,17 +1593,17 @@ function applyGraphicsQuality(quality) {
   renderer.shadowMap.needsUpdate = true;
   if (shadowsChanged) scene.traverse(o => { const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(x => x.needsUpdate = true); });
   renderer.toneMappingExposure = preset.exposure;
-  try { localStorage.setItem('favelaGraphicsQuality', quality); } catch(e) {}
+  if (persist) try { localStorage.setItem('favelaGfx2', quality); } catch(e) {}
   document.querySelectorAll('.qualityChoice').forEach(btn => btn.classList.toggle('active', btn.dataset.quality === quality));
   const status = document.getElementById('qualityStatus');
   if (status) status.textContent = 'Qualidade ativa: ' + preset.label;
 }
-window.FavelaGraphics = { apply: applyGraphicsQuality, getQuality: () => graphicsQuality };
+window.FavelaGraphics = { apply: (q, persist) => applyGraphicsQuality(q, persist !== false), getQuality: () => graphicsQuality };
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
-renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.shadowMap.type = IS_MOBILE ? THREE.BasicShadowMap : THREE.PCFShadowMap;   // celular: 1 leitura de sombra por pixel (PCF faz 17)
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.autoUpdate = false;   // sombra atualizada sob demanda (ver loop)
 renderer.setSize(innerWidth, innerHeight);
@@ -1639,7 +1650,7 @@ scene.add(sunOrb, moonOrb);
 const MAP_ID = (() => { try { return localStorage.getItem('fv_map') === 'colegio' && window.buildColegioGame ? 'colegio' : 'favela'; } catch (e) { return 'favela'; } })();
 window.FAVELA_MAP = MAP_ID;
 const favela = MAP_ID === 'colegio' ? buildColegioGame(THREE, scene) : buildFavela(THREE, scene, 7);
-favela.cfg = favela.cfg || { name: 'Favela', safe: z => z < -36, pol: [-6, 6, -67, -59], pyaw: 0, pdir: 1, bx: 82, bz0: -84, bz1: 84,
+favela.cfg = favela.cfg || { name: 'Favela', botZ: [-33, 1e9], safe: z => z < -36, pol: [-6, 6, -67, -59], pyaw: 0, pdir: 1, bx: 82, bz0: -84, bz1: 84,
   shops: [['guns', 31, -63, Math.PI], ['skins', -31, -63, 0]], polMsg: 'Você renasceu na quadra', banMsg: 'Você renasceu na favela' };
 const MC = favela.cfg;
 const cols = favela.colliders;
@@ -1668,10 +1679,11 @@ fpLimb([-.03,-.37,-.62],[.08,-.29,-.66],.067,gloveMat);
 fpLimb([.55,-.66,-.20],[.34,-.39,-.43],.11,sleeveMat);
 fpLimb([.34,-.39,-.43],[.25,-.30,-.47],.068,gloveMat);
 
-addEventListener('resize', () => {
+let rzT = 0;
+addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => {   // barra do navegador/tela cheia disparam vários resize seguidos
   applyGraphicsQuality(graphicsQuality);
   for (const c of [cam, fpCam]) { c.aspect = innerWidth / innerHeight; c.updateProjectionMatrix(); }
-});
+}, 120); });
 
 /* ---------- colisão (grade espacial) ---------- */
 const CS = 8, grid = new Map(), EMPTY = [];
@@ -1706,18 +1718,29 @@ function groundOf(e) {
 }
 function physics(e, dt) {
   const gy = groundOf(e); e.grounded = false;
-  if (e.vy <= 0 && e.y - gy <= .6) { e.y = gy; e.vy = 0; e.grounded = true; }
-  else { e.vy -= 22 * dt; e.y += e.vy * dt; if (e.y < gy) { e.y = gy; e.vy = 0; e.grounded = true; } }
+  const was = e.wasG; e.wasG = false;
+  if (e.vy <= 0 && e.y - gy <= (was ? .6 : Math.max(.05, -e.vy * dt))) { e.y = gy; e.vy = 0; e.grounded = e.wasG = true; }   // degrau só gruda andando; caindo, pousa sem tranco
+  else { e.vy -= 22 * dt; e.y += e.vy * dt; if (e.y < gy) { e.y = gy; e.vy = 0; e.grounded = e.wasG = true; } }
 }
-// raio contra as paredes: devolve a distância até a primeira parede (ou maxT)
+// raio contra as paredes: devolve a distância até a primeira parede (ou maxT).
+// Anda pelas células da grade ao longo do raio (antes testava as ~3000 caixas do mapa a cada raio: escopeta = 24 mil testes por tiro).
+let rayStamp = 0;
 function rayWall(ox, oy, oz, dx, dy, dz, maxT) {
-  let best = maxT; const ix = 1 / (dx || 1e-9), iy = 1 / (dy || 1e-9), iz = 1 / (dz || 1e-9);
-  for (let i = 0; i < cols.length; i++) {
-    const b = cols[i];
-    let t1 = (b[0] - ox) * ix, t2 = (b[3] - ox) * ix, tmin = Math.min(t1, t2), tmax = Math.max(t1, t2);
-    t1 = (b[1] - oy) * iy; t2 = (b[4] - oy) * iy; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2));
-    t1 = (b[2] - oz) * iz; t2 = (b[5] - oz) * iz; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2));
-    if (tmax >= tmin && tmin > 0 && tmin < best) best = tmin;
+  let best = maxT; const ix = 1 / (dx || 1e-9), iy = 1 / (dy || 1e-9), iz = 1 / (dz || 1e-9), st = ++rayStamp;
+  let ci = Math.floor(ox / CS), cj = Math.floor(oz / CS); const si = dx > 0 ? 1 : -1, sj = dz > 0 ? 1 : -1;
+  const tdx = dx ? Math.abs(CS / dx) : Infinity, tdz = dz ? Math.abs(CS / dz) : Infinity;
+  let tx = dx ? (si > 0 ? (ci + 1) * CS - ox : ox - ci * CS) / Math.abs(dx) : Infinity, tz = dz ? (sj > 0 ? (cj + 1) * CS - oz : oz - cj * CS) / Math.abs(dz) : Infinity;
+  for (let n = 0; n < 400; n++) {
+    const list = grid.get(gk(ci, cj));
+    if (list) for (let i = 0; i < list.length; i++) {
+      const b = list[i]; if (b._r === st) continue; b._r = st;
+      let t1 = (b[0] - ox) * ix, t2 = (b[3] - ox) * ix, tmin = Math.min(t1, t2), tmax = Math.max(t1, t2);
+      t1 = (b[1] - oy) * iy; t2 = (b[4] - oy) * iy; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2));
+      t1 = (b[2] - oz) * iz; t2 = (b[5] - oz) * iz; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2));
+      if (tmax >= tmin && tmin > 0 && tmin < best) best = tmin;
+    }
+    const tn = Math.min(tx, tz); if (best <= tn || tn > maxT) break;   // acertou antes de sair desta célula, ou passou do alcance
+    if (tx < tz) { ci += si; tx += tdx; } else { cj += sj; tz += tdz; }
   }
   return best;
 }
@@ -1852,7 +1875,7 @@ function makeShop(kind, cx, cz, rot) {
     add(1.5, .15, 5.8, Ml(0x24143a), 6.2, .575, 0);
     [[3, -1.9], [5, 0], [1, 1.9]].forEach(([si, z]) => { const m = GA.buildPlayer(THREE, SKINS[si].opt); stripHit(m); m.position.set(6.2, .65, z); m.rotation.y = -Math.PI / 2; grp.add(m); });
   }
-  const L = new THREE.PointLight(guns ? 0xff6a4a : 0x55e0ff, 0, 22); L.position.set(7, 3.8, 0); grp.add(L); shopLights.push(L);
+  if (!IS_MOBILE) { const L = new THREE.PointLight(guns ? 0xff6a4a : 0x55e0ff, 0, 22); L.position.set(7, 3.8, 0); grp.add(L); shopLights.push(L); }   // luz pontual pesa em todo material: só no PC
   const cs = Math.cos(rot), sn = Math.sin(rot);
   const wc = (x0, x1, y1, z0, z1) => { const X = [], Z = []; for (const x of [x0, x1]) for (const z of [z0, z1]) { X.push(cx + x * cs + z * sn); Z.push(cz - x * sn + z * cs); } cols.push([Math.min(...X), 0, Math.min(...Z), Math.max(...X), y1, Math.max(...Z)]); };
   wc(-4.6, 4.6, 5.2, -3.6, 3.6); wc(4.4, 5.7, 1.5, -3, 3); if (!guns) wc(5.45, 6.95, .65, -2.95, 2.95);
@@ -1866,6 +1889,7 @@ let gameTime = 0;
 function setMode() {
   const sky = night ? 0x0b1020 : 0x9ad0f0;
   scene.background = new THREE.Color(sky); scene.fog = new THREE.Fog(sky, walk ? 60 : 130, walk ? 210 : 330);
+  { const f = walk ? 230 : 700; if (cam.far !== f) { cam.far = f; cam.updateProjectionMatrix(); } }   // além da neblina nada aparece: não desenha
   hemi.intensity = night ? .3 : 1; hemi.color.set(night ? 0x6677aa : 0xffffff);
   sun.intensity = night ? .22 : .9; sun.color.set(night ? 0x8fa6ff : 0xfff1d6);
   fpHemi.intensity = night ? .55 : 1.1;
@@ -2018,10 +2042,10 @@ function loadWeaponAsset(type, gunGroup) {
    rs     : posição x da alça de mira traseira   ER : distância do olho até ela ao mirar
    bore   : altura do cano (saída do tiro) */
 const VIEWMODEL = {
-  rifle:   { k: 1, grip: [-.15, -.01], fore: [.20, .055], sightY: .108, rs: .04, ER: .40, bore: .072 },   // AK-47 nova (normalizada 0,88 m)
+  rifle:   { k: 1, grip: [-.15, -.01], fore: [.20, .055], sightY: .129, rs: .04, ER: .40, bore: .072 },   // AK-47 nova (normalizada 0,88 m)
   m4:      { k: 1, grip: [-.17, -.02], fore: [.13, .035], sightY: .128, rs: -.14, ER: .30, bore: .062 },   // mira de ferro (igual à AK)   // M4A1 nova (normalizada 0,84 m)
   smg:     { k: 1.25, grip: [-.04, -.07], fore: [.07, -.045], sightY: .036, rs: -.08, ER: .26, bore: .012 },
-  shotgun: { k: 1.50, grip: [-.10, -.012], fore: [.15, .03],  sightY: .064, rs: -.05, ER: .42, bore: .047 },
+  shotgun: { k: 1.50, grip: [-.10, -.012], fore: [.15, .03],  sightY: .068, rs: -.05, ER: .42, bore: .047 },
   sniper:  { k: 1.05, grip: [-.075, -.035], fore: [.24, .005], sightY: .105, rs: -.10, ER: .30, bore: .06 },
   barrett: { k: 1, grip: [-.348, -.035], fore: [.002, .023], sightY: .096, rs: -.063, ER: .30, bore: .059 }
 };
@@ -2182,7 +2206,8 @@ function swapBodyGun() {
 function nextWeapon() { if (!me.alive || menuOn || !walk) return; select((cur + 1) % slots.length); toast(slots[cur].cfg.label, 700); }
 function select(i) {
   ads = false; document.body.classList.remove('sniperScoped');
-  cur = i; slots.forEach((s, k) => s.gun.visible = k === cur); slots[cur].reloading = false; swapBodyGun();
+  if (i !== cur) slots[cur].reloading = false;   // trocar de arma cancela a recarga da que saiu (tocar na mesma não cancela)
+  cur = i; slots.forEach((s, k) => s.gun.visible = k === cur); swapBodyGun();
 }
 const viewDir = () => new V3(Math.sin(me.yaw) * Math.cos(me.pit), Math.sin(me.pit), Math.cos(me.yaw) * Math.cos(me.pit));
 function startReload(now) {
@@ -2219,12 +2244,12 @@ const _rc = new THREE.Raycaster();
 function fireRayFast(origin, dir, o) {
   const tg = [];
   for (const b of bots) { if (!b.alive) continue; const P = b.root.userData.parts; if (P.hitbox.userData.hitZone) tg.push(P.hitbox); if (P.headHit.userData.hitZone) tg.push(P.headHit); }
-  if (net.on) for (const r of net.players.values()) { if (!r.a || !(performance.now() - (r.shotT || -1e9) < 3000)) continue; /* online: só quem atirou há pouco aparece */ const P = r.root.userData.parts; tg.push(P.hitbox, P.headHit); }
+  if (net.on) for (const r of net.players.values()) { if (!r.a) continue; const P = r.root.userData.parts; tg.push(P.hitbox, P.headHit); }
   if (!tg.length) return null;
   _rc.set(origin, dir.clone().normalize()); _rc.far = o.range || 180;
   const h = _rc.intersectObjects(tg, false)[0]; if (!h) return null;
   const zone = h.object.userData.hitZone, damage = (o.damage || 20) * (zone === 'head' ? (o.headMultiplier || 2) : 1), res = { object: h.object, point: h.point, zone, damage };
-  const ow = h.object.parent; if (ow && ow.userData) { ow.userData.health = Math.max(0, (ow.userData.health === undefined ? 100 : ow.userData.health) - damage); res.healthRemaining = ow.userData.health; }
+  const ow = h.object.parent; if (!o.probe && ow && ow.userData) { ow.userData.health = Math.max(0, (ow.userData.health === undefined ? 100 : ow.userData.health) - damage); res.healthRemaining = ow.userData.health; }
   return res;
 }
 function tryFire(now) {
@@ -2232,7 +2257,11 @@ function tryFire(now) {
   if (safe()) { if (now - lastSafeMsg > 1800) { toast('Zona segura — sem tiros aqui'); lastSafeMsg = now; } return; }
   const s = slots[cur], cfg = s.cfg;
   if (now < s.next || s.reloading) return;
-  const origin = new V3(me.x, me.y + me.eh, me.z), fwd = viewDir();
+  const origin = new V3(me.x, me.y + me.eh, me.z); let fwd = viewDir();
+  if (tps) {   // 3ª pessoa: a cruz está na câmera (atrás do ombro); acha o ponto sob a cruz e atira do olho até ele
+    const cd = cam.getWorldDirection(new V3()), cp = cam.position, R = cfg.range || 180, wt = rayWall(cp.x, cp.y, cp.z, cd.x, cd.y, cd.z, R), tg = fireRayFast(cp, cd, { range: wt, probe: true });
+    const aimP = tg ? tg.point : cp.clone().addScaledVector(cd, wt); if (aimP.distanceTo(origin) > 1) fwd = aimP.sub(origin).normalize();
+  }
   if (s.type === 'knife') {
     s.next = now + cfg.fireRate; s.swing = now; sfx('reload', .12);
     const wd = rayWall(origin.x, origin.y, origin.z, fwd.x, fwd.y, fwd.z, cfg.range);
@@ -2242,9 +2271,9 @@ function tryFire(now) {
   if (s.mag <= 0) { startReload(now); return; }
   // precisão: 1º tiro (sem atirar há 350 ms) quase exato; mirando, espalha bem pouco; andando sem mirar, espalha mais
   const first = now - (s.lastShot || 0) > 350, aim = adsK > .6;
-  s.mag--; s.lastShot = now; s.next = now + cfg.fireRate;
+  s.mag--; s.lastShot = now; s.next = (now - s.next < cfg.fireRate ? s.next : now) + cfg.fireRate;   // guarda a sobra: cadência certa mesmo com FPS baixo
   const right = new V3(-Math.cos(me.yaw), 0, Math.sin(me.yaw)), mz = muzzleWorld(fwd, origin),
-    sp = cfg.pellets ? cfg.spread : cfg.spread * (aim ? .12 : 1) * (me.moving ? (aim ? 1.3 : 1.6) : 1) * (tps ? 1.2 : 1) * (first ? .25 : 1);
+    sp = cfg.pellets ? cfg.spread : cfg.spread * (aim ? .12 : 1) * (me.moving ? (aim ? 1.3 : 1.6) : 1) * (tps ? 1.2 : 1) * (first && (aim || !SCOPED[s.type]) ? .25 : 1) * (SCOPED[s.type] && !aim ? 25 : 1);   // sniper sem mirar não é laser
   for (let p = 0; p < (cfg.pellets || 1); p++) {
     const d = fwd.clone().addScaledVector(right, rand(-1, 1) * sp).addScaledVector(UP, rand(-1, 1) * sp).normalize();
     const wd = rayWall(origin.x, origin.y, origin.z, d.x, d.y, d.z, cfg.range);
@@ -2263,16 +2292,19 @@ function tryFire(now) {
 }
 function handleHit(res) {
   const root = res.object.parent, b = botByRoot.get(root); spark(res.point, 0xff3030);
-  const rp = net.byRoot.get(root); if (rp) { sfx('hit', .2); showHit(false); if (rp.a && !MC.safe(rp.z)) net.send({ t: 'hit', target: rp.id, z: res.zone === 'head' ? 'head' : 'body' }); return; }
+  const rp = net.byRoot.get(root); if (rp) { /* som e marcador vêm do servidor (hitmark), só se o acerto valeu */ if (rp.a && !MC.safe(rp.z)) net.send({ t: 'hit', target: rp.id, z: res.zone === 'head' ? 'head' : 'body' }); return; }
   if (!b) return;
-  sfx('hit', .2); showHit(false);
-  if (root.userData.health <= 0 && b.alive) killBot(b, res.zone === 'head');
+  const hd = res.zone === 'head'; sfx(hd ? 'kill' : 'hit', hd ? .22 : .2); showHit(root.userData.health <= 0, hd);
+  if (root.userData.health <= 0 && b.alive) killBot(b, hd);
 }
 
 /* ---------- interface ---------- */
 let toastT = 0;
 function toast(t, ms) { const m = $('msg'); m.textContent = t; m.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => m.classList.remove('on'), ms || 2200); }
-function showHit(kill) { const h = $('hit'); h.className = ''; void h.offsetWidth; h.className = 'on' + (kill ? ' kill' : ''); }
+function showHit(kill, head) { const h = $('hit'); h.className = ''; void h.offsetWidth; h.className = 'on' + (kill ? ' kill' : '') + (head ? ' head' : ''); }
+// arco vermelho na borda apontando de onde veio o dano
+function dmgDir(sx, sz) { if (sx == null) return; const dx = sx - me.x, dz = sz - me.z, f = dx * Math.sin(me.yaw) + dz * Math.cos(me.yaw), r = -dx * Math.cos(me.yaw) + dz * Math.sin(me.yaw);
+  const d = document.createElement('i'); d.className = 'dd'; d.style.transform = 'rotate(' + (Math.atan2(r, f) * 180 / Math.PI).toFixed(0) + 'deg)'; $('hurt').parentNode.appendChild(d); setTimeout(() => d.remove(), 1100); }
 function flashHurt() { const h = $('hurt'); h.className = ''; void h.offsetWidth; h.className = 'on'; }
 const setT = (id, v) => { const el = $(id); if (el && el._v !== v) { el.textContent = v; el._v = v; } };
 function drawMiniMap() {
@@ -2298,7 +2330,7 @@ function drawMiniMap() {
     c.stroke(); }
   // inimigos
   if (typeof bots !== 'undefined') for (const b of bots) { if (!b.alive) continue; const x = (b.x - me.x) * scale, y = (b.z - me.z) * scale; if (Math.hypot(x, y) < R - 6) { c.fillStyle = '#ff5b58'; c.beginPath(); c.arc(x, y, 4, 0, Math.PI * 2); c.fill(); } }
-  if (net.on) for (const r of net.players.values()) { if (!r.a) continue; const x = (r.x - me.x) * scale, y = (r.z - me.z) * scale; if (Math.hypot(x, y) < R - 6) { c.fillStyle = '#ff5b58'; c.beginPath(); c.arc(x, y, 4, 0, Math.PI * 2); c.fill(); } }
+  if (net.on) for (const r of net.players.values()) { if (!r.a || !(performance.now() - (r.shotT || -1e9) < 3000)) continue; /* online: no minimapa só aparece quem atirou há pouco */ const x = (r.x - me.x) * scale, y = (r.z - me.z) * scale; if (Math.hypot(x, y) < R - 6) { c.fillStyle = '#ff5b58'; c.beginPath(); c.arc(x, y, 4, 0, Math.PI * 2); c.fill(); } }
   c.restore();
   // cone de visão + jogador (sempre apontando para cima)
   c.save(); c.translate(cx, cy);
@@ -2363,7 +2395,7 @@ const botOpts = () => { const sk = pick(['#b87950', '#8d5a3b', '#d9a066', '#6b44
 const botPool = () => teamOf(save.skin) === 'bandido' ? favela.spawns.slice().sort((a, b) => (a[2] - b[2]) * MC.pdir).slice(0, 6) : favela.spawns;
 function makeBotRoot() {
   const root = GA.buildPlayer(THREE, botOpts());
-  const p = root.userData.parts; p.hitbox.position.y = .96; p.hitbox.scale.y = 1.08; p.headHit.position.y = 1.7; p.headHit.scale.setScalar(1.15);
+  const p = root.userData.parts; p.hitbox.position.y = .78; p.hitbox.scale.y = .9; p.headHit.position.y = 1.7; p.headHit.scale.setScalar(1.15);   // corpo até 1,52 m: a cabeça fica de fora (antes a caixa engolia o tiro na cabeça)
   root.rotation.order = 'YXZ'; root.visible = false; scene.add(root);
   const guns = {}; for (const t of BOT_TYPES) { const g = GA.buildGun(THREE, t); g.scale.setScalar(TP_SCALE[t] || .6); orientHandGun(g); procGrips(g, t); g.visible = false; root.userData.hand.add(g); upgradeTpGun(g, t); guns[t] = g; }
   return { root, guns };
@@ -2382,12 +2414,14 @@ function makeBot(i) {
   botByRoot.set(root, b); bots.push(b); return b;
 }
 function activateBot(b, now) {
+  if (!b.root.parent) scene.add(b.root);
   const cand = botPool().filter(p => Math.hypot(p[0] - me.x, p[2] - me.z) > 35 && !bots.some(o => o !== b && o.alive && Math.hypot(o.x - p[0], o.z - p[2]) < 10));
   const p = pick(cand.length ? cand : botPool());
   b.x = p[0]; b.y = p[1]; b.z = p[2]; b.vy = 0; b.yaw = rand(0, 6.28); b.alive = true; b.dying = false; b.fallT = 0;
   b.root.userData.health = 100; b.root.rotation.x = 0; b.root.visible = true; b.path = []; b.seen = -1e9; b.nextShot = now + 1200;
   const P = b.root.userData.parts; for (const o of [P.hitbox, P.headHit]) if (o.userData._z) o.userData.hitZone = o.userData._z;
-  b.type = pick(BOT_TYPES); b.cfg = WC[b.type]; b.gunObj = b.guns[b.type]; for (const t of BOT_TYPES) b.guns[t].visible = t === b.type;
+  b.type = pick(BOT_TYPES); b.cfg = WC[b.type]; b.gunObj = b.guns[b.type];
+  { const hand = b.root.userData.hand; for (const t of BOT_TYPES) { const g = b.guns[t]; g.visible = t === b.type; if (t === b.type) { if (g.parent !== hand) hand.add(g); } else if (g.parent) g.parent.remove(g); } }   // só a arma em uso fica pendurada (menos matrizes por quadro)
 }
 let grenades = 2, grenadeDrops = [], ammoDrops = [];
 function throwGrenade(){
@@ -2395,7 +2429,7 @@ function throwGrenade(){
   if(safe()){toast('Zona segura — sem granadas',1200);return;}
   if(grenades<=0){toast('Sem granadas',1200);return;}
   grenades--; updateGrenadeHud();
-  const dir=viewDir(), start=new V3(me.x+dir.x*.5,me.y+me.eh-.2,me.z+dir.z*.5);
+  const dir=viewDir(), ey=me.y+me.eh-.2, fd=Math.max(0,Math.min(.5,rayWall(me.x,ey,me.z,dir.x,0,dir.z,.8)-.15)), start=new V3(me.x+dir.x*fd,ey,me.z+dir.z*fd);   // colado na parede: não nasce do outro lado
   const mesh=createGrenadeVisual();
   mesh.position.copy(start); scene.add(mesh);
   const vel=dir.clone().multiplyScalar(15); vel.y+=4;
@@ -2426,18 +2460,20 @@ function updateGrenades(dt){
 }
 function killBot(b, head) {
   b.alive = false; b.dying = true; b.fallT = 0; b.respawnAt = performance.now() + 5000;
-  if(!net.on){ const drop={x:b.x,z:b.z,mesh:null,ammo:Math.random()<.85?Math.floor(rand(12,36)):0,grenades:Math.random()<.35?1:0,life:25}; drop.mesh=new THREE.Mesh(new THREE.BoxGeometry(.32,.18,.32),new THREE.MeshStandardMaterial({color:0xa7ff45,emissive:0x243d08}));drop.mesh.position.set(b.x,.22,b.z);scene.add(drop.mesh);ammoDrops.push(drop); }
+  if(!net.on){ const drop={x:b.x,y:b.y,z:b.z,mesh:null,ammo:Math.random()<.85?Math.floor(rand(12,36)):0,grenades:Math.random()<.35?1:0,life:25}; drop.mesh=new THREE.Mesh(new THREE.BoxGeometry(.32,.18,.32),new THREE.MeshStandardMaterial({color:0xa7ff45,emissive:0x243d08}));drop.mesh.position.set(b.x,b.y+.22,b.z);scene.add(drop.mesh);ammoDrops.push(drop); }
   const P = b.root.userData.parts; for (const o of [P.hitbox, P.headHit]) { o.userData._z = o.userData._z || o.userData.hitZone; delete o.userData.hitZone; }
   me.kills++; me.score += head ? 150 : 100; sfx('kill', .25); showHit(true); toast(head ? 'Tiro na cabeça! +150' : 'Inimigo eliminado +100', 1600); addXp(40, 'ABATE'); if (head) addXp(20, 'TIRO NA CABEÇA');
 }
 function botShoot(b, dist) {
   b.kickT = performance.now();
   const mz = new V3(); b.gunObj.userData.muzzle.getWorldPosition(mz);
-  const hit = Math.random() < clamp(.6 - dist * .014, .12, .55), tgt = new V3(me.x, me.y + me.eh - .35, me.z);
+  const tgt = new V3(me.x, me.y + me.eh - .35, me.z);
+  let hit = Math.random() < clamp(.6 - dist * .014, .12, .55) * (me.moving ? .7 : 1) * (me.crouch ? .8 : 1);   // andando/agachado é mais difícil de acertar
+  if (hit && blocked(mz.x, mz.y, mz.z, tgt.x, tgt.y, tgt.z)) hit = false;   // se escondeu atrás da parede: o tiro bate nela
   if (!hit) tgt.add(new V3(rand(-1.5, 1.5), rand(-.5, .8), rand(-1.5, 1.5)));
   tracer(mz, tgt); GA.makeMuzzleFlash(THREE, scene, b.gunObj.userData.muzzle, .04);
   sfx('shot', clamp(.35 * (1 - dist / 60), .02, .3), SHOT_F[b.type]);
-  if (hit) hurtPlayer(b.cfg.damage * .5);
+  if (hit) { hurtPlayer(b.cfg.damage * .5); dmgDir(b.x, b.z); }
 }
 function updateBot(b, now, dt) {
   const R = b.root;
@@ -2448,8 +2484,9 @@ function updateBot(b, now, dt) {
   }
   const dxp = me.x - b.x, dzp = me.z - b.z, dist = Math.hypot(dxp, dzp) || 1;
   b.losT -= dt;
-  if (b.losT <= 0) { b.losT = .2 + Math.random() * .1; b.los = me.alive && walk && !safe() && dist < 55 && !blocked(b.x, b.y + 1.6, b.z, me.x, me.y + me.eh - .15, me.z); }
-  if (b.los) b.seen = now;
+  if (b.losT <= 0) { b.losT = .2 + Math.random() * .1; const was = b.los; b.los = me.alive && walk && !safe() && dist < 55 && !blocked(b.x, b.y + 1.6, b.z, me.x, me.y + me.eh - .15, me.z);
+    if (b.los && !was) b.nextShot = Math.max(b.nextShot, now + rand(300, 650)); }   // tempo de reação ao te ver de novo
+  if (b.los) { b.seen = now; b.lkx = me.x; b.lkz = me.z; }   // persegue a última posição vista (sem "wallhack")
   const chase = me.alive && walk && !safe() && (b.los || now - b.seen < 7000 || dist < 20);
   let mx = 0, mz = 0, spd = 3.1, aim = false;
   if (b.los && dist < 30) {
@@ -2459,14 +2496,16 @@ function updateBot(b, now, dt) {
     mx = dxp / dist * adv + dzp / dist * b.str; mz = dzp / dist * adv - dxp / dist * b.str;
     if (now >= b.nextShot) { b.nextShot = now + b.cfg.fireRate * 2.2 + rand(150, 500); botShoot(b, dist); }
   } else {
-    if (chase) { b.repT -= dt; if (b.repT <= 0 || !b.path.length) { b.repT = 1.2; b.path = pathTo(b, me.x, me.z); b.path.push([me.x, me.z]); } spd = 4.4; }
-    else { if (!b.path.length) { const n = pick(openNodes); b.path = pathTo(b, n.x, n.z); } spd = 2.5; }
+    if (chase) { b.repT -= dt; if (b.repT <= 0 || !b.path.length) { b.repT = 1.2; const tx = b.lkx != null ? b.lkx : me.x, tz = b.lkz != null ? b.lkz : me.z; b.path = pathTo(b, tx, tz); b.path.push([tx, tz]); } spd = 4.4; }
+    else { if (!b.path.length) { const bz = MC.botZ || [-1e9, 1e9], ok = openNodes.botOK || (openNodes.botOK = openNodes.filter(q => q.z > bz[0] && q.z < bz[1])), n = pick(ok.length ? ok : openNodes); b.path = pathTo(b, n.x, n.z); } spd = 2.5; }
     const wp = b.path[0];
     if (wp) { const wx = wp[0] - b.x, wz = wp[1] - b.z, wd = Math.hypot(wx, wz); if (wd < .8) b.path.shift(); else { mx = wx / wd; mz = wz / wd; b.yaw = Math.atan2(mx, mz); } }
   }
   b.stT -= dt;
   if (b.stT <= 0) { b.stT = .7; if ((mx || mz) && Math.hypot(b.x - b.lx, b.z - b.lz) < .2) { b.path = []; b.repT = 0; b.str = b.str ? -b.str : 1; } b.lx = b.x; b.lz = b.z; }
-  const kb = 1 - Math.exp(-dt * 8); b.mvx = (b.mvx || 0) + (mx * spd - (b.mvx || 0)) * kb; b.mvz = (b.mvz || 0) + (mz * spd - (b.mvz || 0)) * kb; collideMove(b, b.mvx * dt, b.mvz * dt); if (b.z < -33) b.z = -33; physics(b, dt);
+  const kb = 1 - Math.exp(-dt * 8); b.mvx = (b.mvx || 0) + (mx * spd - (b.mvx || 0)) * kb; b.mvz = (b.mvz || 0) + (mz * spd - (b.mvz || 0)) * kb;
+  { const bz = MC.botZ || [-1e9, 1e9]; let mdz = b.mvz * dt; if ((b.z + mdz < bz[0] && mdz < 0) || (b.z + mdz > bz[1] && mdz > 0)) mdz = 0;   // cerca dos bots (por mapa): não entram na zona segura
+    collideMove(b, b.mvx * dt, mdz); } physics(b, dt);
   R.position.set(b.x, b.y, b.z); if (b.fy === undefined) b.fy = b.yaw; b.fy += (((b.yaw - b.fy + Math.PI * 3) % (Math.PI * 2)) - Math.PI) * (1 - Math.exp(-dt * 12)); R.rotation.y = b.fy + Math.PI;
   { const sn = Math.sin(b.fy), cs = Math.cos(b.fy), vx = b.mvx || 0, vz = b.mvz || 0;
     R.userData.animate(dt, { vf: vx * sn + vz * cs, vs: -vx * cs + vz * sn, grounded: true, sprint: !aim && chase && spd > 4, pitch: 0, armed: true, ready: aim ? 1 : (chase ? .65 : .4), reload: -1, kick: b.kickT ? Math.max(0, 1 - (now - b.kickT) / 150) : 0 }); }
@@ -2475,7 +2514,7 @@ function updateBot(b, now, dt) {
 
 /* ---------- morte e renascimento ---------- */
 function hurtPlayer(d) {
-  if (!me.alive || !walk || safe()) return;
+  if (!me.alive || !walk || safe() || performance.now() < (me.protectUntil || 0)) return;   // 2 s de proteção ao renascer
   me.hp -= d; me.lastHit = performance.now(); flashHurt(); sfx('hurt', .3);
   if (me.hp <= 0) die();
 }
@@ -2484,7 +2523,7 @@ function die() {
   $('dead').classList.add('on'); body.visible = true;
 }
 function respawn() {
-  me.alive = true; me.vy = 0; me.pit = 0; me.recoilPit = 0;
+  me.alive = true; me.vy = 0; me.pit = 0; me.recoilPit = 0; me.protectUntil = performance.now() + 2000; grenades = 2; updateGrenadeHud();   // 2 granadas por vida (igual ao servidor)
   if (teamOf(save.skin) === 'policia') { me.x = rand(MC.pol[0], MC.pol[1]); me.z = rand(MC.pol[2], MC.pol[3]); me.y = favela.heightAt(me.x, me.z); me.yaw = MC.pyaw; }
   else { const cand = favela.spawns.filter(q => !bots.some(o => o.alive && Math.hypot(o.x - q[0], o.z - q[2]) < 14)), q = pick(cand.length ? cand : favela.spawns);
     me.x = q[0]; me.y = q[1]; me.z = q[2]; me.yaw = rand(0, 6.28); me.wvx = me.wvz = 0; }
@@ -2503,6 +2542,7 @@ addEventListener('keydown', e => {
   if (e.code === 'Escape' && menuOn) closeMenu();
 });
 addEventListener('keyup', e => key[e.code] = 0);
+addEventListener('blur', () => { for (const k in key) key[k] = 0; firing = false; });   // trocou de janela: nenhuma tecla fica presa
 addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('mousemove', e => { if (document.pointerLockElement === cv && walk && !menuOn) { me.yaw -= e.movementX * .0025 * sensK; me.pit = clamp(me.pit - e.movementY * .0025 * sensK, -1.3, 1.3); } });
 cv.addEventListener('mousedown', e=>{ if(e.button===0 && hasKBM && walk && !menuOn){ if(document.pointerLockElement!==cv){cv.requestPointerLock&&cv.requestPointerLock();} firing=true; } if(e.button===2 && hasKBM){ads=true;} });
@@ -2524,9 +2564,9 @@ pad.addEventListener('pointerup', padUp); pad.addEventListener('pointercancel', 
 // botão de tiro: segurar atira; arrastar o dedo também gira a mira
 {
   const bf = $('bf'); let lp = null;
-  bf.addEventListener('pointerdown', e => { bf.setPointerCapture(e.pointerId); lp = { x: e.clientX, y: e.clientY }; firing = true; e.preventDefault(); });
+  bf.addEventListener('pointerdown', e => { bf.setPointerCapture(e.pointerId); lp = { x: e.clientX, y: e.clientY }; me.fA = true; firing = true; e.preventDefault(); });
   bf.addEventListener('pointermove', e => { if (!lp) return; me.yaw -= (e.clientX - lp.x) * .005 * sensK; me.pit = clamp(me.pit - (e.clientY - lp.y) * .005 * sensK, -1.3, 1.3); lp = { x: e.clientX, y: e.clientY }; });
-  const end = () => { lp = null; firing = false; }; bf.addEventListener('pointerup', end); bf.addEventListener('pointercancel', end);
+  const end = () => { lp = null; me.fA = false; firing = !!me.fB; }; bf.addEventListener('pointerup', end);   // o outro botão de tiro pode continuar apertado bf.addEventListener('pointercancel', end);
 }
 const tap = (id, fn) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); fn(); });
 tap('bj', () => { if (me.alive && walk && !menuOn && camMode !== 2) { me.crouch = false; me.jumpBuf = performance.now(); } });
@@ -2543,8 +2583,8 @@ tap('bad', toggleAds);
 tap('zp', () => zoomStep(1)); tap('zm', () => zoomStep(-1));
 addEventListener('wheel', e => { if (ads && walk && !tps && !menuOn && me.alive) zoomStep(e.deltaY < 0 ? 1 : -1); }, { passive: true });
 { const bL = $('bfL');                                                          // atirar com a mão esquerda enquanto mira (estilo Free Fire)
-  bL.addEventListener('pointerdown', e => { try { bL.setPointerCapture(e.pointerId); } catch (x) {} firing = true; e.preventDefault(); });
-  const endL = () => { firing = false; }; bL.addEventListener('pointerup', endL); bL.addEventListener('pointercancel', endL); }
+  bL.addEventListener('pointerdown', e => { try { bL.setPointerCapture(e.pointerId); } catch (x) {} me.fB = true; firing = true; e.preventDefault(); });
+  const endL = () => { me.fB = false; firing = !!me.fA; }; bL.addEventListener('pointerup', endL); bL.addEventListener('pointercancel', endL); }
 function toggleCrouch() { if (!me.alive || !walk || menuOn) return; me.crouch = !me.crouch; }
 tap('bs', toggleCrouch);
 function toggleTps() {
@@ -2552,7 +2592,7 @@ function toggleTps() {
   if (camMode === 2) { orb.fy = me.yaw; orb.fp = me.pit; orb.y = me.yaw; orb.p = .12; orb.d = 3.2; firing = false; ads = false; }
   const names = ['1ª pessoa', '3ª pessoa', 'Câmera livre'], nx = names[(camMode + 1) % 3];
   $('bc').setAttribute('aria-label', 'Câmera: ' + names[camMode]); $('bc').title = 'Câmera: ' + names[camMode] + ' (toque para ' + nx + ')';
-  $('bc').classList.toggle('tps-on', camMode > 0); $('fcUI').classList.toggle('on', camMode === 2);
+  $('bc').classList.toggle('tps-on', camMode > 0); $('fcUI').classList.toggle('on', camMode === 2); document.body.classList.toggle('freeCam', camMode === 2);
   toast(camMode === 2 ? 'Câmera livre: arraste para girar 360°' : 'Câmera: ' + names[camMode], 1600);
 }
 $('bc').onclick = toggleTps;
@@ -2642,15 +2682,19 @@ function frame() {
   requestAnimationFrame(frame);
   // Tela inicial aberta (offline): não gasta GPU/bateria com o jogo por trás.
   if (!net.on && startEl && !startEl.classList.contains('off')) { last = performance.now(); return; }
-  const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now;
-  fpsFrames++;
+  const now = performance.now(), dt = Math.min(.1, (now - last) / 1000); last = now;   // até 0,1 s: a 15 FPS o jogo não fica em câmera lenta (colisão continua segura)
+  fpsFrames++; { const I = renderer.info.render; perfCalls = I.calls; perfTris = I.triangles; } renderer.info.autoReset = false; renderer.info.reset();   // contagem do quadro anterior (mundo + arma + sombra)
   if (now - fpsStamp >= 500) {
     const fps = Math.round(fpsFrames * 1000 / (now - fpsStamp));
     const fe = $('fpsValue'), pe = $('pingValue');
     if (fe) { fe.textContent = fps; fe.style.color = fps >= 50 ? '#a7ff45' : fps >= 30 ? '#ffd166' : '#ff5b58'; }
     if (pe) pe.textContent = net.on && net.ping ? net.ping + 'ms' : '--';
     fpsFrames = 0; fpsStamp = now;
-    if (graphicsQuality !== 'ultra' && !menuOn && document.visibilityState === 'visible') {
+    if (document.body.classList.contains('perfOn')) { const pi = $('perfInfo');   // diagnóstico (toque no FPS)
+      if (pi) pi.textContent = (GRAPHICS_PRESETS[graphicsQuality] || {}).label.split(' ')[0] + ' · res ' + Math.round(renderer.getPixelRatio() * 100) + '% · ' + perfCalls + ' desenhos · ' + Math.round(perfTris / 1000) + 'k tri · CPU ' + (frameMs || 0).toFixed(1) + ' ms' + (renderer.shadowMap.enabled ? ' · sombra' : '') + (GPU_LOW ? ' · GPU fraca' : ''); }
+    // resolução já no mínimo e ainda travando: desce um nível de qualidade (sem salvar a escolha do jogador)
+    if (dynK <= .56 && fps < 28 && !menuOn) { if (++autoDown >= 6 && graphicsQuality !== 'suave') { autoDown = 0; dynK = .8; applyGraphicsQuality(graphicsQuality === 'ultra' ? 'padrao' : 'suave'); toast('Qualidade reduzida para o jogo ficar mais fluido', 2200); } } else autoDown = 0;
+    if ((graphicsQuality !== 'ultra' || IS_MOBILE) && !menuOn && document.visibilityState === 'visible') {
       if (fps < 38) { dynLow++; dynHigh = 0; } else if (fps >= 57) { dynHigh++; dynLow = 0; } else { dynLow = 0; dynHigh = 0; }
       if (dynLow >= 3 && dynK > .55) { dynK = Math.max(.55, dynK - .1); dynLow = 0; applyGraphicsQuality(graphicsQuality); }
       else if (dynHigh >= 14 && dynK < 1) { dynK = Math.min(1, dynK + .1); dynHigh = 0; applyGraphicsQuality(graphicsQuality); }
@@ -2685,7 +2729,7 @@ function frame() {
       physics(me, dt); if (me.grounded) me.lastGround = now;
       if (now - (me.jumpBuf || 0) < 150 && now - (me.lastGround || 0) < 120 && me.vy <= .5) { me.vy = 7.4; me.jumpBuf = 0; me.lastGround = 0; me.grounded = false; }
       me.eh += ((me.crouch ? 1.05 : 1.65) - me.eh) * (1 - Math.exp(-dt * 14)); me.h = me.crouch ? 1.2 : 1.7; $('bs').classList.toggle('on', me.crouch);
-      if ((firing || key.KeyF) && camMode !== 2) tryFire(now);
+      if ((firing || key.KeyF) && camMode !== 2) for (let n = 0; n < 3; n++) { const sl = slots[cur], b = sl.mag; tryFire(now); if (sl.mag === b || now < sl.next) break; }   // FPS baixo: até 3 tiros no quadro
       const sf = safe(); if (sf && !wasSafe) { if (net.on) { for (const s of slots) { s.mag = s.cfg.ammo; s.res = s.cfg.reserve; s.reloading = false; } toast('Zona segura: munição reabastecida', 2000); } else { refill(); toast('Zona segura: vida e munição reabastecidas', 2000); } } wasSafe = sf;
       if (!net.on && now - me.lastHit > 5000) me.hp = Math.min(100, me.hp + (sf ? 30 : 5) * dt);
       const s0 = slots[cur]; if (s0.reloading && now >= s0.reloadEnd) { const take = Math.min(s0.cfg.ammo - s0.mag, s0.res); s0.mag += take; s0.res -= take; s0.reloading = false; }
@@ -2696,7 +2740,7 @@ function frame() {
   }
   if (!net.on) for (const b of bots) updateBot(b, now, dt);
   updateGrenades(dt);
-  if(!net.on && walk && me.alive){ for(let i=ammoDrops.length-1;i>=0;i--){const d=ammoDrops[i];d.life-=dt;if(Math.hypot(me.x-d.x,me.z-d.z)<1.8){const sl=slots[cur];sl.res+=d.ammo;grenades+=d.grenades;updateGrenadeHud();toast('Coletou munição'+(d.grenades?' e granada':''),1500);if(d.mesh){scene.remove(d.mesh);d.mesh.geometry.dispose();d.mesh.material.dispose();}ammoDrops.splice(i,1);}else if(d.life<=0){if(d.mesh){scene.remove(d.mesh);d.mesh.geometry.dispose();d.mesh.material.dispose();}ammoDrops.splice(i,1);} } }
+  if(!net.on && walk && me.alive){ for(let i=ammoDrops.length-1;i>=0;i--){const d=ammoDrops[i];d.life-=dt;if(Math.hypot(me.x-d.x,me.z-d.z)<1.8&&Math.abs(me.y-(d.y||0))<1.5){const sl=slots[cur];sl.res+=d.ammo;grenades+=d.grenades;updateGrenadeHud();toast('Coletou munição'+(d.grenades?' e granada':''),1500);if(d.mesh){scene.remove(d.mesh);d.mesh.geometry.dispose();d.mesh.material.dispose();}ammoDrops.splice(i,1);}else if(d.life<=0){if(d.mesh){scene.remove(d.mesh);d.mesh.geometry.dispose();d.mesh.material.dispose();}ammoDrops.splice(i,1);} } }
   net.tick(dt);
   for (let i = sparks.length - 1; i >= 0; i--) if (now >= sparks[i].t) { scene.remove(sparks[i].m); sparks.splice(i, 1); }
   updateTracers(dt);
@@ -2762,7 +2806,7 @@ function frame() {
     }
     { const SN = 6, cx = Math.round(me.x / SN) * SN, cy = Math.round(me.y / 2) * 2, cz = Math.round(me.z / SN) * SN;
       sun.position.set(cx + Math.cos(angle)*90, cy + Math.max(-8,Math.sin(angle)*110), cz - Math.sin(angle)*35); sun.target.position.set(cx, cy, cz);
-      if (renderer.shadowMap.enabled) { const iv = graphicsQuality === 'ultra' ? 50 : 100;
+      if (renderer.shadowMap.enabled) { const iv = IS_MOBILE ? 250 : graphicsQuality === 'ultra' ? 50 : 100;
         if (cx !== shCx || cy !== shCy || cz !== shCz || Math.abs(angle - shAng) > .004 || now - shT > iv) { shCx = cx; shCy = cy; shCz = cz; shAng = angle; shT = now; renderer.shadowMap.needsUpdate = true; } } }
   } else {
     if (auto) th += .004;
@@ -2772,6 +2816,7 @@ function frame() {
   try {
     renderer.render(scene, cam);
     if (walk && !tps && me.alive) { renderer.autoClear = false; renderer.clearDepth(); renderer.render(fpScene, fpCam); renderer.autoClear = true; }
+    frameMs += ((performance.now() - now) - frameMs) * .1;   // tempo de CPU do quadro (média)
   } catch (err) {
     renderer.autoClear = true;
     console.error('Falha ao renderizar o mundo 3D:', err);
@@ -2788,7 +2833,7 @@ for (let i = 0; i < BOT_COUNT; i++) makeBot(i);
 function makeRemote(id, name) {
   const root = GA.buildPlayer(THREE, { skin: pick(['#b87950', '#8d5a3b', '#d9a066', '#6b4429']), shirt: '#1f4f8f', shorts: '#2b2b2b', gear: '#243040', helmet: true, helmetColor: '#152238', name });
   if (window.__favelaAttachCharacter) window.__favelaAttachCharacter(root);
-  const p = root.userData.parts; p.hitbox.position.y = .96; p.hitbox.scale.y = 1.08; p.headHit.position.y = 1.7; p.headHit.scale.setScalar(1.15);
+  const p = root.userData.parts; p.hitbox.position.y = .78; p.hitbox.scale.y = .9; p.headHit.position.y = 1.7; p.headHit.scale.setScalar(1.15);   // corpo até 1,52 m: a cabeça fica de fora (antes a caixa engolia o tiro na cabeça)
   root.rotation.order = 'YXZ'; scene.add(root);
   const r = { id, name, root, guns: {}, x: 0, y: 0, z: -60, yaw: 0, pit: 0, a: 1, w: null };
   net.players.set(id, r); net.byRoot.set(root, r); return r;
@@ -2808,7 +2853,7 @@ function netBadge() {
 net.ping = 0; const INTERP_MS = 100;
 Object.assign(net, {
   send(o) { if (this.ws && this.ws.readyState === 1) this.ws.send(JSON.stringify(o)); },
-  shot(o, e) { this.send({ t: 'shot', ox: o.x, oy: o.y, oz: o.z, ex: e.x, ey: e.y, ez: e.z }); },
+  shot(o, e) { this.send({ t: 'shot', ox: o.x, oy: o.y, oz: o.z, ex: e.x, ey: e.y, ez: e.z, w: slots[cur].type }); },
   tick(dt) {
     if (!this.on) return;
     const rt = performance.now() - INTERP_MS;                 // renderiza ~100 ms no passado, entre dois snapshots
@@ -2836,8 +2881,9 @@ function onNet(m, finish) {
   if (m.t === 'joined') {
     net.on = true; net.id = m.id; net.code = m.code; net.ping = 0; net.over = false; net.board.clear();
     document.body.classList.add('online');
-    for (const b of bots) { b.alive = false; b.root.visible = false; }
-    respawn(); netBadge(); toast('Você entrou na sala ' + m.code, 2500); finish(true);
+    for (const b of bots) { b.alive = false; b.root.visible = false; if (b.root.parent) b.root.parent.remove(b.root); }   // fora da cena: não recalcula ~200 nós por bot a cada quadro
+    respawn(); net.tp = m.tp; if (m.x != null) { me.x = m.x; me.z = m.z; me.y = favela.heightAt(me.x, me.z); }   // nasce onde o servidor colocou
+    netBadge(); toast('Você entrou na sala ' + m.code, 2500); finish(true);
     net.send({ t: 'ping', c: performance.now() });
   } else if (m.t === 'wrongmap') { finish(false, 'Carregando o mapa da sala…'); if (window.FavelaSwitchMap) window.FavelaSwitchMap(m.map, { a: 'join', c: m.code }); }
   else if (m.t === 'error') { finish(false, m.msg); if (net.ws) net.ws.close(); }
@@ -2862,14 +2908,14 @@ function onNet(m, finish) {
   } else if (m.t === 'pong') { net.ping = Math.max(1, Math.round(performance.now() - m.c)); netBadge(); }
   else if (m.t === 'player_join') toast(m.name + ' entrou na sala', 2000);
   else if (m.t === 'player_leave') { const r = dropRemote(m.id); if (r) toast(r.name + ' saiu', 2000); netBadge(); }
-  else if (m.t === 'damage') { me.hp = m.hp; me.lastHit = performance.now(); flashHurt(); sfx('hurt', .3); if (m.hp <= 0 && me.alive) die(); }
-  else if (m.t === 'hitmark') { sfx(m.kill ? 'kill' : 'hit', .25); showHit(!!m.kill); }
+  else if (m.t === 'damage') { me.hp = m.hp; me.lastHit = performance.now(); flashHurt(); { const sp = net.players.get(m.from); if (sp) dmgDir(sp.x, sp.z); } sfx('hurt', .3); if (m.hp <= 0 && me.alive) die(); }
+  else if (m.t === 'hitmark') { sfx(m.kill || m.head ? 'kill' : 'hit', .25); showHit(!!m.kill, !!m.head); }
   else if (m.t === 'kill') killfeed(m);
   else if (m.t === 'xp') addXp(m.n, m.why || 'XP');
   else if (m.t === 'fix') { me.x = m.x; me.z = m.z; me.y = m.y; me.vy = 0; }
   else if (m.t === 'match_end') { net.over = true; showFinal(m); }
   else if (m.t === 'match_start') { net.over = false; hideBoard(); toast('Nova rodada! Primeiro a ' + m.limit + ' abates vence', 3000); }
-  else if (m.t === 'respawn') { respawn(); me.x = m.x; me.z = m.z; me.y = favela.heightAt(me.x, me.z); }
+  else if (m.t === 'respawn') { respawn(); net.tp = m.tp; me.x = m.x; me.z = m.z; me.y = favela.heightAt(me.x, me.z); }
   else if (m.t === 'boom') { const bm=new THREE.Mesh(new THREE.SphereGeometry(3,10,8),new THREE.MeshBasicMaterial({color:0xff9c35,transparent:true,opacity:.55}));bm.position.set(m.x,m.y,m.z);scene.add(bm);setTimeout(()=>{scene.remove(bm);bm.geometry.dispose();bm.material.dispose();},180);sfx('shot',.3,300); }
   else if (m.t === 'shot') { { const sp = net.players.get(m.id); if (sp) sp.shotT = performance.now(); } tracer(new V3(m.ox, m.oy, m.oz), new V3(m.ex, m.ey, m.ez)); sfx('shot', .12, 120); }
 }
@@ -2899,10 +2945,17 @@ addEventListener('keydown', e => { if (e.code === 'Tab' && net.on) { e.preventDe
 addEventListener('keyup', e => { if (e.code === 'Tab' && net.on) { e.preventDefault(); showBoard(false); } });
 { const sb = $('sbBtn'); if (sb) sb.addEventListener('pointerdown', e => { e.preventDefault(); showBoard(!net.sbOn); }); }
 window.FavelaNet = {
+  /* sai da sala de verdade: fecha o socket (sem disparar "conexão perdida"), avisa o servidor e limpa os outros jogadores */
+  leave() {
+    const ws = net.ws; net.ws = null;
+    if (ws) { ws.onopen = ws.onmessage = ws.onerror = ws.onclose = null; try { if (ws.readyState === 1) ws.send(JSON.stringify({ t: 'leave' })); ws.close(); } catch (e) {} }
+    if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); }
+  },
   /* Render grátis dorme após 15 min: acorda com /health (até ~90 s) e tenta o WebSocket algumas vezes antes de desistir. */
   connect(o, ok, fail, tries) {
     if (net.ws && net.ws.readyState === 0) return;
     if (tries == null) {
+      this.leave();                                              // nunca fica com duas salas abertas ao mesmo tempo
       if (this._waking) return; this._waking = true; const t0 = Date.now();
       const wake = () => fetch('/health', { cache: 'no-store' }).then(r => { if (!r.ok) throw 0; this._waking = false; this.connect(o, ok, fail, 3); })
         .catch(() => { if (Date.now() - t0 > 90000) { this._waking = false; fail && fail('Servidor fora do ar. Tente de novo em instantes.'); return; }
@@ -2914,13 +2967,14 @@ window.FavelaNet = {
       else fail && fail(msg); };
     const ws = net.ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
     ws.onopen = () => ws.send(JSON.stringify({ t: o.kind, code: o.code, name: o.name, lv: XP.info(save.xp).level, map: MAP_ID }));
-    ws.onmessage = e => { let m; try { m = JSON.parse(e.data); } catch (x) { return; } try { onNet(m, finish); } catch (err) { toast('Erro: ' + ((err && err.message) || err), 4000); } };
+    ws.onmessage = e => { if (ws !== net.ws) return; let m; try { m = JSON.parse(e.data); } catch (x) { return; } try { onNet(m, finish); } catch (err) { toast('Erro: ' + ((err && err.message) || err), 4000); } };
     ws.onerror = () => finish(false, 'Não foi possível conectar ao servidor', true);
-    ws.onclose = () => { if (!settled) finish(false, 'Servidor não respondeu. Tente de novo.', true); else if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); toast('Conexão perdida — recarregue a página', 6000); } };
+    ws.onclose = () => { if (ws !== net.ws) return; if (!settled) finish(false, 'Servidor não respondeu. Tente de novo.', true); else if (net.on) { net.on = false; document.body.classList.remove('online'); for (const id of [...net.players.keys()]) dropRemote(id); netBadge(); toast('Conexão perdida — recarregue a página', 6000); } };
   }
 };
-setInterval(() => { if (net.on && me.alive) net.send({ t: 'state', x: me.x, y: me.y, z: me.z, yaw: me.yaw, pit: me.pit, w: slots[cur].type }); }, 33);
+setInterval(() => { if (net.on && me.alive) net.send({ t: 'state', x: me.x, y: me.y, z: me.z, yaw: me.yaw, pit: me.pit, w: slots[cur].type, tp: net.tp }); }, 33);
 setInterval(() => { if (net.on) net.send({ t: 'ping', c: performance.now() }); }, 2000);
+{ const ph = $('perfHud'); if (ph) { ph.style.pointerEvents = 'auto'; ph.addEventListener('pointerdown', e => { e.stopPropagation(); document.body.classList.toggle('perfOn'); }); } }
 { const rb = $('roomBadge'); if (rb) rb.addEventListener('pointerdown', () => { try { navigator.clipboard.writeText(net.code); toast('Código ' + net.code + ' copiado', 1500); } catch (e) {} }); }
 window.FavelaGame = {
   SKINS, teamOf, getSkin: () => save.skin, xp: () => XP.info(save.xp),
@@ -3150,13 +3204,13 @@ frame();
     if(window.FavelaGraphics) window.FavelaGraphics.apply(btn.dataset.quality);
   }));
   $('lobbyBtn').addEventListener('click', () => {
-    closeSettings();
+    closeSettings(); if (window.FavelaNet) window.FavelaNet.leave();   // voltar ao lobby sai da sala (antes o boneco ficava parado lá como alvo)
     try { if(document.pointerLockElement) document.exitPointerLock(); } catch(e) {}
     document.getElementById('start').classList.remove('off'); document.body.classList.add('homeOn');
     const msg = $('lobbyMsg'); if(msg) msg.textContent = 'Você voltou ao lobby. Escolha como jogar.';
   });
   // Atualiza o estado visual inicial depois que o motor gráfico criou os controles.
-  window.addEventListener('load', () => { if(window.FavelaGraphics) window.FavelaGraphics.apply(window.FavelaGraphics.getQuality()); });
+  window.addEventListener('load', () => { if(window.FavelaGraphics) window.FavelaGraphics.apply(window.FavelaGraphics.getQuality(), false); });
 })();
 </script>
 <script>
@@ -3166,7 +3220,7 @@ frame();
   const ITEMS = [
     ['bf','ATIRAR',.905,.769,.104,0],['bad','MIRAR',.946,.567,.062,0],['bj','PULAR',.809,.656,.052,0],['bs','AGACHAR',.794,.804,.052,0],
     ['br2','↻',.84,.905,.052,0],['bw','ARMA',.87,.444,.062,0],['bg','GRANADA',.946,.444,.062,0],
-    ['bfL','ATIRAR\n(esq.)',.08,.66,.08,1],['zp','ZOOM +',.74,.40,.05,1],['zm','ZOOM −',.74,.58,.05,1]
+    ['bfL','ATIRAR\n(esq.)',.08,.66,.08,1],['zp','ZOOM +',.68,.40,.05,1],['zm','ZOOM −',.68,.58,.05,1]
   ];
   let saved = {}; try { saved = JSON.parse(localStorage.getItem('fv_hud') || '{}') || {}; } catch(e) {}
   const clamp = (v,a,b) => Math.min(b, Math.max(a, v));

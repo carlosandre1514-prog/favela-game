@@ -249,7 +249,7 @@ function buildColegioGame(THREE, scene) {
     heightAt: (x, z) => sup(x, z, .5),
     windows: { color: { set: c => { night = c !== 0x1c2733; m.setNight(night); } } }, lamps: { color: { set() {} } },
     maze: { hO, vO, NX, NZ, P, X0, Z0 },
-    cfg: { name: 'Colégio Central', safe: z => z > 67, pol: [28, 40, 71, 78], pyaw: Math.PI, pdir: -1, bx: 110, bz0: -98, bz1: 88,
+    cfg: { name: 'Colégio Central', botZ: [-1e9, 64], safe: z => z > 67, pol: [28, 40, 71, 78], pyaw: Math.PI, pdir: -1, bx: 110, bz0: -98, bz1: 88,
       shops: [['guns', 54, 77, Math.PI], ['skins', 14, 77, 0]], polMsg: 'Você renasceu na portaria', banMsg: 'Você renasceu no colégio' }
   };
 }
