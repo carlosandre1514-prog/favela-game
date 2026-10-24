@@ -56,7 +56,7 @@ const server = http.createServer((req, res) => {
     if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('nao encontrado'); return; }
     const ext = path.extname(file).toLowerCase();
     const headers = { 'Content-Type': MIME[ext] || 'application/octet-stream' };
-    if (path.basename(file) === 'sw.js' || ext === '.html') headers['Cache-Control'] = 'no-cache';
+    if (path.basename(file) === 'sw.js' || ext === '.html' || ext === '.js') headers['Cache-Control'] = 'no-cache';   // código sempre novo (senão chars.js antigo + index novo quebram)
     else headers['Cache-Control'] = 'public, max-age=604800';   // armas .glb, imagens: celular não baixa de novo a cada partida
     // gzip para texto (index.html ~300KB vira ~70KB): carrega bem mais rápido em 3G/4G fraco
     if (/^(text\/|application\/(json|manifest))/.test(headers['Content-Type']) && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
